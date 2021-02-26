@@ -1,4 +1,4 @@
-import { Component, ContentChild, Pipe, PipeTransform, Output, EventEmitter, HostListener, Directive } from '@angular/core';
+import { Component, ContentChild, Pipe, PipeTransform, Directive } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { IgxInputDirective, IgxInputState } from '../input-group/public_api';
 import { IgxInputGroupComponent } from '../input-group/input-group.component';
@@ -6,9 +6,7 @@ import { IgxInputGroupBase } from '../input-group/input-group.common';
 import { DatePickerUtil } from '../date-picker/date-picker.utils';
 import { IgxDateTimeEditorDirective } from '../directives/date-time-editor/public_api';
 
-/**
- * Represents a range between two dates.
- */
+/** Represents a range between two dates. */
 export interface DateRange {
     start: Date;
     end: Date;
@@ -78,40 +76,6 @@ export class IgxDateRangeInputsBaseComponent extends IgxInputGroupComponent {
     /** @hidden @internal */
     public updateInputValidity(state: IgxInputState) {
         this.inputDirective.valid = state;
-    }
-}
-
-/**
- * Templates the default icon in the `IgxDateRangePicker`.
- *
- * @igxModule IgxDateRangePickerModule
- *
- * @igxKeyWords date range icon, date picker icon
- *
- * @igxGroup scheduling
- *
- * @example
- * ```html
- * <igx-date-range-picker>
- *   <igx-picker-toggle igxSuffix>
- *      <igx-icon>calendar_view_day</igx-icon>
- *   </igx-picker-toggle>
- * </igx-date-range-picker>
- * ```
- */
-@Component({
-    template: `<ng-content></ng-content>`,
-    selector: 'igx-picker-toggle'
-})
-export class IgxPickerToggleComponent {
-    @Output()
-    public clicked = new EventEmitter();
-
-    @HostListener('click', ['$event'])
-    public onClick(event: MouseEvent) {
-        // do not focus input on click
-        event.stopPropagation();
-        this.clicked.emit();
     }
 }
 

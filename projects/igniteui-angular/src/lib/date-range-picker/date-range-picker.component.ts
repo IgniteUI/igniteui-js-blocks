@@ -18,13 +18,14 @@ import { InteractionMode } from '../core/enums';
 import { CurrentResourceStrings } from '../core/i18n/resources';
 import { IToggleView } from '../core/navigation';
 import { IBaseCancelableBrowserEventArgs, IBaseEventArgs, KEYS } from '../core/utils';
+import { IgxPickerToggleComponent } from '../date-common/picker-icons.common';
 import { DatePickerUtil } from '../date-picker/date-picker.utils';
 import { IgxToggleDirective } from '../directives/toggle/toggle.directive';
 import { IgxInputDirective, IgxInputGroupComponent, IgxInputState, IgxLabelDirective } from '../input-group/public_api';
 import { AutoPositionStrategy, OverlaySettings, PositionSettings } from '../services/public_api';
 import {
     DateRange, IgxDateRangeEndComponent, IgxDateRangeInputsBaseComponent,
-    IgxDateRangeSeparatorDirective, IgxDateRangeStartComponent, IgxPickerToggleComponent
+    IgxDateRangeSeparatorDirective, IgxDateRangeStartComponent
 } from './date-range-picker-inputs.common';
 
 const SingleInputDatesConcatenationString = ' - ';

@@ -142,6 +142,7 @@ import { MainComponent } from './grid-finjs/main.component';
 import { ControllerComponent } from './grid-finjs/controllers.component';
 import { CommonModule } from '@angular/common';
 import { GridEventsComponent } from './grid-events/grid-events.component';
+import { IgxPickerIconsModule } from 'projects/igniteui-angular/src/lib/date-common/picker-icons.common';
 
 const components = [
     ActionStripSampleComponent,
@@ -289,6 +290,7 @@ const components = [
         IgxHierarchicalGridModule,
         IgxDragDropModule,
         IgxDateRangePickerModule,
+        IgxPickerIconsModule,
         IgxDividerModule,
         SharedModule,
         routing,
