@@ -210,6 +210,7 @@ export class IgxDateTimeEditorDirective extends IgxMaskDirective implements OnCh
 
   private _value: Date;
   private _format: string;
+  private _onClear: boolean;
   private document: Document;
   private _isFocused: boolean;
   private _inputFormat: string;
@@ -293,7 +294,10 @@ export class IgxDateTimeEditorDirective extends IgxMaskDirective implements OnCh
 
   /** Clear the input element value. */
   public clear(): void {
+    this._onClear = true;
     this.updateValue(null);
+    this.setSelectionRange(0, this.inputValue.length);
+    this._onClear = false;
   }
 
   /**
@@ -442,9 +446,6 @@ export class IgxDateTimeEditorDirective extends IgxMaskDirective implements OnCh
   /** @hidden @internal */
   public updateMask(): void {
     if (this._isFocused) {
-      if (!this.value) {
-        return;
-      }
       // store the cursor position as it will be moved during masking
       const cursor = this.selectionEnd;
       this.inputValue = this.getMaskedValue();
@@ -474,14 +475,19 @@ export class IgxDateTimeEditorDirective extends IgxMaskDirective implements OnCh
 
   private getMaskedValue(): string {
     let mask = this.emptyMask;
-    for (const part of this._inputDateParts) {
-      if (part.type === DatePart.Literal) {
-        continue;
+    if (this.value) {
+      for (const part of this._inputDateParts) {
+        if (part.type === DatePart.Literal) {
+          continue;
+        }
+        const targetValue = this.getPartValue(part, part.format.length);
+        mask = this.maskParser.replaceInMask(mask, targetValue, this.maskOptions, part.start, part.end).value;
       }
-      const targetValue = this.getPartValue(part, part.format.length);
-      mask = this.maskParser.replaceInMask(mask, targetValue, this.maskOptions, part.start, part.end).value;
+      return mask;
     }
-
+    if (!this.inputIsComplete() || !this._onClear) {
+      return this.inputValue;
+    }
     return mask;
   }
 

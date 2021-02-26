@@ -37,10 +37,10 @@ describe('IgxDateTimeEditor', () => {
             dateTimeEditor.ngOnChanges(changes);
         };
         describe('Properties & Events', () => {
-            it('should emit valueChange event on clear()', () => {
+           it('should emit valueChange event on clear()', () => {
                 inputFormat = 'dd/M/yy';
                 inputDate = '6/6/2000';
-                elementRef = { nativeElement: { value: inputDate } };
+                elementRef = { nativeElement: { value: inputDate, setSelectionRange: () => {} } };
                 initializeDateTimeEditor();
 
                 const date = new Date(2000, 5, 6);
