@@ -1,4 +1,4 @@
-<igx-input-group [suppressInputAutofocus]="this.isDropdown">
+<igx-input-group [suppressInputAutofocus]="true">
     <igx-prefix *ngIf="!this.toggleComponents.length" (click)="this.toggle()">
         <igx-icon>today</igx-icon>
     </igx-prefix>
@@ -9,7 +9,7 @@
         [placeholder]="this.placeholder" role="combobox" aria-haspopup="dialog" [attr.aria-expanded]="!this.collapsed"
         [attr.aria-labelledby]="this.label" [readonly]="!this.isDropdown" [igxTextSelection]="this.isDropdown">
 
-    <igx-suffix *ngIf="!this.iconComponents.length && !this.empty" (click)="this.clear()">
+    <igx-suffix *ngIf="!this.clearComponents.length && !this.empty" (click)="this.clear()">
         <igx-icon>clear</igx-icon>
     </igx-suffix>
 
