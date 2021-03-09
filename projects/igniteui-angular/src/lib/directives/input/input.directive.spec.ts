@@ -1,6 +1,6 @@
 import { Component, ViewChild, ViewChildren, QueryList, DebugElement } from '@angular/core';
 import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
-import { FormsModule, FormBuilder, ReactiveFormsModule, Validators  } from '@angular/forms';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { IgxInputGroupComponent, IgxInputGroupModule } from '../../input-group/input-group.component';
 import { IgxInputDirective, IgxInputState } from './input.directive';
@@ -32,6 +32,7 @@ describe('IgxInput', () => {
                 RequiredInputComponent,
                 RequiredTwoWayDataBoundInputComponent,
                 DataBoundDisabledInputComponent,
+                DataBoundDisabledInputWithoutValueComponent,
                 ReactiveFormComponent,
                 InputsWithSameNameAttributesComponent,
                 ToggleRequiredWithNgModelInputComponent
@@ -42,7 +43,7 @@ describe('IgxInput', () => {
                 ReactiveFormsModule
             ]
         })
-        .compileComponents();
+            .compileComponents();
     }));
 
     it('Initializes an input.', () => {
@@ -184,6 +185,25 @@ describe('IgxInput', () => {
         expect(inputGroupElement.classList.contains(INPUT_GROUP_DISABLED_CSS_CLASS)).toBe(true);
         expect(inputElement.disabled).toBe(true);
         expect(igxInput.disabled).toBe(true);
+    });
+
+    it('should have disabled style if disabled attr is set without value', () => {
+        const fixture = TestBed.createComponent(DataBoundDisabledInputWithoutValueComponent);
+        fixture.detectChanges();
+
+        const igxInput = fixture.componentInstance.igxInput;
+        const inputElement = fixture.debugElement.query(By.directive(IgxInputDirective)).nativeElement;
+        const inputGroupElement = fixture.debugElement.query(By.css('igx-input-group')).nativeElement;
+        expect(inputGroupElement.classList.contains(INPUT_GROUP_DISABLED_CSS_CLASS)).toBe(true);
+        expect(inputElement.disabled).toBe(true);
+        expect(igxInput.disabled).toBe(true);
+
+        fixture.componentInstance.changeDisabledState();
+        fixture.detectChanges();
+
+        expect(inputGroupElement.classList.contains(INPUT_GROUP_DISABLED_CSS_CLASS)).toBe(false);
+        expect(inputElement.disabled).toBe(false);
+        expect(igxInput.disabled).toBe(false);
     });
 
     it('should style required input correctly.', () => {
@@ -645,7 +665,8 @@ describe('IgxInput', () => {
     });
 });
 
-@Component({ template: `
+@Component({
+    template: `
                     <form>
                         <igx-input-group #igxInputGroup>
                             <label for="firstName" #igxLabel igxLabel>Name</label>
@@ -666,7 +687,8 @@ class InputsWithSameNameAttributesComponent {
 }
 
 
-@Component({ template: `<igx-input-group #igxInputGroup>
+@Component({
+    template: `<igx-input-group #igxInputGroup>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" #igxInput type="text" igxInput />
                         </igx-input-group>` })
@@ -675,14 +697,16 @@ class InputComponent {
     @ViewChild(IgxInputDirective, { static: true }) public igxInput: IgxInputDirective;
 }
 
-@Component({ template: `<igx-input-group>
+@Component({
+    template: `<igx-input-group>
                             <label for="test" igxLabel>Test</label>
                             <textarea name="test" igxInput></textarea>
                         </igx-input-group>` })
 class TextareaComponent {
 }
 
-@Component({ template: `<igx-input-group>
+@Component({
+    template: `<igx-input-group>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" placeholder="Test" #igxInput type="text" igxInput />
                         </igx-input-group>` })
@@ -690,7 +714,8 @@ class InputWithPlaceholderComponent {
     @ViewChild(IgxInputDirective, { static: true }) public igxInput: IgxInputDirective;
 }
 
-@Component({ template: `<igx-input-group #igxInputGroup>
+@Component({
+    template: `<igx-input-group #igxInputGroup>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" #igxInput type="text" igxInput value="Test" />
                         </igx-input-group>` })
@@ -699,7 +724,8 @@ class FilledInputComponent {
     @ViewChild(IgxInputDirective, { static: true }) public igxInput: IgxInputDirective;
 }
 
-@Component({ template: `<igx-input-group #igxInputGroup>
+@Component({
+    template: `<igx-input-group #igxInputGroup>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" #igxInput type="text" igxInput value="Test" disabled="disabled" />
                         </igx-input-group>` })
@@ -708,7 +734,8 @@ class DisabledInputComponent {
     @ViewChild(IgxInputDirective, { static: true }) public igxInput: IgxInputDirective;
 }
 
-@Component({ template: `<igx-input-group #igxInputGroup>
+@Component({
+    template: `<igx-input-group #igxInputGroup>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" #igxInput type="text" igxInput required="required" />
                         </igx-input-group>` })
@@ -717,7 +744,8 @@ class RequiredInputComponent {
     @ViewChild(IgxInputDirective, { static: true }) public igxInput: IgxInputDirective;
 }
 
-@Component({ template: `<igx-input-group #igxInputGroup>
+@Component({
+    template: `<igx-input-group #igxInputGroup>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" #igxInput type="text" igxInput [(ngModel)]="user.firstName" required="required" />
                         </igx-input-group>` })
@@ -730,7 +758,8 @@ class RequiredTwoWayDataBoundInputComponent {
     };
 }
 
-@Component({ template: `<igx-input-group #igxInputGroupNotFilledUndefined>
+@Component({
+    template: `<igx-input-group #igxInputGroupNotFilledUndefined>
                             <label for="not-filled-undefined" igxLabel>Not Filled Undefined</label>
                             <input name="not-filled-undefined" igxInput [(ngModel)]="notFilledUndefined" />
                         </igx-input-group>
@@ -793,7 +822,8 @@ class InitiallyFilledInputComponent {
     };
 }
 
-@Component({ template: `<igx-input-group #igxInputGroup>
+@Component({
+    template: `<igx-input-group #igxInputGroup>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" #igxInput type="text" igxInput [disabled]="disabled" />
                         </igx-input-group>` })
@@ -805,8 +835,20 @@ class DataBoundDisabledInputComponent {
 }
 
 @Component({
+    template: `<igx-input-group #igxInputGroup>
+                    <label for="test" igxLabel>Test</label>
+                    <input name="test" #igxInput type="text" igxInput disabled />
+                </igx-input-group>`
+})
+class DataBoundDisabledInputWithoutValueComponent extends DataBoundDisabledInputComponent {
+    public changeDisabledState() {
+        this.igxInput.disabled = !this.igxInput.disabled;
+    }
+}
+
+@Component({
     template:
-    `<form class="wrapper" [formGroup]="form">
+        `<form class="wrapper" [formGroup]="form">
         <section>
         <igx-input-group>
             <label igxLabel>single line</label>
@@ -855,7 +897,8 @@ class ReactiveFormComponent {
     }
 }
 
-@Component({ template: `<igx-input-group>
+@Component({
+    template: `<igx-input-group>
                             <label for="test" igxLabel>Test</label>
                             <input name="test" type="text" igxInput [(ngModel)]="data" [required]="isRequired"/>
                         </igx-input-group>

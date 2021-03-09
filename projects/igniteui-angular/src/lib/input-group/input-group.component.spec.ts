@@ -30,6 +30,7 @@ describe('IgxInputGroup', () => {
                 InputGroupDisabledComponent,
                 InputGroupDisabledByDefaultComponent,
                 InputGroupCosyDisplayDensityComponent,
+                InputGroupDisabledWithoutValueComponent,
                 InputGroupCompactDisplayDensityComponent,
                 InputGroupInputDisplayDensityComponent
             ],
@@ -37,7 +38,7 @@ describe('IgxInputGroup', () => {
                 IgxInputGroupModule, IgxIconModule
             ]
         })
-        .compileComponents();
+            .compileComponents();
     }));
 
     it('Initializes an input group.', () => {
@@ -144,6 +145,24 @@ describe('IgxInputGroup', () => {
 
         const component = fixture.componentInstance;
         const igxInputGroup = component.igxInputGroup;
+        expect(igxInputGroup.disabled).toBeTruthy();
+    });
+
+    it('should handle disabled attribute without value', () => {
+        pending();
+        const fixture = TestBed.createComponent(InputGroupDisabledWithoutValueComponent);
+        fixture.detectChanges();
+
+        const component = fixture.componentInstance;
+        const igxInputGroup = component.igxInputGroup;
+        expect(igxInputGroup.disabled).toBeTruthy();
+
+        component.changeDisableState();
+        fixture.detectChanges();
+        expect(igxInputGroup.disabled).toBeFalsy();
+
+        component.changeDisableState();
+        fixture.detectChanges();
         expect(igxInputGroup.disabled).toBeTruthy();
     });
 
@@ -345,6 +364,20 @@ class InputGroupDisabledComponent {
 
     public changeDisableState() {
         this.disabled = !this.disabled;
+    }
+}
+
+@Component({
+    template: `<igx-input-group #igxInputGroup disabled>
+                    <input igxInput />
+                </igx-input-group>`
+})
+class InputGroupDisabledWithoutValueComponent {
+    @ViewChild('igxInputGroup')
+    public igxInputGroup: IgxInputGroupComponent;
+
+    public changeDisableState() {
+        this.igxInputGroup.disabled = !this.igxInputGroup.disabled;
     }
 }
 
