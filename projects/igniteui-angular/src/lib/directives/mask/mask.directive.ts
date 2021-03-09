@@ -234,7 +234,10 @@ export class IgxMaskDirective implements OnInit, AfterViewChecked, ControlValueA
     /** @hidden */
     @HostListener('focus')
     public onFocus(): void {
-        // TODO: handle readonly
+        const readonly = this.nativeElement.readOnly;
+        if (readonly !== null && `${readonly}` !== 'false') {
+            return;
+        }
         this._focused = true;
         this.showMask(this._dataValue);
     }
