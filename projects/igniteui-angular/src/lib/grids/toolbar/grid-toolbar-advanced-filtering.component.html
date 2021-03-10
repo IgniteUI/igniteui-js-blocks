@@ -2,11 +2,9 @@
     [title]="grid?.resourceStrings.igx_grid_toolbar_advanced_filtering_button_tooltip"
     (click)="grid.openAdvancedFilteringDialog()"
     [ngClass]="grid.advancedFilteringExpressionsTree ? 'igx-grid-toolbar__adv-filter--filtered' : 'igx-grid-toolbar__adv-filter'">
-    <div class="igx-grid-toolbar__button-space">
-        <igx-icon>filter_list</igx-icon>
-        <span #ref>
-            <ng-content></ng-content>
-        </span>
-        <span *ngIf="!ref.childNodes.length">{{ grid?.resourceStrings.igx_grid_toolbar_advanced_filtering_button_label }}</span>
-    </div>
+    <igx-icon>filter_list</igx-icon>
+    <span #ref>
+        <ng-content></ng-content>
+    </span>
+    <span *ngIf="!ref.childNodes.length">{{ grid?.resourceStrings.igx_grid_toolbar_advanced_filtering_button_label }}</span>
 </button>

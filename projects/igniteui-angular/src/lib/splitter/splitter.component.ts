@@ -1,4 +1,5 @@
-import { Component, QueryList, Input, ContentChildren, AfterContentInit, HostBinding, Inject, ElementRef } from '@angular/core';
+import { Component, QueryList, Input, ContentChildren, AfterContentInit, HostBinding, Inject, ElementRef,
+     Output, EventEmitter } from '@angular/core';
 import { IgxSplitterPaneComponent } from './splitter-pane/splitter-pane.component';
 import { DOCUMENT } from '@angular/common';
 
@@ -8,6 +9,11 @@ import { DOCUMENT } from '@angular/common';
 export enum SplitterType {
     Horizontal,
     Vertical
+}
+
+export declare interface ISplitterBarResizeEventArgs {
+    pane: IgxSplitterPaneComponent;
+    sibling: IgxSplitterPaneComponent;
 }
 
 /**
@@ -66,6 +72,46 @@ export class IgxSplitterComponent implements AfterContentInit {
     @HostBinding('style.display')
     public display = 'flex';
 
+    /**
+     * Event fired when resizing of panes starts.
+     *
+     * @example
+     * ```html
+     * <igx-splitter (resizeStart)='resizeStart($event)'>
+     *  <igx-splitter-pane>...</igx-splitter-pane>
+     * </igx-splitter>
+     * ```
+     */
+    @Output()
+    public resizeStart = new EventEmitter<ISplitterBarResizeEventArgs>();
+
+    /**
+     * Event fired when resizing of panes is in progress.
+     *
+     * @example
+     * ```html
+     * <igx-splitter (resizing)='resizing($event)'>
+     *  <igx-splitter-pane>...</igx-splitter-pane>
+     * </igx-splitter>
+     * ```
+     */
+    @Output()
+    public resizing = new EventEmitter<ISplitterBarResizeEventArgs>();
+
+
+    /**
+     * Event fired when resizing of panes ends.
+     *
+     * @example
+     * ```html
+     * <igx-splitter (resizeEnd)='resizeEnd($event)'>
+     *  <igx-splitter-pane>...</igx-splitter-pane>
+     * </igx-splitter>
+     * ```
+     */
+    @Output()
+    public resizeEnd = new EventEmitter<ISplitterBarResizeEventArgs>();
+
     private _type: SplitterType = SplitterType.Horizontal;
 
     /**
@@ -102,10 +148,10 @@ export class IgxSplitterComponent implements AfterContentInit {
      * ```
      */
     @Input()
-    get type() {
+    public get type() {
         return this._type;
     }
-    set type(value) {
+    public set type(value) {
         this._type = value;
         if (this.panes) {
             // if type is changed runtime, should reset sizes.
@@ -147,6 +193,8 @@ export class IgxSplitterComponent implements AfterContentInit {
 
         const siblingRect = this.sibling.element.getBoundingClientRect();
         this.initialSiblingSize = this.type === SplitterType.Horizontal ? siblingRect.width : siblingRect.height;
+        const args: ISplitterBarResizeEventArgs = {pane: this.pane, sibling: this.sibling};
+        this.resizeStart.emit(args);
     }
 
     /**
@@ -167,6 +215,9 @@ export class IgxSplitterComponent implements AfterContentInit {
         }
         this.pane.dragSize = paneSize + 'px';
         this.sibling.dragSize = siblingSize + 'px';
+
+        const args: ISplitterBarResizeEventArgs = { pane: this.pane, sibling: this.sibling };
+        this.resizing.emit(args);
     }
 
     public onMoveEnd(delta: number) {
@@ -193,6 +244,9 @@ export class IgxSplitterComponent implements AfterContentInit {
         }
         this.pane.dragSize = null;
         this.sibling.dragSize = null;
+
+        const args: ISplitterBarResizeEventArgs = { pane: this.pane, sibling: this.sibling };
+        this.resizeEnd.emit(args);
     }
 
     /** @hidden @internal */

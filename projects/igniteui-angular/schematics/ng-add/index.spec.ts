@@ -38,6 +38,65 @@ describe('ng-add schematics', () => {
     }
   };
 
+    const browserslistrcEnabledIE = `
+# This file is used by the build system to adjust CSS and JS output to support the specified browsers below.
+# For additional information regarding the format and rule options, please see:
+# https://github.com/browserslist/browserslist#queries
+
+# For the full list of supported browsers by the Angular framework, please see:
+# https://angular.io/guide/browser-support
+
+# You can see what browsers were selected by your queries by running:
+#   npx browserslist
+
+last 1 Chrome version
+last 1 Firefox version
+last 2 Edge major versions
+last 2 Safari major versions
+last 2 iOS major versions
+Firefox ESR
+IE 11 # Angular supports IE 11 only as an opt-in. To opt-in, remove the 'not' prefix on this line.
+`;
+
+    const browserslistrcDisabledIE = `
+# This file is used by the build system to adjust CSS and JS output to support the specified browsers below.
+# For additional information regarding the format and rule options, please see:
+# https://github.com/browserslist/browserslist#queries
+
+# For the full list of supported browsers by the Angular framework, please see:
+# https://angular.io/guide/browser-support
+
+# You can see what browsers were selected by your queries by running:
+#   npx browserslist
+
+last 1 Chrome version
+last 1 Firefox version
+last 2 Edge major versions
+last 2 Safari major versions
+last 2 iOS major versions
+Firefox ESR
+not IE 11 # Angular supports IE 11 only as an opt-in. To opt-in, remove the 'not' prefix on this line.
+`;
+
+const browserslistrcMissingIE = `
+# This file is used by the build system to adjust CSS and JS output to support the specified browsers below.
+# For additional information regarding the format and rule options, please see:
+# https://github.com/browserslist/browserslist#queries
+
+# For the full list of supported browsers by the Angular framework, please see:
+# https://angular.io/guide/browser-support
+
+# You can see what browsers were selected by your queries by running:
+#   npx browserslist
+
+last 1 Chrome version
+last 1 Firefox version
+last 2 Edge major versions
+last 2 Safari major versions
+last 2 iOS major versions
+Firefox ESR
+`;
+
   const pkgJsonConfig = {
     dependencies: {},
     devDependencies: {}
@@ -93,52 +152,87 @@ describe('ng-add schematics', () => {
     expect(pkgJsonData.dependencies['hammerjs']).toBeTruthy();
   });
 
-  it('should add hammer.js to the main.ts file', async () => {
+  it('should NOT add hammer.js to the main.ts file', async () => {
     await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
     const mainTs = tree.read(`${sourceRoot}/main.ts`).toString();
-    expect(mainTs).toContain('import \'hammerjs\';');
+    expect(mainTs).not.toContain('import \'hammerjs\';');
   });
 
-  it('should not add hammer.js if it exists in angular.json build options', async () => {
+  it('should NOT add hammer.js to the test.ts file', async () => {
+    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
+    const testTs = tree.read(`${sourceRoot}/test.ts`).toString();
+    expect(testTs).not.toContain('import \'hammerjs\';');
+  });
+
+  it('should add hammer.js in angular.json build options under scripts', async () => {
+    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
+    const ngJsonConfigResult = JSON.parse(tree.read('/angular.json').toString());
+    expect(ngJsonConfigResult.projects.testProj.architect.build.options.scripts).toContain('./node_modules/hammerjs/hammer.min.js');
+  });
+
+  it('should add hammer.js in angular.json test options under scripts', async () => {
+    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
+    const ngJsonConfigResult = JSON.parse(tree.read('/angular.json').toString());
+    expect(ngJsonConfigResult.projects.testProj.architect.test.options.scripts).toContain('./node_modules/hammerjs/hammer.min.js');
+  });
+
+  it('should NOT duplicate hammer.js if it exists in angular.json build options', async () => {
+    const ngJsonConfig1 = JSON.parse(tree.read('/angular.json').toString());
+    ngJsonConfig1.projects.testProj.architect.build.options.scripts.push('./node_modules/hammerjs/hammer.min.js');
+    tree.overwrite('/angular.json', JSON.stringify(ngJsonConfig1));
+    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
+
+    const ngJsonConfigResult = JSON.parse(tree.read('/angular.json').toString());
+    expect(ngJsonConfigResult.projects.testProj.architect.build.options.scripts.length).toBe(1);
+    expect(ngJsonConfigResult.projects.testProj.architect.build.options.scripts).toMatch('./node_modules/hammerjs/hammer.min.js');
+  });
+
+  it('should NOT duplicate hammer.js if it exists in angular.json test options', async () => {
+    const ngJsonConfig1 = JSON.parse(tree.read('/angular.json').toString());
+    ngJsonConfig1.projects.testProj.architect.test.options.scripts.push('./node_modules/hammerjs/hammer.min.js');
+    tree.overwrite('/angular.json', JSON.stringify(ngJsonConfig1));
+    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
+
+    const ngJsonConfigResult = JSON.parse(tree.read('/angular.json').toString());
+    expect(ngJsonConfigResult.projects.testProj.architect.test.options.scripts.length).toBe(1);
+    expect(ngJsonConfigResult.projects.testProj.architect.test.options.scripts).toMatch('./node_modules/hammerjs/hammer.min.js');
+  });
+
+  it('should NOT add hammer.js to main.ts if it exists in angular.json build options', async () => {
     const ngJsonConfig1 = JSON.parse(tree.read('/angular.json').toString());
     ngJsonConfig1.projects.testProj.architect.build.options.scripts.push('./node_modules/hammerjs/hammer.min.js');
     tree.overwrite('/angular.json', JSON.stringify(ngJsonConfig1));
     await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
 
     const newContent = tree.read(`${sourceRoot}/main.ts`).toString();
-    expect(newContent.split('import \'hammerjs\';\n// test comment').length).toEqual(1);
+    expect(newContent).toMatch('// test comment');
   });
 
-  it('should add hammer.js to the test.ts file', async () => {
-    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
-    const testTs = tree.read(`${sourceRoot}/test.ts`).toString();
-    expect(testTs).toContain('import \'hammerjs\';');
-  });
-
-  it('should not add hammer.js if it exists in angular.json test options', async () => {
+  it('should NOT add hammer.js to test.ts if it exists in angular.json test options', async () => {
     const ngJsonConfig1 = JSON.parse(tree.read('/angular.json').toString());
     ngJsonConfig1.projects.testProj.architect.test.options.scripts.push('./node_modules/hammerjs/hammer.min.js');
     tree.overwrite('/angular.json', JSON.stringify(ngJsonConfig1));
     await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
 
-    const testTs = tree.read(`${sourceRoot}/test.ts`).toString();
-    expect(testTs).toMatch('// test comment');
-  });
-
-  it('should not add hammer.js if it exists in main.ts', async () => {
-    const mainTsPath = `${sourceRoot}/main.ts`;
-    const content = tree.read(mainTsPath).toString();
-    tree.overwrite(mainTsPath, 'import \'hammerjs\';\n' + content);
-    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
-
-    const newContent = tree.read(mainTsPath).toString();
-    expect(newContent.split('import \'hammerjs\';\n// test comment').length).toEqual(2);
+    const newContent = tree.read(`${sourceRoot}/test.ts`).toString();
+    expect(newContent).toMatch('// test comment');
   });
 
   it('should add hammer.js to package.json dependencies', async () => {
     await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
     const pkgJsonData = JSON.parse(tree.readContent('/package.json'));
     expect(pkgJsonData.dependencies['hammerjs']).toBeTruthy();
+  });
+
+  it('should NOT add hammer.js to angular.json if it exists in main.ts options', async () => {
+    const mainTsPath = `${sourceRoot}/main.ts`;
+    const content = tree.read(mainTsPath).toString();
+    tree.overwrite(mainTsPath, 'import \'hammerjs\';\n' + content);
+    await runner.runSchematicAsync('ng-add', { normalizeCss: false }, tree).toPromise();
+
+    const ngJsonConfigResult = JSON.parse(tree.read('/angular.json').toString());
+    expect(ngJsonConfigResult.projects.testProj.architect.build.options.scripts.length).toBe(0);
+    expect(ngJsonConfigResult.projects.testProj.architect.build.options.scripts).not.toContain('./node_modules/hammerjs/hammer.min.js');
   });
 
   it('should add the CLI only to devDependencies', async () => {
@@ -148,39 +242,6 @@ describe('ng-add schematics', () => {
     const version = require('../../package.json')['igxDevDependencies']['@igniteui/angular-schematics'];
     expect(pkgJsonData.devDependencies['@igniteui/angular-schematics']).toBe(version);
     expect(pkgJsonData.dependencies['@igniteui/angular-schematics']).toBeFalsy();
-  });
-
-  it('should properly add polyfills', async () => {
-    const polyfills = `
-// import 'core-js/es6/object';
-// import 'core-js/es6/function';
-/** a comment */
-// import 'core-js/es6/reflect';
-// import 'core-js/es6/set';
-
-/** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run \`npm install --save classlist.js\`.
-
-/** comment */
-// import 'web-animations-js';  // Run \`npm install --save web-animations-js\`.
-`;
-    const result = `
-import 'core-js/es6/object';
-import 'core-js/es6/function';
-/** a comment */
-import 'core-js/es6/reflect';
-import 'core-js/es6/set';
-
-/** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run \`npm install --save classlist.js\`.
-
-/** comment */
-import 'web-animations-js';  // Run \`npm install --save web-animations-js\`.
-`;
-
-    tree.create(`${sourceRoot}/polyfills.ts`, polyfills);
-    await runner.runSchematicAsync('ng-add', { polyfills: true, normalizeCss: false }, tree).toPromise();
-    expect(tree.readContent(`${sourceRoot}/polyfills.ts`).replace(/\r\n/g, '\n')).toEqual(result.replace(/\r\n/g, '\n'));
   });
 
   it('should properly add css reset', async () => {
@@ -235,23 +296,18 @@ import 'web-animations-js';  // Run \`npm install --save web-animations-js\`.
   });
 
   /**
-   * Projects that use AngularCLI v7.3 or above have an 'es5BrowserSupport' property in their angular.json file.
-   * All commented imports that used to be in the polyfills file have been removed and this property handles all polyfills.
-   *
-   * The ng-add schematic will consider a project that contains the 'es5BrowserSupport', in its angular.json file, as a project
-   * that is built with AngularCLI v7.3 or above. All else are considered below v7.3.
+   * Projects generated with AngularCLI v10.0 or above have a '.browserslistrc' file in the root folder.
+   * The ng-add schematic will consider a project that contains the '.browserslistrc' file, as a project
+   * that is built with AngularCLI v10.0 or above.
    */
-  it('should enable es5BrowserSupport on projects with ng cli version >= 7.3', async () => {
-    tree.create(`${sourceRoot}/polyfills.ts`, '');
-    const newJson: any = JSON.parse(tree.read('/angular.json').toString());
-    newJson.projects['testProj'].architect.build.options['es5BrowserSupport'] = false;
-    tree.overwrite('/angular.json', JSON.stringify(newJson));
+  it('should enable IE support and uncomment the IE section in .browserslistrc', async () => {
+    tree.create(`/.browserslistrc`, browserslistrcDisabledIE);
     await runner.runSchematicAsync('ng-add', { polyfills: true }, tree).toPromise();
-    const ngJsonData = JSON.parse(tree.readContent('/angular.json').toString());
-    expect(ngJsonData.projects['testProj'].architect.build.options['es5BrowserSupport']).toBeTruthy();
+    const browserslistrcFile = (tree.read('/.browserslistrc').toString());
+    expect(browserslistrcFile).toMatch(browserslistrcEnabledIE);
   });
 
-  it('should enable web-anmations and object.entries properly on projects with ng cli version >= 7.3', async () => {
+  it('should enable web-animations and object.entries properly on projects with ng cli version >= 7.3', async () => {
     const polyfills = `
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
 // import 'classlist.js';  // Run \`npm install --save classlist.js\`.
@@ -261,15 +317,12 @@ import 'web-animations-js';  // Run \`npm install --save web-animations-js\`.
 
     const result = `
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run \`npm install --save classlist.js\`.
+import 'classlist.js';  // Run \`npm install --save classlist.js\`.
 
 import 'web-animations-js';  // Run \`npm install --save web-animations-js\`.
     `;
 
     tree.create(`${sourceRoot}/polyfills.ts`, polyfills);
-    const newJson: any = JSON.parse(tree.read('/angular.json').toString());
-    newJson.projects['testProj'].architect.build.options['es5BrowserSupport'] = false;
-    tree.overwrite('/angular.json', JSON.stringify(newJson));
     await runner.runSchematicAsync('ng-add', { polyfills: true }, tree).toPromise();
     expect(tree.readContent(`${sourceRoot}/polyfills.ts`).replace(/\r\n/g, '\n')).toEqual(result.replace(/\r\n/g, '\n'));
   });

@@ -133,6 +133,7 @@ describe('IgxGrid - Column Moving #grid', () => {
         it('Should exit edit mode and commit the new value when column moving programmatically', () => {
             fixture.componentInstance.isEditable = true;
             fixture.detectChanges();
+            const cacheValue = grid.getCellByColumn(0, 'ID').value;
 
             // step 1 - enter edit mode on a cell
             const cell = fixture.debugElement.queryAll(By.css(CELL_CSS_CLASS))[0];
@@ -158,7 +159,7 @@ describe('IgxGrid - Column Moving #grid', () => {
             // step 4 - verify cell has exited edit mode correctly
             expect(grid.columnList.toArray()[2].field).toEqual('ID');
             expect(grid.getCellByColumn(0, 'ID').editMode).toBe(false);
-            expect(grid.getCellByColumn(0, 'ID').value).toBe('4');
+            expect(grid.getCellByColumn(0, 'ID').value).toBe(cacheValue);
         });
 
         it('Should preserve hidden columns order after columns are reordered programmatically', () => {
@@ -533,7 +534,7 @@ describe('IgxGrid - Column Moving #grid', () => {
             expect(grid.rowList.length).toEqual(1);
         });
 
-        it('Should exit edit mode and commit the new value when column moving starts.', (async () => {
+        it('Should exit edit mode and discard the new value when column moving starts.', (async () => {
             fixture.componentInstance.isEditable = true;
             fixture.detectChanges();
 
@@ -541,6 +542,7 @@ describe('IgxGrid - Column Moving #grid', () => {
 
             // step 1 - enter edit mode on a cell
             const cell = fixture.debugElement.queryAll(By.css(CELL_CSS_CLASS))[0];
+            const cacheValue = grid.getCellByColumn(0, 'ID').value;
             cell.nativeElement.dispatchEvent(new Event('focus'));
             fixture.detectChanges();
 
@@ -569,7 +571,7 @@ describe('IgxGrid - Column Moving #grid', () => {
             // step 4 - verify cell has exited edit mode correctly
             expect(grid.columnList.toArray()[1].field).toEqual('ID');
             expect(grid.getCellByColumn(0, 'ID').editMode).toBe(false);
-            expect(grid.getCellByColumn(0, 'ID').value).toBe('4');
+            expect(grid.getCellByColumn(0, 'ID').value).toBe(cacheValue);
         }));
 
         it('Should preserve hidden columns order after columns are reordered.', (async () => {

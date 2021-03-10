@@ -15,7 +15,7 @@
                 tabIndex="-1"
                 [displayDensity]="displayDensity"
                 (click)="onChipClicked(item.expression)"
-                (onRemove)="onChipRemoved($event, item)">
+                (remove)="onChipRemoved($event, item)">
                 <igx-icon igxPrefix
                     family="imx-icons"
                     [name]="item.expression.condition.iconName">
@@ -34,7 +34,7 @@
 </ng-template>
 
 <ng-template #complexFilter>
-    <igx-chip #complexChip [removable]="true" [displayDensity]="displayDensity" (onRemove)="clearFiltering()" tabIndex="-1">
+    <igx-chip #complexChip [removable]="true" [displayDensity]="displayDensity" (remove)="clearFiltering()" tabIndex="-1">
         <igx-icon igxPrefix>filter_list</igx-icon>
         <span>{{filteringService.grid.resourceStrings.igx_grid_complex_filter}}</span>
     </igx-chip>

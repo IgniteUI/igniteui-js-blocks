@@ -80,7 +80,7 @@ describe('IgxTreeGrid - Multi Cell selection #tGrid', () => {
             GridSelectionFunctions.verifyCellsRegionSelected(treeGrid, 0, 2, 0, 0, false);
             expect(rangeChangeSpy).toHaveBeenCalledTimes(1);
             expect(treeGrid.selectedCells.length).toBe(0);
-            expect(treeGrid.getSelectedData()).toEqual([]);
+            expect(treeGrid.getSelectedData().length).toBe(1);
             expect(treeGrid.getSelectedRanges()).toEqual([]);
         });
 

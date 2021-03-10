@@ -1,5 +1,11 @@
 <div class="wrapper">
     <igx-grid #grid1 [data]="data" [width]="'800px'" [height]="'500px'">
+        <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+            </igx-grid-toolbar-actions>
+          </igx-grid-toolbar>
         <igx-column-group header="General Information" title="General Company Information" >
             <igx-column [field]='"Missing"' [groupable]='true'></igx-column>
         </igx-column-group>

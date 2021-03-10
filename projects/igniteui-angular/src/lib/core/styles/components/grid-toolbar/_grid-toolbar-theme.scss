@@ -163,26 +163,6 @@
             margin-#{$left}: rem(16);
         }
 
-        %igx-grid-toolbar__button-space {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            span {
-                &:empty {
-                    display: none;
-                }
-            }
-
-            > * {
-                margin-#{$left}: rem(8px);
-
-                &:first-child {
-                    margin-#{$left}: 0;
-                }
-            }
-        }
-
         &[dir='rtl'] {
             text-align: #{$right};
 
@@ -192,19 +172,6 @@
             %igx-button--icon{
                 margin-#{$left}: 0;
                 margin-#{$right}: rem(8);
-            }
-
-            %igx-grid-toolbar__button-space {
-                text-align: #{$right};
-
-                > * {
-                    margin-#{$left}: 0;
-                    margin-#{$right}: rem(8px);
-                }
-
-                > *:last-child {
-                    margin-#{$left}: 0;
-                }
             }
         }
     }

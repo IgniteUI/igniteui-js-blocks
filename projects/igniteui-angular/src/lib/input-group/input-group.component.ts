@@ -232,24 +232,6 @@ export class IgxInputGroupComponent extends DisplayDensityBase implements IgxInp
         return this._variant;
     }
 
-    /**
-     * @hidden
-     * @deprecated Use 'suppressInputAutofocus' instead.
-     */
-    @DeprecateProperty(`Deprecated. Use 'suppressInputAutofocus' instead.`)
-    @Input()
-    public get supressInputAutofocus(): boolean {
-        return this.suppressInputAutofocus;
-    }
-
-    /**
-     * @hidden
-     * @deprecated Use 'suppressInputAutofocus' instead.
-     */
-    public set supressInputAutofocus(value: boolean) {
-        this.suppressInputAutofocus = value;
-    }
-
     constructor(
         public element: ElementRef<HTMLElement>,
         @Optional()

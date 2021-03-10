@@ -94,7 +94,7 @@ export class IgxTreeGridRowComponent extends IgxRowDirective<IgxTreeGridComponen
      * ```
      */
     @HostBinding('attr.aria-expanded')
-    get expanded(): boolean {
+    public get expanded(): boolean {
         return this._treeRow.expanded;
     }
 
@@ -106,7 +106,7 @@ export class IgxTreeGridRowComponent extends IgxRowDirective<IgxTreeGridComponen
      * row.expanded = true;
      * ```
      */
-    set expanded(value: boolean) {
+    public set expanded(value: boolean) {
         (this.gridAPI as IgxTreeGridAPIService).set_row_expansion_state(this._treeRow.rowID, value);
     }
 
@@ -114,7 +114,7 @@ export class IgxTreeGridRowComponent extends IgxRowDirective<IgxTreeGridComponen
      * @hidden
      * @internal
      */
-    get viewIndex(): number {
+    public get viewIndex(): number {
         return this.index + this.grid.page * this.grid.perPage;
     }
 
@@ -129,6 +129,13 @@ export class IgxTreeGridRowComponent extends IgxRowDirective<IgxTreeGridComponen
                     this.rowData[this.grid.hasChildrenKey] :
                     true :
             this.treeRow.children && this.treeRow.children.length;
+    }
+
+    /**
+     * @hidden
+     */
+    get indeterminate(): boolean {
+        return this.selectionService.isRowInIndeterminateState(this.rowID);
     }
 
     /**

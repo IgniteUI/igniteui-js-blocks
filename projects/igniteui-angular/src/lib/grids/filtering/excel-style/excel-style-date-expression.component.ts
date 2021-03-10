@@ -26,7 +26,7 @@ export class IgxExcelStyleDateExpressionComponent extends IgxExcelStyleDefaultEx
         return this.datePicker.getEditElement();
     }
 
-    get inputDatePlaceholder(): string {
+    public get inputDatePlaceholder(): string {
         return this.grid.resourceStrings['igx_grid_filter_row_date_placeholder'];
     }
 }

@@ -1,7 +1,7 @@
 <div class="hgrid-sample">
     <h4 class="sample-title">Sample One</h4>
     <div class="density-chooser" style="margin-bottom: 16px">
-        <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"
+        <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"
             style="display: block; width: 500px"></igx-buttongroup>
     </div>
     <button igxButton="raised" (click)="getState()">Get state</button>

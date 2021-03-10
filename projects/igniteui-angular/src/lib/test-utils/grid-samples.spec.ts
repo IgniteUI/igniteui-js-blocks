@@ -199,7 +199,7 @@ export class RowSelectionComponent extends BasicGridComponent {
         '', ColumnDefinitions.productBasicNumberID)
 })
 export class RowSelectionWithDisabledSelectRowOnClickComponent extends BasicGridComponent {
-    data = SampleTestData.foodProductDataExtended();
+    public data = SampleTestData.foodProductDataExtended();
     public width = '800px';
     public height = '600px';
     public selectedRows = [];
@@ -1752,6 +1752,37 @@ export class IgxGridRowEditingTransactionComponent extends BasicGridComponent {
     public paging = false;
 }
 
+
+@Component({
+    template: `
+    <igx-grid #grid [data]="data" [primaryKey]="'ProductID'" width="900px" height="900px" [paging]="paging" [perPage]="7">
+        <igx-column field="ProductID" header="Product ID" width="150px"></igx-column>
+        <igx-column field="ProductName" header="Product Name" [dataType]="'string'" width="200px"></igx-column>
+        <igx-column field="InStock" header="In Stock" [dataType]="'boolean'" width="100px"></igx-column>
+        <igx-column field="UnitsInStock" header="Units in Stock" [dataType]="'currency'" width="150px"></igx-column>
+        <igx-column field="OrderDate" header="Order Date" [dataType]="'date'" width="200px"></igx-column>
+    </igx-grid>`,
+    providers: [{ provide: IgxGridTransaction, useClass: IgxTransactionService }],
+})
+export class IgxGridCurrencyColumnComponent extends BasicGridComponent {
+    public data = SampleTestData.foodProductData();
+    public paging = false;
+}
+
+@Component({
+    template: `
+    <igx-grid #grid [data]="data" [primaryKey]="'ProductID'" width="900px" height="900px">
+        <igx-column field="ProductID" header="Product ID" width="150px"></igx-column>
+        <igx-column field="ProductName" header="Product Name" [dataType]="'string'" width="200px"></igx-column>
+        <igx-column field="InStock" header="In Stock" [dataType]="'boolean'" width="100px"></igx-column>
+        <igx-column field="UnitsInStock" header="Units in Stock" [dataType]="'currency'" width="150px"></igx-column>
+        <igx-column field="Discount" header="Order Date" [dataType]="'percent'" width="200px"></igx-column>
+    </igx-grid>`,
+    providers: [{ provide: IgxGridTransaction, useClass: IgxTransactionService }],
+})
+export class IgxGridPercentColumnComponent extends BasicGridComponent {
+    public data = SampleTestData.foodPercentProductData();
+}
 @Component({
     template: `
         <igx-grid
@@ -2340,5 +2371,5 @@ export class IgxAddRowComponent implements OnInit {
     template: GridTemplateStrings.declareGrid(` [hideGroupedColumns]="true"`, '', ColumnDefinitions.exportGroupedDataColumns)
 })
 export class GridExportGroupedDataComponent extends BasicGridComponent {
-    data = SampleTestData.exportGroupedDataColumns();
+    public data = SampleTestData.exportGroupedDataColumns();
 }

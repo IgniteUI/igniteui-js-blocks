@@ -2,7 +2,7 @@
     <div class="sample-content">
         <div class="sample-column">
             <div class="density-chooser">
-                <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+                <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
             </div>
 
             <igx-grid
@@ -15,6 +15,18 @@
                 [paging]="false"
                 [width]="'980px'"
                 [height]="'600px'">
+                <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+                    <app-grid-search-box [grid]="grid1" [style.width]="'300px'"></app-grid-search-box>
+                    <igx-grid-toolbar-actions>
+                        <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                        <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                        <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                        <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                            <span excelText>Export to Excel 👌</span>
+                            <span csvText>Export to CSV 👍</span>
+                        </igx-grid-toolbar-exporter>
+                    </igx-grid-toolbar-actions>
+                </igx-grid-toolbar>
                 <igx-column *ngFor="let c of columns" [field]="c.field"
                                                     [header]="c.field"
                                                     [movable]="c.movable"
@@ -29,10 +41,6 @@
                                                     [maxWidth]="c.maxWidth"
                                                     [dataType]="c.type">
                 </igx-column>
-
-                <ng-template igxToolbarCustomContent>
-                    <app-grid-search-box [grid]="grid1" [style.width]="'400px'"></app-grid-search-box>
-                </ng-template>
             </igx-grid>
             <div class="sample-buttons">
                 <button igxButton="raised" (click)="toggleColumn('ContactName')">Pin/Unpin 'ContactName'</button>

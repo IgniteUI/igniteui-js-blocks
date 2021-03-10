@@ -1,6 +1,6 @@
 import { Tree } from '@angular-devkit/schematics';
 import * as ts from 'typescript/lib/tsserverlibrary';
-import { CUSTOM_TS_PLUGIN_NAME } from './tsUtils';
+import { CUSTOM_TS_PLUGIN_NAME, CUSTOM_TS_PLUGIN_PATH } from './tsUtils';
 
 export class ServerHost implements ts.server.ServerHost {
     readonly args: string[];
@@ -75,6 +75,7 @@ export class ServerHost implements ts.server.ServerHost {
         try {
             const paths = [initialPath];
             if (moduleName === CUSTOM_TS_PLUGIN_NAME) {
+                moduleName = CUSTOM_TS_PLUGIN_PATH;
                 paths.push(__dirname);
             }
             const modulePath = require.resolve(moduleName, { paths });

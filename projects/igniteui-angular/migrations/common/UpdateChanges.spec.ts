@@ -768,4 +768,76 @@ export class AppModule { }`);
 <igx-component newProp="leaveMeBe">STRING</igx-component>`);
         done();
     });
+
+    describe('Project loading', () => {
+        it('should correctly load project files', () => {
+            const tsFile = '/src/component.ts';
+            const htmlFile = '/src/component.html';
+            const scssFile = '/src/component.scss';
+            const sassFile = '/src/component.sass';
+            appTree.overwrite('/angular.json', JSON.stringify({
+                projects: {
+                    testProj: {
+                        sourceRoot: '/src'
+                    }
+                }
+            }));
+            appTree.create(tsFile, '');
+            appTree.create(htmlFile, '');
+            appTree.create(scssFile, '');
+            appTree.create(sassFile, '');
+
+            // skip loading json config files
+            spyOn(fs, 'existsSync').and.returnValue(false);
+
+            const update = new UnitUpdateChanges(__dirname, appTree);
+            expect(update.tsFiles).toContain(tsFile);
+            expect(update.templateFiles).toContain(htmlFile);
+            expect(update.sassFiles).toContain(scssFile);
+            expect(update.sassFiles).toContain(sassFile);
+        });
+
+        it('should correctly load multiple and library project files', () => {
+            const tsFile = 'component.ts';
+            const htmlFile = 'component.html';
+            const scssFile = 'component.scss';
+            const sassFile = 'component.sass';
+            const workspace = {
+                projects: {
+                    testProj: {
+                        projectType: 'application',
+                        sourceRoot: 'src-one'
+                    },
+                    test2Proj: {
+                        projectType: 'application',
+                        sourceRoot: '/src-two'
+                    },
+                    libProj: {
+                        projectType: 'library',
+                        sourceRoot: 'src-lib'
+                    }
+                }
+            };
+            appTree.overwrite('/angular.json', JSON.stringify(workspace));
+            for (const projName of Object.keys(workspace.projects)) {
+                const root = workspace.projects[projName].sourceRoot;
+                appTree.create(path.posix.join(root, tsFile), '');
+                appTree.create(path.posix.join(root, htmlFile), '');
+                appTree.create(path.posix.join(root, scssFile), '');
+                appTree.create(path.posix.join(root, sassFile), '');
+            }
+
+            // skip loading json config files
+            spyOn(fs, 'existsSync').and.returnValue(false);
+
+            const update = new UnitUpdateChanges(__dirname, appTree);
+            for (const projName of Object.keys(workspace.projects)) {
+                const root = workspace.projects[projName].sourceRoot;
+                expect(update.tsFiles).toContain(path.posix.join(`/${root}`, tsFile));
+                expect(update.templateFiles).toContain(path.posix.join(`/${root}`, htmlFile));
+                expect(update.sassFiles).toContain(path.posix.join(`/${root}`, scssFile));
+                expect(update.sassFiles).toContain(path.posix.join(`/${root}`, sassFile));
+            }
+        });
+    });
 });

@@ -28,7 +28,7 @@
                 You can select me. Click!
             </igx-chip>
 
-            <igx-chip #me removable="true" (onRemove)="removeChip(me)">
+            <igx-chip #me removable="true" (remove)="removeChip(me)">
                 <igx-icon igxPrefix>mood_bad</igx-icon>
                 <span>You can remove me.</span>
             </igx-chip>
@@ -52,7 +52,7 @@
                 With a custom select icon.
             </igx-chip>
 
-            <igx-chip #me2 [removable]="true" [removeIcon]="myRemoveIcon" (onRemove)="removeChip(me2)">
+            <igx-chip #me2 [removable]="true" [removeIcon]="myRemoveIcon" (remove)="removeChip(me2)">
                 With a custom remove icon.
             </igx-chip>
 
@@ -101,14 +101,14 @@
         <header>
             <h4 class="sample-title">Chips in Chip Area</h4>
         </header>
-        <igx-chips-area #chipsArea (onReorder)="chipsOrderChanged($event)" (onMoveEnd)="chipMovingEnded()" (onSelection)="onChipsSelected($event)">
+        <igx-chips-area #chipsArea (reorder)="chipsOrderChanged($event)" (moveEnd)="chipMovingEnded()" (selectionChange)="onChipsSelected($event)">
             <ng-container *ngFor="let chipElem of chipList; let last = last;">
                 <igx-chip
                     [id]="chipElem.id"
                     [draggable]="true"
                     [selectable]="true"
                     [removable]="true"
-                    (onRemove)="chipRemoved($event)">
+                    (remove)="chipRemoved($event)">
                     <igx-icon igxPrefix>{{chipElem.icon}}</igx-icon>
                     {{chipElem.text}}
                 </igx-chip>
@@ -123,13 +123,13 @@
             <h4 class="sample-title">Chips in a Custom Scenario</h4>
         </header>
         <div class="wrapperAreaTo">
-            <igx-chips-area #chipsAreaTo class="chipAreaTo" (onReorder)="chipsOrderChangedTo($event)">
+            <igx-chips-area #chipsAreaTo class="chipAreaTo" (reorder)="chipsOrderChangedTo($event)">
                 <span>To:</span>
                 <igx-chip *ngFor="let chip of chipListTo"
                     [id]="chip.id"
                     [draggable]="true"
-                    (onMoveStart)="onMoveStartTo()"
-                    (onMoveEnd)="moveEndedTo()">
+                    (moveStart)="onMoveStartTo()"
+                    (moveEnd)="moveEndedTo()">
                     <igx-avatar igxPrefix class="chip-area-avatar"
                         [src]="chip.picture"
                         [roundShape]="true">
@@ -145,13 +145,13 @@
         </div>
 
         <div class="wrapperAreaCc">
-            <igx-chips-area #chipsAreaCc class="chipAreaCc" (onReorder)="chipsOrderChangedCc($event)">
+            <igx-chips-area #chipsAreaCc class="chipAreaCc" (reorder)="chipsOrderChangedCc($event)">
                 <span>Cc:</span>
                 <igx-chip *ngFor="let chip of chipListCc"
                     [id]="chip.id"
                     [draggable]="true"
-                    (onMoveStart)="onMoveStartCc()"
-                    (onMoveEnd)="moveEndedCc()">
+                    (moveStart)="onMoveStartCc()"
+                    (moveEnd)="moveEndedCc()">
                     <igx-avatar igxPrefix class="chip-area-avatar"
                         [src]="chip.picture"
                         [roundShape]="true">

@@ -1,6 +1,6 @@
 import {
     AfterViewInit, Component, ContentChild, ContentChildren, ElementRef,
-    EventEmitter, HostBinding, Inject, Injector, Input, LOCALE_ID,
+    EventEmitter, HostBinding, HostListener, Inject, Injector, Input, LOCALE_ID,
     OnChanges, OnDestroy, OnInit, Optional, Output, QueryList,
     SimpleChanges, TemplateRef, ViewChild
 } from '@angular/core';
@@ -457,6 +457,29 @@ export class IgxDateRangePickerComponent extends DisplayDensityBase
         this.locale = this.locale || this.localeId;
     }
 
+    /** @hidden @internal */
+    @HostListener('keydown', ['$event'])
+    public onKeyDown(event: KeyboardEvent): void {
+        switch (event.key) {
+            case KEYS.UP_ARROW:
+            case KEYS.UP_ARROW_IE:
+                if (event.altKey) {
+                    this.close();
+                }
+                break;
+            case KEYS.DOWN_ARROW:
+            case KEYS.DOWN_ARROW_IE:
+                if (event.altKey) {
+                    this.open();
+                }
+                break;
+            case KEYS.ESCAPE:
+            case KEYS.ESCAPE_IE:
+                this.close();
+                break;
+        }
+    }
+
     /**
      * Opens the date range picker's dropdown or dialog.
      *
@@ -600,9 +623,6 @@ export class IgxDateRangePickerComponent extends DisplayDensityBase
 
     /** @hidden */
     public ngAfterViewInit(): void {
-        if (this.mode === InteractionMode.DropDown) {
-            this.attachOnKeydown();
-        }
         this.subscribeToDateEditorEvents();
         this.configPositionStrategy();
         this.configOverlaySettings();
@@ -709,28 +729,6 @@ export class IgxDateRangePickerComponent extends DisplayDensityBase
     public handleClosed(): void {
         this._collapsed = true;
         this.onClosed.emit({ owner: this });
-    }
-
-    /** @hidden @internal */
-    public onKeyDown(event: KeyboardEvent): void {
-        switch (event.key) {
-            case KEYS.UP_ARROW:
-            case KEYS.UP_ARROW_IE:
-                if (event.altKey) {
-                    this.close();
-                }
-                break;
-            case KEYS.DOWN_ARROW:
-            case KEYS.DOWN_ARROW_IE:
-                if (event.altKey) {
-                    this.open();
-                }
-                break;
-            case KEYS.ESCAPE:
-            case KEYS.ESCAPE_IE:
-                this.close();
-                break;
-        }
     }
 
     /** @hidden @internal */
@@ -896,12 +894,6 @@ export class IgxDateRangePickerComponent extends DisplayDensityBase
             start: selection[0],
             end: selection.length > 0 ? selection[selection.length - 1] : null
         };
-    }
-
-    private attachOnKeydown(): void {
-        fromEvent(this.element.nativeElement, 'keydown')
-            .pipe(takeUntil(this.$destroy))
-            .subscribe((evt: KeyboardEvent) => this.onKeyDown(evt));
     }
 
     private subscribeToDateEditorEvents(): void {

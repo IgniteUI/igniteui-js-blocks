@@ -2,13 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Output, EventEmitter, HostListener, NgModule } from '@angular/core';
 
 /**
- * Templates the default icon in the picker.
- *
- * @igxModule IgxDateCommonModule
- *
- * @igxKeyWords date range icon, date picker icon, time picker icon
- *
- * @igxGroup scheduling
+ * Templates the default toggle icon in the picker.
  *
  * @example
  * ```html
@@ -36,13 +30,7 @@ export class IgxPickerToggleComponent {
 }
 
 /**
- * Templates the default icon in the picker.
- *
- * @igxModule IgxDateCommonModule
- *
- * @igxKeyWords date range icon, date picker icon, time picker icon
- *
- * @igxGroup scheduling
+ * Templates the default clear icon in the picker.
  *
  * @example
  * ```html
@@ -59,7 +47,7 @@ export class IgxPickerToggleComponent {
 })
 export class IgxPickerClearComponent extends IgxPickerToggleComponent { }
 
-/** @hidden @internal */
+/** @hidden */
 @NgModule({
     declarations: [
         IgxPickerToggleComponent,
@@ -71,4 +59,4 @@ export class IgxPickerClearComponent extends IgxPickerToggleComponent { }
         IgxPickerClearComponent
     ]
 })
-export class IgxPickerIconsModule { }
+export class IgxPickersCommonModule { }

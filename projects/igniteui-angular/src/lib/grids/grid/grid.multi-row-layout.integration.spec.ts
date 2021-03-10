@@ -363,8 +363,8 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
 
             const verifyCheckbox = ControlsFunction.verifyCheckbox;
             const columnChooserElement = GridFunctions.getColumnHidingElement(fixture);
-            const checkbox = ControlsFunction.getCheckboxInput('group1', columnChooserElement, fixture);
-            verifyCheckbox('group1', false, false, columnChooserElement, fixture);
+            const checkbox = ControlsFunction.getCheckboxInput('group1', columnChooserElement);
+            verifyCheckbox('group1', false, false, columnChooserElement);
 
             const column = grid.getColumnByName('group1');
             expect(column.hidden).toBeTrue();
@@ -375,7 +375,7 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             GridFunctions.verifyLayoutHeadersAreAligned(headerCells, firstRowCells);
             GridFunctions.verifyDOMMatchesLayoutSettings(gridFirstRow, fixture.componentInstance.colGroups.slice(1));
 
-            const checkboxEl = ControlsFunction.getCheckboxElement('group1', columnChooserElement, fixture);
+            const checkboxEl = ControlsFunction.getCheckboxElement('group1', columnChooserElement);
             checkboxEl.triggerEventHandler('click', new Event('click'));
             fixture.detectChanges();
 
@@ -399,7 +399,6 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             fixture = TestBed.createComponent(ColumnLayoutPinningTestComponent);
             fixture.detectChanges();
             grid = fixture.componentInstance.grid;
-            colGroups = fixture.componentInstance.colGroups;
         });
 
         it('should allow pinning/unpinning a whole group.', () => {
@@ -731,13 +730,13 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             const columnChooserElement = GridFunctions.getColumnPinningElement(fixture);
 
             const verifyCheckbox = ControlsFunction.verifyCheckbox;
-            const checkbox = ControlsFunction.getCheckboxInput('group1', columnChooserElement, fixture);
-            verifyCheckbox('group1', false, false, columnChooserElement, fixture);
+            const checkbox = ControlsFunction.getCheckboxInput('group1', columnChooserElement);
+            verifyCheckbox('group1', false, false, columnChooserElement);
 
             const column = grid.getColumnByName('group1');
             expect(column.pinned).toBeFalsy();
 
-            const checkboxEl = ControlsFunction.getCheckboxElement('group1', columnChooserElement, fixture);
+            const checkboxEl = ControlsFunction.getCheckboxElement('group1', columnChooserElement);
             checkboxEl.triggerEventHandler('click', new Event('click'));
             fixture.detectChanges();
 
@@ -815,7 +814,6 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             fixture = TestBed.createComponent(ColumnLayoutFilteringTestComponent);
             fixture.detectChanges();
             grid = fixture.componentInstance.grid;
-            colGroups = fixture.componentInstance.colGroups;
         }));
 
         it('should enforce excel style filtering.', () => {
@@ -860,7 +858,6 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             fixture = TestBed.createComponent(ColumnLayoutGroupingTestComponent);
             fixture.detectChanges();
             grid = fixture.componentInstance.grid;
-            colGroups = fixture.componentInstance.colGroups;
         }));
 
         it('should render rows correctly when grouped by a column and scrolling to bottom should not leave empty space.', async () => {
@@ -930,7 +927,6 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             fixture = TestBed.createComponent(ColumnLayoutResizingTestComponent);
             fixture.detectChanges();
             grid = fixture.componentInstance.grid;
-            colGroups = fixture.componentInstance.colGroups;
         }));
 
         it('should correctly resize column on upper level with 3 spans and the two cols below it with span 1 that have width', async () => {
@@ -1187,7 +1183,6 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
             fixture = TestBed.createComponent(ColumnLayoutGroupingTestComponent);
             fixture.detectChanges();
             grid = fixture.componentInstance.grid;
-            colGroups = fixture.componentInstance.colGroups;
         }));
 
         it('should return correct selected data via getSelectedData API.', () => {
@@ -1233,21 +1228,21 @@ describe('IgxGrid - multi-row-layout Integration #grid - ', () => {
 })
 export class ColumnLayouHidingTestComponent {
     @ViewChild(IgxGridComponent, { read: IgxGridComponent, static: true })
-    grid: IgxGridComponent;
-    showToolbar = false;
-    cols1: Array<any> = [
+    public grid: IgxGridComponent;
+    public showToolbar = false;
+    public cols1: Array<any> = [
         { field: 'ID', rowStart: 1, colStart: 1},
         { field: 'CompanyName', rowStart: 1, colStart: 2},
         { field: 'ContactName', rowStart: 1, colStart: 3},
         { field: 'ContactTitle', rowStart: 2, colStart: 1, rowEnd: 4, colEnd : 4},
     ];
-    cols2: Array<any> = [
+    public cols2: Array<any> = [
         { field: 'PostalCode', rowStart: 1, colStart: 1, colEnd: 3 },
         { field: 'City', rowStart: 2, colStart: 1},
         { field: 'Country', rowStart: 2, colStart: 2},
         { field: 'Address', rowStart: 3, colStart: 1, colEnd: 3}
     ];
-    colGroups: ColGroupsType[] = [
+    public colGroups: ColGroupsType[] = [
         {
             group: 'group1',
             hidden: true,
@@ -1259,7 +1254,7 @@ export class ColumnLayouHidingTestComponent {
             columns: this.cols1
         }
     ];
-    data = SampleTestData.contactInfoDataFull();
+    public data = SampleTestData.contactInfoDataFull();
 }
 
 @Component({
@@ -1276,21 +1271,21 @@ export class ColumnLayouHidingTestComponent {
 })
 export class ColumnLayoutPinningTestComponent {
     @ViewChild(IgxGridComponent, { read: IgxGridComponent, static: true })
-    grid: IgxGridComponent;
-    showToolbar = false;
-    cols1: Array<any> = [
+    public grid: IgxGridComponent;
+    public showToolbar = false;
+    public cols1: Array<any> = [
         { field: 'ID', rowStart: 1, colStart: 1},
         { field: 'CompanyName', rowStart: 1, colStart: 2},
         { field: 'ContactName', rowStart: 1, colStart: 3},
         { field: 'ContactTitle', rowStart: 2, colStart: 1, rowEnd: 4, colEnd : 4},
     ];
-    cols2: Array<any> = [
+    public cols2: Array<any> = [
         { field: 'PostalCode', rowStart: 1, colStart: 1, colEnd: 3 },
         { field: 'City', rowStart: 2, colStart: 1},
         { field: 'Country', rowStart: 2, colStart: 2},
         { field: 'Address', rowStart: 3, colStart: 1, colEnd: 3}
     ];
-    colGroups: ColGroupsType[] = [
+    public colGroups: ColGroupsType[] = [
         {
             group: 'group1',
             pinned: true,
@@ -1302,7 +1297,7 @@ export class ColumnLayoutPinningTestComponent {
             columns: this.cols1
         }
     ];
-    data = SampleTestData.contactInfoDataFull();
+    public data = SampleTestData.contactInfoDataFull();
 }
 
 @Component({
@@ -1331,14 +1326,14 @@ export class ColumnLayoutFilteringTestComponent extends ColumnLayoutPinningTestC
     `
 })
 export class ColumnLayoutGroupingTestComponent extends ColumnLayoutPinningTestComponent {
-    showToolbar = false;
-    cols1: Array<any> = [
+    public showToolbar = false;
+    public cols1: Array<any> = [
         { field: 'ID', rowStart: 1, colStart: 1},
         { field: 'CompanyName', rowStart: 1, colStart: 2, groupable: true},
         { field: 'ContactName', rowStart: 1, colStart: 3, groupable: true},
         { field: 'ContactTitle', rowStart: 2, colStart: 1, rowEnd: 4, colEnd : 4, groupable: true},
     ];
-    cols2: Array<any> = [
+    public cols2: Array<any> = [
         { field: 'PostalCode', rowStart: 1, colStart: 1, colEnd: 3 },
         { field: 'City', rowStart: 2, colStart: 1, groupable: true},
         { field: 'Country', rowStart: 2, colStart: 2, groupable: true},
@@ -1359,20 +1354,20 @@ export class ColumnLayoutGroupingTestComponent extends ColumnLayoutPinningTestCo
 export class ColumnLayoutResizingTestComponent {
 
     @ViewChild(IgxGridComponent, { read: IgxGridComponent, static: true })
-    grid: IgxGridComponent;
-    showToolbar = false;
+    public grid: IgxGridComponent;
+    public showToolbar = false;
 
-    cols: Array<any> = [
+    public cols: Array<any> = [
         { field: 'ID', rowStart: 1, colStart: 1, resizable: true },
         { field: 'CompanyName', rowStart: 1, colStart: 2, resizable: true },
         { field: 'ContactName', rowStart: 1, colStart: 3, resizable: true },
         { field: 'ContactTitle', rowStart: 2, colStart: 1, rowEnd: 4, colEnd: 4, resizable: true },
     ];
-    colGroups: ColGroupsType[] = [
+    public colGroups: ColGroupsType[] = [
         {
             group: 'group1',
             columns: this.cols
         }
     ];
-    data = SampleTestData.contactInfoDataFull();
+    public data = SampleTestData.contactInfoDataFull();
 }

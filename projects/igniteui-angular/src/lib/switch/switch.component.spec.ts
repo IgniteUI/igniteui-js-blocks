@@ -152,9 +152,12 @@ describe('IgxSwitch', () => {
         const nativeCheckbox = switchInstance.nativeCheckbox.nativeElement;
         const nativeLabel = switchInstance.nativeLabel.nativeElement;
         const placeholderLabel = switchInstance.placeholderLabel.nativeElement;
-        fixture.detectChanges();
+        const switchEl = fixture.debugElement.query(By.directive(IgxSwitchComponent)).nativeElement;
 
-        nativeCheckbox.dispatchEvent(new Event('focus'));
+        fixture.detectChanges();
+        expect(switchInstance.focused).toBe(false);
+
+        switchEl.dispatchEvent(new KeyboardEvent('keyup'));
         fixture.detectChanges();
         expect(switchInstance.focused).toBe(true);
 
@@ -194,17 +197,17 @@ describe('IgxSwitch', () => {
 class InitSwitchComponent { }
 
 @Component({
-    template: `<igx-switch #switch (change)="onChange($event)" (click)="onClick($event)"
+    template: `<igx-switch #switch (change)="onChange()" (click)="onClick()"
 [(ngModel)]="subscribed" [checked]="subscribed">Simple</igx-switch>`})
 class SwitchSimpleComponent {
     @ViewChild('switch', { static: true }) public switch: IgxSwitchComponent;
     public changeEventCalled = false;
     public subscribed = false;
     public clickCounter = 0;
-    public onChange(event) {
+    public onChange() {
         this.changeEventCalled = true;
     }
-    public onClick(event) {
+    public onClick() {
         this.clickCounter++;
     }
 }
@@ -233,7 +236,7 @@ class SwitchDisabledComponent {
 })
 class SwitchExternalLabelComponent {
     @ViewChild('switch', { static: true }) public switch: IgxSwitchComponent;
-    label = 'My Label';
+    public label = 'My Label';
 }
 
 @Component({
@@ -241,5 +244,5 @@ class SwitchExternalLabelComponent {
 })
 class SwitchInvisibleLabelComponent {
     @ViewChild('switch', { static: true }) public switch: IgxSwitchComponent;
-    label = 'Invisible Label';
+    public label = 'Invisible Label';
 }

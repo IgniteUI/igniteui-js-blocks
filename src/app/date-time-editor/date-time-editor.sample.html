@@ -9,7 +9,7 @@
     <div>
         <h5>DateTime editor in a form </h5>
         <form>
-            <igx-input-group [supressInputAutofocus]="true" style="max-width: 300px;">
+            <igx-input-group [suppressInputAutofocus]="true" style="max-width: 300px;">
                 <input #dateEditor="igxDateTimeEditor" type="text" [(ngModel)]="date" #formControl="ngModel" name="form"
                     igxInput (valueChange)="onValueChanged($event)" (validationFailed)="onValidationFailed($event)"
                     [igxDateTimeEditor]="'dd/MM/yyyy hh:mm'" [minValue]="minDate" [maxValue]="maxDate" required />

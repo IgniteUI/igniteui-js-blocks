@@ -12,9 +12,10 @@ import { OverlaySettings } from '../services/overlay/utilities';
 @Directive()
 export abstract class PickersBaseDirective extends DisplayDensityBase implements IToggleView, EditorProvider {
     /**
-     * The expected user input format and placeholder.
+     * The editor's input mask.
      *
      * @remarks
+     * Also used as a placeholder when none is provided.
      * Default is `"'MM/dd/yyyy'"`
      *
      * @example
@@ -26,7 +27,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public inputFormat: string;
 
     /**
-     * The format used when the editable input(s) are not focused.
+     * The format used to display the picker's value when it's not being edited.
      *
      * @remarks
      * Uses Angular's DatePipe.
@@ -52,21 +53,21 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public placeholder = '';
 
     /**
-     * Display calendar in either `dialog` or `dropdown` mode.
+     * Can be `dropdown` with editable input field or `dialog` with readonly input field.
      *
      * @remarks
-     * Default mode is `dialog`
+     * Default mode is `dropdown`
      *
      * @example
      * ```html
-     * <igx-date-picker mode="dropdown"></igx-date-picker>
+     * <igx-date-picker mode="dialog"></igx-date-picker>
      * ```
      */
     @Input()
-    public mode = InteractionMode.Dialog;
+    public mode = InteractionMode.DropDown;
 
     /**
-     * Custom overlay settings that will be used to display the calendar.
+     * Overlay settings used to display the pop-up element.
      *
      * @example
      * ```html
@@ -77,7 +78,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public overlaySettings: OverlaySettings;
 
     /**
-     * Enables/Disables the picker.
+     * Enables or disables the picker.
      *
      * @example
      * ```html
@@ -88,7 +89,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public disabled = false;
 
     /**
-     * Locale settings used for value formatting and calendar.
+     * Locale settings used for value formatting and calendar or time spinner.
      *
      * @remarks
      * Uses Angular's `LOCALE_ID` by default. Affects both input mask and display format if those are not set.
@@ -105,7 +106,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public locale: string;
 
     /**
-     * The container used for the popup element.
+     * The container used for the pop-up element.
      *
      * @example
      * ```html
@@ -119,7 +120,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public outlet: IgxOverlayOutletDirective | ElementRef;
 
     /**
-     * Determines how the picker will be styled.
+     * Determines how the picker's input will be styled.
      *
      * @remarks
      * Default is `box`.
@@ -138,7 +139,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     }
 
     /**
-     * Emitted right before a selection is done, cancelable.
+     * Emitted before the picker finishes a selection, cancelable.
      *
      * @example
      * ```html
@@ -149,7 +150,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public selecting = new EventEmitter<IBaseCancelableBrowserEventArgs>();
 
     /**
-     * Emitted after a selection has been done.
+     * Emitted when the selected date value has changed.
      *
      * @example
      * ```html
@@ -160,7 +161,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public abstract selected = new EventEmitter<Date | DateRange>();
 
     /**
-     * Emitted when the calendar starts opening, cancelable.
+     * Emitted when the calendar has started opening, cancelable.
      *
      * @example
      * ```html
@@ -171,7 +172,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public opening = new EventEmitter<IBaseCancelableBrowserEventArgs>();
 
     /**
-     * Emitted when the picker has opened.
+     * Emitted after the calendar has opened.
      *
      * @example
      * ```html
@@ -182,7 +183,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public opened = new EventEmitter<IBaseEventArgs>();
 
     /**
-     * Emitted when the calendar starts closing, cancelable.
+     * Emitted when the calendar has started closing, cancelable.
      *
      * @example
      * ```html
@@ -193,7 +194,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     public closing = new EventEmitter<IBaseCancelableBrowserEventArgs>();
 
     /**
-     * Emitted when the picker has closed.
+     * Emitted after the calendar has closed.
      *
      * @example
      * ```html
@@ -209,7 +210,7 @@ export abstract class PickersBaseDirective extends DisplayDensityBase implements
     protected _maxValue: Date | string;
 
     /**
-     * Gets the picker's calendar state.
+     * Gets the picker's pop-up state.
      *
      * @example
      * ```typescript

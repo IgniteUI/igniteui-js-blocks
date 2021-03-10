@@ -6,7 +6,7 @@ import { DataUtil } from '../../data-operations/data-util';
 import { ExportUtilities } from './export-utilities';
 import { IgxExporterOptionsBase } from './exporter-options-base';
 import { ITreeGridRecord } from '../../grids/tree-grid/tree-grid.interfaces';
-import { TreeGridFilteringStrategy } from '../../grids/tree-grid/tree-grid.filtering.pipe';
+import { TreeGridFilteringStrategy } from '../../grids/tree-grid/tree-grid.filtering.strategy';
 import { IGroupingState } from '../../data-operations/groupby-state.interface';
 import { getHierarchy, isHierarchyMatch } from '../../data-operations/operations';
 import { IGroupByExpandState } from '../../data-operations/groupby-expand-state.interface';
@@ -31,8 +31,8 @@ export interface IExportRecord {
 }
 
 /**
- * onRowExport event arguments
- * this.exporterService.onRowExport.subscribe((args: IRowExportingEventArgs) => {
+ * rowExporting event arguments
+ * this.exporterService.rowExporting.subscribe((args: IRowExportingEventArgs) => {
  * // set args properties here
  * })
  */
@@ -54,9 +54,9 @@ export interface IRowExportingEventArgs extends IBaseEventArgs {
 }
 
 /**
- * onColumnExport event arguments
+ * columnExporting event arguments
  * ```typescript
- * this.exporterService.onColumnExport.subscribe((args: IColumnExportingEventArgs) => {
+ * this.exporterService.columnExporting.subscribe((args: IColumnExportingEventArgs) => {
  * // set args properties here
  * });
  * ```
@@ -96,26 +96,26 @@ export abstract class IgxBaseExporter {
     /**
      * This event is emitted when a row is exported.
      * ```typescript
-     * this.exporterService.onRowExport.subscribe((args: IRowExportingEventArgs) => {
+     * this.exporterService.rowExporting.subscribe((args: IRowExportingEventArgs) => {
      * // put event handler code here
      * });
      * ```
      *
      * @memberof IgxBaseExporter
      */
-    public onRowExport = new EventEmitter<IRowExportingEventArgs>();
+    public rowExporting = new EventEmitter<IRowExportingEventArgs>();
 
     /**
      * This event is emitted when a column is exported.
      * ```typescript
-     * this.exporterService.onColumnExport.subscribe((args: IColumnExportingEventArgs) => {
+     * this.exporterService.columnExporting.subscribe((args: IColumnExportingEventArgs) => {
      * // put event handler code here
      * });
      * ```
      *
      * @memberof IgxBaseExporter
      */
-    public onColumnExport = new EventEmitter<IColumnExportingEventArgs>();
+    public columnExporting = new EventEmitter<IColumnExportingEventArgs>();
 
     protected _indexOfLastPinnedColumn = -1;
     protected _sort = null;
@@ -151,7 +151,7 @@ export abstract class IgxBaseExporter {
         columns.forEach((column) => {
             const columnHeader = !ExportUtilities.isNullOrWhitespaces(column.header) ? column.header : column.field;
             const exportColumn = !column.hidden || options.ignoreColumnsVisibility;
-            const index = options.ignoreColumnsOrder ? column.index : column.visibleIndex;
+            const index = options.ignoreColumnsOrder || options.ignoreColumnsVisibility ? column.index : column.visibleIndex;
             const columnWidth = Number(column.width.slice(0, -2));
 
             const columnInfo = {
@@ -236,7 +236,7 @@ export abstract class IgxBaseExporter {
                     cancel: false,
                     skipFormatter: false
                 };
-                this.onColumnExport.emit(columnExportArgs);
+                this.columnExporting.emit(columnExportArgs);
 
                 column.header = columnExportArgs.header;
                 column.skip = columnExportArgs.cancel;
@@ -301,7 +301,7 @@ export abstract class IgxBaseExporter {
             cancel: false
         };
 
-        this.onRowExport.emit(rowArgs);
+        this.rowExporting.emit(rowArgs);
 
         if (!rowArgs.cancel) {
             data.push(record);

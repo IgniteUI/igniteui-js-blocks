@@ -69,7 +69,7 @@ let CHIP_ID = 0;
  *
  * @example
  * ```html
- * <igx-chip class="chipStyle" [id]="901" [draggable]="true" [removable]="true" (onRemove)="chipRemoved($event)">
+ * <igx-chip class="chipStyle" [id]="901" [draggable]="true" [removable]="true" (remove)="chipRemoved($event)">
  *    <igx-avatar class="chip-avatar-resized" igxPrefix roundShape="true"></igx-avatar>
  * </igx-chip>
  * ```
@@ -305,11 +305,11 @@ export class IgxChipComponent extends DisplayDensityBase {
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (onMoveStart)="moveStarted($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (moveStart)="moveStarted($event)">
      * ```
      */
     @Output()
-    public onMoveStart = new EventEmitter<IBaseChipEventArgs>();
+    public moveStart = new EventEmitter<IBaseChipEventArgs>();
 
     /**
      * Emits an event when the `IgxChipComponent` moving ends.
@@ -317,11 +317,11 @@ export class IgxChipComponent extends DisplayDensityBase {
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (onMoveEnd)="moveEnded($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (moveEnd)="moveEnded($event)">
      * ```
      */
     @Output()
-    public onMoveEnd = new EventEmitter<IBaseChipEventArgs>();
+    public moveEnd = new EventEmitter<IBaseChipEventArgs>();
 
     /**
      * Emits an event when the `IgxChipComponent` is removed.
@@ -329,11 +329,11 @@ export class IgxChipComponent extends DisplayDensityBase {
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (onRemove)="remove($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (remove)="remove($event)">
      * ```
      */
     @Output()
-    public onRemove = new EventEmitter<IBaseChipEventArgs>();
+    public remove = new EventEmitter<IBaseChipEventArgs>();
 
     /**
      * Emits an event when the `IgxChipComponent` is clicked.
@@ -341,11 +341,11 @@ export class IgxChipComponent extends DisplayDensityBase {
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (onClick)="chipClick($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (click)="chipClick($event)">
      * ```
      */
     @Output()
-    public onClick = new EventEmitter<IChipClickEventArgs>();
+    public chipClick = new EventEmitter<IChipClickEventArgs>();
 
     /**
      * Emits event when the `IgxChipComponent` is selected/deselected.
@@ -354,22 +354,22 @@ export class IgxChipComponent extends DisplayDensityBase {
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [selectable]="true" (onSelection)="chipSelect($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [selectable]="true" (selectedChanging)="chipSelect($event)">
      * ```
      */
     @Output()
-    public onSelection = new EventEmitter<IChipSelectEventArgs>();
+    public selectedChanging = new EventEmitter<IChipSelectEventArgs>();
 
     /**
      * Emits event when the `IgxChipComponent` is selected/deselected and any related animations and transitions also end.
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [selectable]="true" (onSelectionDone)="chipSelectEnd($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [selectable]="true" (selectedChanged)="chipSelectEnd($event)">
      * ```
      */
     @Output()
-    public onSelectionDone = new EventEmitter<IBaseChipEventArgs>();
+    public selectedChanged = new EventEmitter<IBaseChipEventArgs>();
 
     /**
      * Emits an event when the `IgxChipComponent` keyboard navigation is being used.
@@ -378,11 +378,11 @@ export class IgxChipComponent extends DisplayDensityBase {
      *
      * @example
      * ```html
-     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (onKeyDown)="chipKeyDown($event)">
+     * <igx-chip #myChip [id]="'igx-chip-1'" [draggable]="true" (keyDown)="chipKeyDown($event)">
      * ```
      */
     @Output()
-    public onKeyDown = new EventEmitter<IChipKeyDownEventArgs>();
+    public keyDown = new EventEmitter<IChipKeyDownEventArgs>();
 
     /**
      * Emits an event when the `IgxChipComponent` has entered the `IgxChipsAreaComponent`.
@@ -395,14 +395,14 @@ export class IgxChipComponent extends DisplayDensityBase {
      * ```
      */
     @Output()
-    public onDragEnter = new EventEmitter<IChipEnterDragAreaEventArgs>();
+    public dragEnter = new EventEmitter<IChipEnterDragAreaEventArgs>();
 
     /**
      * @hidden
      * @internal
      */
     @HostBinding('attr.class')
-    get hostClass(): string {
+    public get hostClass(): string {
         const classes = [this.getComponentDensityClass('igx-chip')];
         classes.push(this.disabled ? 'igx-chip--disabled' : '');
         // The custom classes should be at the end.
@@ -519,7 +519,7 @@ export class IgxChipComponent extends DisplayDensityBase {
     public onSelectTransitionDone(event) {
         if (!!event.target.tagName) {
             // Trigger onSelectionDone on when `width` property is changed and the target is valid element(not comment).
-            this.onSelectionDone.emit({
+            this.selectedChanged.emit({
                 owner: this,
                 originalEvent: event
             });
@@ -537,13 +537,13 @@ export class IgxChipComponent extends DisplayDensityBase {
             cancel: false
         };
 
-        this.onKeyDown.emit(keyDownArgs);
+        this.keyDown.emit(keyDownArgs);
         if (keyDownArgs.cancel) {
             return;
         }
 
         if ((event.key === 'Delete' || event.key === 'Del') && this.removable) {
-            this.onRemove.emit({
+            this.remove.emit({
                 originalEvent: event,
                 owner: this
             });
@@ -564,7 +564,7 @@ export class IgxChipComponent extends DisplayDensityBase {
      */
     public onRemoveBtnKeyDown(event: KeyboardEvent) {
         if (event.key === ' ' || event.key === 'Spacebar' || event.key === 'Enter') {
-            this.onRemove.emit({
+            this.remove.emit({
                 originalEvent: event,
                 owner: this
             });
@@ -583,7 +583,7 @@ export class IgxChipComponent extends DisplayDensityBase {
      * @internal
      */
     public onRemoveClick(event: MouseEvent | TouchEvent) {
-        this.onRemove.emit({
+        this.remove.emit({
             originalEvent: event,
             owner: this
         });
@@ -616,7 +616,7 @@ export class IgxChipComponent extends DisplayDensityBase {
     // -----------------------------
     // Start chip igxDrag behavior
     public onChipDragStart(event: IDragStartEventArgs) {
-        this.onMoveStart.emit({
+        this.moveStart.emit({
             originalEvent: event,
             owner: this
         });
@@ -639,7 +639,7 @@ export class IgxChipComponent extends DisplayDensityBase {
      */
     public onChipMoveEnd(event: IDragBaseEventArgs) {
         // moveEnd is triggered after return animation has finished. This happen when we drag and release the chip.
-        this.onMoveEnd.emit({
+        this.moveEnd.emit({
             originalEvent: event,
             owner: this
         });
@@ -675,7 +675,7 @@ export class IgxChipComponent extends DisplayDensityBase {
             owner: this,
             cancel: false
         };
-        this.onClick.emit(clickEventArgs);
+        this.chipClick.emit(clickEventArgs);
 
         if (!clickEventArgs.cancel && this.selectable && !this.disabled) {
             this.changeSelection(!this.selected, event);
@@ -699,7 +699,7 @@ export class IgxChipComponent extends DisplayDensityBase {
             dragChip: event.drag.data.chip,
             originalEvent: event
         };
-        this.onDragEnter.emit(eventArgs);
+        this.dragEnter.emit(eventArgs);
     }
 
     /**
@@ -726,7 +726,7 @@ export class IgxChipComponent extends DisplayDensityBase {
 
         if (newValue && !this._selected) {
             onSelectArgs.selected = true;
-            this.onSelection.emit(onSelectArgs);
+            this.selectedChanging.emit(onSelectArgs);
 
             if (!onSelectArgs.cancel) {
                 this.renderer.addClass(this.chipArea.nativeElement, this._selectedItemClass);
@@ -734,7 +734,7 @@ export class IgxChipComponent extends DisplayDensityBase {
                 this.selectedChange.emit(this._selected);
             }
         } else if (!newValue && this._selected) {
-            this.onSelection.emit(onSelectArgs);
+            this.selectedChanging.emit(onSelectArgs);
 
             if (!onSelectArgs.cancel) {
                 this.renderer.removeClass(this.chipArea.nativeElement, this._selectedItemClass);

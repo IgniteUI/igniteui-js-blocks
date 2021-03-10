@@ -2,7 +2,7 @@
     <div class="sample-content">
         <div class="sample-column">
             <div class="density-chooser">
-                <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+                <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
             </div>
             <div>
                 <button igxButton="raised" (click)="gridContainerHidden = !gridContainerHidden">Toggle Container Visibility</button>
@@ -30,6 +30,12 @@
                 [paging]="false"
                 [width]="'100%'"
                 [height]="height">
+                <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+                    <igx-grid-toolbar-actions>
+                        <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                        <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                    </igx-grid-toolbar-actions>
+                  </igx-grid-toolbar>
                 <igx-column *ngFor="let c of columns" [field]="c.field"
                                                     [header]="c.field"
                                                     [movable]="c.movable"

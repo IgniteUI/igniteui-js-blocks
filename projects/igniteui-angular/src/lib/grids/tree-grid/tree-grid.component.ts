@@ -10,13 +10,14 @@ import {
     ContentChild,
     AfterContentInit,
     ViewChild,
-    DoCheck
+    DoCheck,
+    AfterViewInit
 } from '@angular/core';
 import { IgxTreeGridAPIService } from './tree-grid-api.service';
 import { IgxGridBaseDirective } from '../grid-base.directive';
 import { GridBaseAPIService } from '../api.service';
 import { ITreeGridRecord } from './tree-grid.interfaces';
-import { IRowToggleEventArgs } from '../common/events';
+import { IRowDataEventArgs, IRowToggleEventArgs } from '../common/events';
 import {
     HierarchicalTransaction,
     HierarchicalState,
@@ -36,6 +37,8 @@ import { IgxGridNavigationService } from '../grid-navigation.service';
 import { GridType } from '../common/grid.interface';
 import { IgxColumnComponent } from '../columns/column.component';
 import { IgxTreeGridRowComponent } from './tree-grid-row.component';
+import { IgxTreeGridSelectionService } from './tree-grid-selection.service';
+import { GridSelectionMode } from '../common/enums';
 
 let NEXT_ID = 0;
 
@@ -61,10 +64,10 @@ let NEXT_ID = 0;
     selector: 'igx-tree-grid',
     templateUrl: 'tree-grid.component.html',
     providers: [
-        IgxGridSelectionService,
         IgxGridCRUDService,
         IgxGridSummaryService,
         IgxGridNavigationService,
+        { provide: IgxGridSelectionService, useClass: IgxTreeGridSelectionService },
         { provide: GridBaseAPIService, useClass: IgxTreeGridAPIService },
         { provide: IgxGridBaseDirective, useExisting: forwardRef(() => IgxTreeGridComponent) },
         IgxFilteringService,
@@ -72,7 +75,7 @@ let NEXT_ID = 0;
         IgxForOfScrollSyncService
     ]
 })
-export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridType, OnInit, DoCheck, AfterContentInit {
+export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridType, OnInit, AfterViewInit, DoCheck, AfterContentInit {
     /**
      * An @Input property that sets the child data key of the `IgxTreeGridComponent`.
      * ```html
@@ -151,7 +154,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
      */
     @HostBinding('attr.id')
     @Input()
-    public id  = `igx-tree-grid-${NEXT_ID++}`;
+    public id = `igx-tree-grid-${NEXT_ID++}`;
 
     /**
      * @hidden
@@ -273,7 +276,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
      *
      * @memberof IgxTreeGridComponent
      */
-    get filteredData() {
+    public get filteredData() {
         return this._filteredData;
     }
 
@@ -288,7 +291,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
      *
      * @memberof IgxTreeGridComponent
      */
-    set filteredData(value) {
+    public set filteredData(value) {
         this._filteredData = value;
     }
 
@@ -297,7 +300,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
      *
      * @experimental @hidden
      */
-    get transactions() {
+    public get transactions() {
         return this._transactions;
     }
 
@@ -360,12 +363,81 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
             this.loadChildrenOnRowExpansion(args);
         });
 
+        this.onRowAdded.pipe(takeUntil(this.destroy$)).subscribe(args => {
+            if (this.rowSelection === GridSelectionMode.multipleCascade) {
+                let rec = this._gridAPI.get_rec_by_id(this.primaryKey ? args.data[this.primaryKey] : args.data);
+                if (rec && rec.parent) {
+                    this.gridAPI.grid.selectionService.updateCascadeSelectionOnFilterAndCRUD(
+                        new Set([rec.parent]), rec.parent.rowID);
+                } else {
+                    // The record is still not available
+                    // Wait for the change detection to update records through pipes
+                    requestAnimationFrame(() => {
+                        rec = this._gridAPI.get_rec_by_id(this.primaryKey ?
+                            args.data[this.primaryKey] : args.data);
+                        if (rec && rec.parent) {
+                            this.gridAPI.grid.selectionService.updateCascadeSelectionOnFilterAndCRUD(
+                                new Set([rec.parent]), rec.parent.rowID);
+                        }
+                        this.notifyChanges();
+                    });
+                }
+            }
+        });
+
+        this.onRowDeleted.pipe(takeUntil(this.destroy$)).subscribe(args => {
+            if (this.rowSelection === GridSelectionMode.multipleCascade) {
+                if (args.data) {
+                    const rec = this._gridAPI.get_rec_by_id(
+                        this.primaryKey ? args.data[this.primaryKey] : args.data);
+                    this.handleCascadeSelection(args, rec);
+                } else {
+                    // if a row has been added and before commiting the transaction deleted
+                    const leafRowsDirectParents = new Set<any>();
+                    this.records.forEach(record => {
+                        if (record && !record.children && record.parent) {
+                            leafRowsDirectParents.add(record.parent);
+                        }
+                    });
+                    // Wait for the change detection to update records through pipes
+                    requestAnimationFrame(() => {
+                        this.gridAPI.grid.selectionService.updateCascadeSelectionOnFilterAndCRUD(leafRowsDirectParents);
+                        this.notifyChanges();
+                    });
+                }
+            }
+        });
+
+        this.onFilteringDone.pipe(takeUntil(this.destroy$)).subscribe(() => {
+            if (this.rowSelection === GridSelectionMode.multipleCascade) {
+                const leafRowsDirectParents = new Set<any>();
+                this.records.forEach(record => {
+                    if (record && !record.children && record.parent) {
+                        leafRowsDirectParents.add(record.parent);
+                    }
+                });
+                this.gridAPI.grid.selectionService.updateCascadeSelectionOnFilterAndCRUD(leafRowsDirectParents);
+                this.notifyChanges();
+            }
+        });
+
         this.transactions.onStateUpdate.pipe(takeUntil<any>(this.destroy$)).subscribe((event: StateUpdateEvent) => {
             let actions = [];
             if (event.origin === TransactionEventOrigin.REDO) {
                 actions = event.actions ? event.actions.filter(x => x.transaction.type === TransactionType.DELETE) : [];
+                if (this.rowSelection === GridSelectionMode.multipleCascade) {
+                    this.handleCascadeSelection(event);
+                }
             } else if (event.origin === TransactionEventOrigin.UNDO) {
                 actions = event.actions ? event.actions.filter(x => x.transaction.type === TransactionType.ADD) : [];
+                if (this.rowSelection === GridSelectionMode.multipleCascade) {
+                    if (event.actions[0].transaction.type === 'add') {
+                        const rec = this._gridAPI.get_rec_by_id(event.actions[0].transaction.id);
+                        this.handleCascadeSelection(event, rec);
+                    } else {
+                        this.handleCascadeSelection(event);
+                    }
+                }
             }
             if (actions.length) {
                 for (const action of actions) {
@@ -375,8 +447,23 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         });
     }
 
-    ngDoCheck() {
+    public ngDoCheck() {
         super.ngDoCheck();
+    }
+
+    /**
+     * @hidden
+     */
+    public ngAfterViewInit() {
+        super.ngAfterViewInit();
+        // TODO: pipesExectured event
+        // run after change detection in super triggers pipes for records structure
+        if (this.rowSelection === GridSelectionMode.multipleCascade && this.selectedRows.length) {
+            const selRows = this.selectedRows;
+            this.selectionService.clearRowSelection();
+            this.selectRows(selRows, true);
+            this.cdr.detectChanges();
+        }
     }
 
     /**
@@ -427,11 +514,12 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         super.refreshGridState();
         if (this.primaryKey && this.foreignKey) {
             const rowID = args.data[this.foreignKey];
-            this.summaryService.clearSummaryCache({rowID});
+            this.summaryService.clearSummaryCache({ rowID });
             this._pipeTrigger++;
             this.cdr.detectChanges();
         }
     }
+
 
     /**
      * Creates a new `IgxTreeGridRowComponent` with the given data. If a parentRowID is not specified, the newly created
@@ -498,9 +586,9 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
     }
 
     public getEmptyRecordObjectFor(rec) {
-        const row = {...rec};
+        const row = { ...rec };
         const data = rec || {};
-        row.data = {... data};
+        row.data = { ...data };
         Object.keys(row.data).forEach(key => {
             // persist foreign key if one is set.
             if (this.foreignKey && key === this.foreignKey) {
@@ -511,7 +599,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         });
         let id = this.generateRowID();
         const rootRecPK = this.foreignKey && this.rootRecords && this.rootRecords.length > 0 ?
-         this.rootRecords[0].data[this.foreignKey] : null;
+            this.rootRecords[0].data[this.foreignKey] : null;
         if (id === rootRecPK) {
             // safeguard in case generated id matches the root foreign key.
             id = this.generateRowID();
@@ -559,7 +647,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         if (this.addRowParent.asChild) {
             return super._getParentRecordId();
         } else if (this.addRowParent.rowID !== null && this.addRowParent.rowID !== undefined) {
-            const spawnedForRecord =  this._gridAPI.get_rec_by_id(this.addRowParent.rowID);
+            const spawnedForRecord = this._gridAPI.get_rec_by_id(this.addRowParent.rowID);
             return spawnedForRecord?.parent?.rowID;
         }
     }
@@ -579,7 +667,7 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         let delayScrolling = false;
         let record: ITreeGridRecord;
 
-        if (typeof(row) !== 'number') {
+        if (typeof (row) !== 'number') {
             const rowData = row;
             const rowID = this._gridAPI.get_row_id(rowData);
             record = this.processedRecords.get(rowID);
@@ -599,11 +687,11 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         if (delayScrolling) {
             this.verticalScrollContainer.onDataChanged.pipe(first()).subscribe(() => {
                 this.scrollDirective(this.verticalScrollContainer,
-                    typeof(row) === 'number' ? row : this.unpinnedDataView.indexOf(record));
+                    typeof (row) === 'number' ? row : this.unpinnedDataView.indexOf(record));
             });
         } else {
             this.scrollDirective(this.verticalScrollContainer,
-                typeof(row) === 'number' ? row : this.unpinnedDataView.indexOf(record));
+                typeof (row) === 'number' ? row : this.unpinnedDataView.indexOf(record));
         }
 
         this.scrollToHorizontally(column);
@@ -679,6 +767,14 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
         }
         this.selectionService.clearHeaderCBState();
         this._pipeTrigger++;
+        if (this.rowSelection === GridSelectionMode.multipleCascade) {
+            // Force pipe triggering for building the data structure
+            this.cdr.detectChanges();
+            if (this.selectionService.isRowSelected(parentID)) {
+                this.selectionService.rowSelection.delete(parentID);
+                this.selectionService.selectRowsWithNoEvent([parentID]);
+            }
+        }
     }
 
     private loadChildrenOnRowExpansion(args: IRowToggleEventArgs) {
@@ -695,5 +791,20 @@ export class IgxTreeGridComponent extends IgxGridBaseDirective implements GridTy
                 });
             }
         }
+    }
+
+    private handleCascadeSelection(event: IRowDataEventArgs | StateUpdateEvent, rec: ITreeGridRecord = null) {
+        // Wait for the change detection to update records through the pipes
+        requestAnimationFrame(() => {
+            if (rec === null) {
+                rec = this._gridAPI.get_rec_by_id((event as StateUpdateEvent).actions[0].transaction.id);
+            }
+            if (rec && rec.parent) {
+                this.gridAPI.grid.selectionService.updateCascadeSelectionOnFilterAndCRUD(
+                    new Set([rec.parent]), rec.parent.rowID
+                );
+                this.notifyChanges();
+            }
+        });
     }
 }

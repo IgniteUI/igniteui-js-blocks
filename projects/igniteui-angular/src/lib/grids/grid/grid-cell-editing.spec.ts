@@ -340,6 +340,7 @@ describe('IgxGrid - Cell Editing #grid', () => {
 
         it('edit mode - exit edit mode and submit when pin/unpin unpin column', fakeAsync(/** height/width setter rAF */() => {
             let cell = grid.getCellByColumn(0, 'firstName');
+            const cacheValue = cell.value;
             const cellDom = fixture.debugElement.queryAll(By.css(CELL_CSS_CLASS))[0];
 
             UIInteractions.simulateDoubleClickAndSelectEvent(cell);
@@ -355,7 +356,7 @@ describe('IgxGrid - Cell Editing #grid', () => {
             expect(grid.crudService.cell).toBeNull();
             expect(grid.pinnedColumns.length).toBe(1);
             cell = grid.getCellByColumn(0, 'firstName');
-            expect(cell.value).toBe('Gary Martin');
+            expect(cell.value).toBe(cacheValue);
             cell = grid.getCellByColumn(1, 'firstName');
             const cellValue = cell.value;
             cell.setEditMode(true);

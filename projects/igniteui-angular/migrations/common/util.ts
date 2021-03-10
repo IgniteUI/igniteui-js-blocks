@@ -1,7 +1,7 @@
 import { normalize } from '@angular-devkit/core';
 import * as path from 'path';
 import { SchematicContext, Tree } from '@angular-devkit/schematics';
-import { WorkspaceSchema, WorkspaceProject, ProjectType } from '@schematics/angular/utility/workspace-models';
+import { WorkspaceSchema, WorkspaceProject } from '@schematics/angular/utility/workspace-models';
 import { execSync } from 'child_process';
 import {
     Attribute,
@@ -19,15 +19,12 @@ import { replaceMatch } from './tsUtils';
 
 const configPaths = ['/.angular.json', '/angular.json'];
 
-export const getProjectPaths = (config: WorkspaceSchema, appendPrefix = true): string[] => {
+export const getProjectPaths = (config: WorkspaceSchema): string[] => {
     const sourceDirs = [];
 
     const projects = getProjects(config);
     for (const proj of projects) {
-        let sourcePath = path.join('/', proj.sourceRoot);
-        if (appendPrefix && (proj.prefix)) {
-            sourcePath = path.join(sourcePath, proj.prefix);
-        }
+        const sourcePath = path.join('/', proj.sourceRoot);
         sourceDirs.push(normalize(sourcePath));
     }
     return sourceDirs;
@@ -43,16 +40,16 @@ export const getWorkspace = (host: Tree): WorkspaceSchema => {
     return null;
 };
 
-export const getProjects = (config: WorkspaceSchema): WorkspaceProject<ProjectType.Application>[] => {
-    const projects: WorkspaceProject<ProjectType.Application>[] = [];
+export const getProjects = (config: WorkspaceSchema): WorkspaceProject[] => {
+    const projects: WorkspaceProject[] = [];
 
     for (const projName of Object.keys(config.projects)) {
         const proj = config.projects[projName];
-        if ((proj.projectType && proj.projectType !== ProjectType.Application) ||
-            (proj.architect && proj.architect.e2e && !proj.architect.build)) {
+        if ((proj.architect && proj.architect.e2e && !proj.architect.build)) {
+            // skip old style e2e-only projects
             continue;
         }
-        projects.push(proj as WorkspaceProject<ProjectType.Application>);
+        projects.push(proj);
     }
     return projects;
 };
@@ -78,13 +75,24 @@ export const getPackageManager = (host: Tree) => {
 };
 
 export const canResolvePackage = (pkg: string): boolean => {
-    let modulePath;
     try {
-        modulePath = require.resolve(pkg);
-    } finally {
-        // eslint-disable-next-line no-unsafe-finally
-        return !!modulePath;
+        // attempt resolve in child process to keep result out of package.json cache
+        // otherwise resolve will not read the json again (after install) and won't load the main correctly
+        // https://stackoverflow.com/questions/59865584/how-to-invalidate-cached-require-resolve-results
+        execSync(`node -e "require.resolve('${pkg}');"`, { stdio: 'ignore' });
+        return true;
+    } catch {
+        return false;
     }
+};
+
+export const getPackageVersion = (pkg: string): string => {
+    let version = null;
+    try {
+        version = require(path.posix.join(pkg, 'package.json'))?.version;
+    } catch {}
+
+    return version;
 };
 
 export const tryInstallPackage = (context: SchematicContext, packageManager: string, pkg: string) => {

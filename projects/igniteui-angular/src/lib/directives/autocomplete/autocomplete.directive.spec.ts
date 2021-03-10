@@ -133,10 +133,10 @@ describe('IgxAutocomplete', () => {
         }));
         it('Should close the dropdown when no items match the filter', fakeAsync(() => {
             expect((autocomplete as any).collapsed).toEqual(true);
-            spyOn(autocomplete, 'close').and.callThrough();
+            spyOn(autocomplete.target, 'close').and.callThrough();
             spyOn(autocomplete, 'open').and.callThrough();
             spyOn(autocomplete.target, 'open').and.callThrough();
-            expect(autocomplete.close).not.toHaveBeenCalled();
+            expect(autocomplete.target.close).not.toHaveBeenCalled();
             UIInteractions.setInputElementValue(input, 'a', fixture);
             tick();
             expect(autocomplete.open).toHaveBeenCalledTimes(1);
@@ -145,7 +145,7 @@ describe('IgxAutocomplete', () => {
 
             UIInteractions.setInputElementValue(input, 'ax', fixture);
             tick();
-            expect(autocomplete.close).toHaveBeenCalledTimes(1);
+            expect(autocomplete.target.close).toHaveBeenCalledTimes(1);
             expect(autocomplete.open).toHaveBeenCalledTimes(2);
             expect(autocomplete.target.open).toHaveBeenCalledTimes(1);
             expect(autocomplete.target.collapsed).toEqual(true);
@@ -154,7 +154,7 @@ describe('IgxAutocomplete', () => {
             // Should not try to reopen if no items
             UIInteractions.setInputElementValue(input, 'axx', fixture);
             tick();
-            expect(autocomplete.close).toHaveBeenCalledTimes(1);
+            expect(autocomplete.target.close).toHaveBeenCalledTimes(1);
             expect(autocomplete.open).toHaveBeenCalledTimes(3);
             expect(autocomplete.target.open).toHaveBeenCalledTimes(1);
             expect(autocomplete.target.collapsed).toEqual(true);

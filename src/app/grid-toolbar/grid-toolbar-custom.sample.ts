@@ -8,13 +8,12 @@ import { IgxColumnComponent } from 'igniteui-angular';
     templateUrl: 'grid-toolbar-custom.sample.html'
 })
 export class GridToolbarCustomSampleComponent {
-
     public showToolbar = true;
-    public title = 'Custom Title';
-    public hidingEnabled = true;
-    public pinningEnabled = true;
-    public csv = true;
-    public excel = true;
+    public columnHiding = true;
+    public columnPinning = true;
+    public exportExcel = true;
+    public exportCsv = true;
+    public toolbarTitle = 'Grid Toolbar';
 
     public data = [
         {

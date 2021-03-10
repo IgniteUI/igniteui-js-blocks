@@ -2,13 +2,13 @@
 
 <div [style.flex-basis.px]='outerWidth' class="igx-grid__grouparea"
     *ngIf="showGroupArea && (groupingExpressions.length > 0 || hasGroupableColumns)" #groupArea>
-    <igx-chips-area (onReorder)="chipsOrderChanged($event)" (onMoveEnd)="chipsMovingEnded()">
+    <igx-chips-area (reorder)="chipsOrderChanged($event)" (moveEnd)="chipsMovingEnded()">
         <ng-container *ngFor="let expr of chipsGoupingExpressions; let last = last;">
             <igx-chip [id]="expr.fieldName" [title]="getGroupByChipTitle(expr)"
                 [removable]="getColumnGroupable(expr.fieldName)"
                 [draggable]="getColumnGroupable(expr.fieldName)" [displayDensity]="displayDensity"
-                (onKeyDown)="onChipKeyDown($event)" (onRemove)="onChipRemoved($event)"
-                (onClick)="getColumnGroupable(expr.fieldName) ? onChipClicked($event): null"
+                (keyDown)="onChipKeyDown($event)" (remove)="onChipRemoved($event)"
+                (chipClick)="getColumnGroupable(expr.fieldName) ? onChipClicked($event): null"
                 [disabled]='!getColumnGroupable(expr.fieldName)'>
                 <span>{{ getGroupByChipTitle(expr) }}</span>
                 <igx-icon igxSuffix>{{ expr.dir == 1 ? 'arrow_upward' : 'arrow_downward' }}</igx-icon>

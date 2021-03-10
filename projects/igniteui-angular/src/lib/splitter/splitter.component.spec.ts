@@ -2,7 +2,7 @@ import { IgxSplitterModule } from './splitter.module';
 import { configureTestSuite } from '../test-utils/configure-suite';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Component, ViewChild, DebugElement } from '@angular/core';
-import { SplitterType, IgxSplitterComponent } from './splitter.component';
+import { SplitterType, IgxSplitterComponent, ISplitterBarResizeEventArgs } from './splitter.component';
 import { By } from '@angular/platform-browser';
 import { UIInteractions } from '../test-utils/ui-interactions.spec';
 
@@ -366,6 +366,35 @@ describe('IgxSplitter pane toggle', () => {
         fixture.detectChanges();
         expect(pane1.collapsed).toBeFalsy();
         expect(pane1.resizable).toBeTruthy();
+    });
+
+    it('should emit resizing events on splitter bar move: resizeStart, resizing, resizeEnd.', () => {
+        fixture.componentInstance.type = SplitterType.Vertical;
+        fixture.detectChanges();
+        spyOn(splitter.resizeStart, 'emit').and.callThrough();
+        spyOn(splitter.resizing, 'emit').and.callThrough();
+        spyOn(splitter.resizeEnd, 'emit').and.callThrough();
+
+        const pane1 = splitter.panes.toArray()[0];
+        const pane2 = splitter.panes.toArray()[1];
+        const splitterBarComponent = fixture.debugElement.query(By.css(SPLITTERBAR_CLASS)).context;
+        splitterBarComponent.moveStart.emit(pane1);
+        fixture.detectChanges();
+        splitterBarComponent.moving.emit(-100);
+        fixture.detectChanges();
+        splitterBarComponent.movingEnd.emit(-100);
+        fixture.detectChanges();
+
+        const args: ISplitterBarResizeEventArgs = {
+            pane: pane1,
+            sibling: pane2
+        };
+        expect(splitter.resizeStart.emit).toHaveBeenCalledTimes(1);
+        expect(splitter.resizeStart.emit).toHaveBeenCalledWith(args);
+        expect(splitter.resizing.emit).toHaveBeenCalledTimes(1);
+        expect(splitter.resizing.emit).toHaveBeenCalledWith(args);
+        expect(splitter.resizeEnd.emit).toHaveBeenCalledTimes(1);
+        expect(splitter.resizeEnd.emit).toHaveBeenCalledWith(args);
     });
 });
 @Component({

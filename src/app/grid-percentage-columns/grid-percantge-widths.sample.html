@@ -1,10 +1,10 @@
 <div class="wrapper">
     <div class="sample-content">
         <div class="sample-column">
-            <igx-grid [allowFiltering]="true" [data]="data" [autoGenerate]="false" displayDensity="comfortable" width="100%" height="600px" [paging]="true" [perPage]="10">
+            <igx-grid [data]="data" [allowFiltering]="true" [filterMode]="'excelStyleFilter'" displayDensity="comfortable" width="100%" height="600px" [paging]="true" [perPage]="10">
                 <igx-column field="ProductName" [pinned]="true" [movable]="true" header="Product Name" width="19%" [dataType]="'string'" [sortable]="true" [hasSummary]="false" [editable]="true" [filterable]="true" [resizable]="true">
                 </igx-column>
-                <igx-column field="UnitsInStock" [pinned]="false" [movable]="true"  header="Units In Stock" width="19%" [dataType]="'number'" [sortable]="true" [hasSummary]="false" [editable]="true" [filterable]="true" [resizable]="true">
+                <igx-column field="UnitsInStock" [pinned]="false" [movable]="true"  header="Units In Stock" width="19%" [dataType]="'currency'" [sortable]="true" [hasSummary]="true" [editable]="true" [filterable]="true" [resizable]="true">
                 </igx-column>
                 <igx-column field="OrderDate" [movable]="true" header="Order Date" width="19%" [dataType]="'date'" [sortable]="true" [hasSummary]="false" [editable]="true" [filterable]="true" [resizable]="true">
                     <ng-template igxCell let-cell="cell" let-val>
@@ -14,10 +14,7 @@
                 <igx-column field="Discontinued" [movable]="true" [resizable]="true"  header="Discontinued" width="15%" [dataType]="'boolean'"
                     [sortable]="false" [hasSummary]="false" [editable]="true" [filterable]="false">
                 </igx-column>
-                <igx-column field="ReorderLevel" header="Reorder Level" [movable]="true" [resizable]="true" [dataType]="'number'" width="19%" [sortable]="false" [hasSummary]="false" [editable]="true" >
-                    <ng-template igxCellEditor let-cell="cell">
-                        <input type="number" [(ngModel)]="cell.value" style="color: black"/>
-                    </ng-template>
+                <igx-column field="ReorderLevel" header="Reorder Level" [movable]="true" [resizable]="true" [dataType]="'percent'" [hasSummary]="true" width="19%" [sortable]="false"  [editable]="true" >
                 </igx-column>
             </igx-grid>
         </div>

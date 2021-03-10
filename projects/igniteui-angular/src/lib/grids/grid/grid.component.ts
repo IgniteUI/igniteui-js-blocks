@@ -482,7 +482,7 @@ export class IgxGridComponent extends IgxGridBaseDirective implements GridType, 
             return res;
         }
         const rList = this._groupsRowList.filter(item => item.element.nativeElement.parentElement !== null)
-                                        .sort((item1, item2) => item1.index - item2.index);
+            .sort((item1, item2) => item1.index - item2.index);
         res.reset(rList);
         return res;
     }
@@ -624,7 +624,7 @@ export class IgxGridComponent extends IgxGridBaseDirective implements GridType, 
         if (this.checkIfNoColumnField(expression)) {
             return;
         }
-        this.endEdit(true);
+        this.endEdit(false);
         if (expression instanceof Array) {
             this._gridAPI.groupBy_multiple(expression);
         } else {
@@ -993,7 +993,7 @@ export class IgxGridComponent extends IgxGridBaseDirective implements GridType, 
     public ngOnInit() {
         super.ngOnInit();
         this.onGroupingDone.pipe(takeUntil(this.destroy$)).subscribe((args) => {
-            this.endEdit(true);
+            this.endEdit(false);
             this.summaryService.updateSummaryCache(args);
             this._headerFeaturesWidth = NaN;
         });

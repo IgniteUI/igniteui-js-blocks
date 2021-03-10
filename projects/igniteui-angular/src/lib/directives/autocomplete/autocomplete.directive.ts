@@ -66,7 +66,7 @@ export interface AutocompleteOverlaySettings {
  *
  * Example:
  * ```html
- * <input type="text" [igxAutocomplete]="townsPanel" />
+ * <input type="text" [igxAutocomplete]="townsPanel" #autocompleteRef="igxAutocomplete"/>
  * <igx-drop-down #townsPanel>
  *     <igx-drop-down-item *ngFor="let town of towns | startsWith:townSelected" [value]="town">
  *         {{town}}
@@ -75,7 +75,8 @@ export interface AutocompleteOverlaySettings {
  * ```
  */
 @Directive({
-    selector: '[igxAutocomplete]'
+    selector: '[igxAutocomplete]',
+    exportAs: 'igxAutocomplete'
 })
 export class IgxAutocompleteDirective extends IgxDropDownItemNavigationDirective implements OnDestroy, AfterViewInit, OnInit {
     /**
@@ -338,7 +339,9 @@ export class IgxAutocompleteDirective extends IgxDropDownItemNavigationDirective
                     this.open();
                 }
             } else {
-                this.close();
+                // _shouldBeOpen flag should remain unchanged since this state change doesn't come from outside of the component
+                // (like in the case of public API or user interaction).
+                this.target.close();
             }
         });
         this.target.onSelection.pipe(takeUntil(this.destroy$)).subscribe(this.select.bind(this));

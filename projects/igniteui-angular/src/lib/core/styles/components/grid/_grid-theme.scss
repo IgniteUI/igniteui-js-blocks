@@ -2756,14 +2756,6 @@
         align-items: center;
     }
 
-    %igx-grid__filtering-row-editing-buttons {
-        button {
-            igx-icon {
-                margin-#{$right}: rem(8px);
-            }
-        }
-    }
-
     %igx-grid__filtering-row-editing-buttons--small {
         button {
             &:not([disabled]) {

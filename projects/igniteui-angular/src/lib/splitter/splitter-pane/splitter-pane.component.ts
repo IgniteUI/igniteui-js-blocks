@@ -93,7 +93,7 @@ export class IgxSplitterPaneComponent {
      * ```
      */
     @Output()
-    public collapsedChange = new EventEmitter<IgxSplitterPaneComponent>();
+    public collapsedChange = new EventEmitter<boolean>();
 
     /** @hidden @internal */
     @HostBinding('style.order')
@@ -217,7 +217,7 @@ export class IgxSplitterPaneComponent {
         this._getSiblings().forEach(sibling => sibling.size = 'auto');
         this.collapsed = !this.collapsed;
         this.onToggle.emit(this);
-        this.collapsedChange.emit(this);
+        this.collapsedChange.emit(this.collapsed);
     }
 
     /** @hidden @internal */

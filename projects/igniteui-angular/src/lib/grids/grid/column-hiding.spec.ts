@@ -12,7 +12,6 @@ import { configureTestSuite } from '../../test-utils/configure-suite';
 import { GridSelectionMode, ColumnDisplayOrder } from '../common/enums';
 import { ControlsFunction } from '../../test-utils/controls-functions.spec';
 import { IgxColumnActionsComponent } from '../column-actions/column-actions.component';
-import { IColumnVisibilityChangingEventArgs } from '../common/events';
 
 describe('Column Hiding UI #grid', () => {
     configureTestSuite();
@@ -148,7 +147,7 @@ describe('Column Hiding UI #grid', () => {
             grid.columns[3].disableHiding = undefined;
             fix.detectChanges();
 
-            verifyCheckbox('Released', true, false, columnChooserElement, fix);
+            verifyCheckbox('Released', true, false, columnChooserElement);
         });
 
         it('onColumnToggled, onColumnVisibilityChanged, onColumnVisibilityChanging event is fired on toggling checkboxes.', () => {
@@ -201,7 +200,7 @@ describe('Column Hiding UI #grid', () => {
 
         it('- toggling column checkbox checked state successfully changes the grid column visibility.', () => {
             const checkbox = GridFunctions.getColumnChooserItemElement(columnChooserElement, 'ReleaseDate');
-            verifyCheckbox('ReleaseDate', true, false, columnChooserElement, fix);
+            verifyCheckbox('ReleaseDate', true, false, columnChooserElement);
 
             const column = grid.getColumnByName('ReleaseDate');
             verifyColumnIsHidden(column, false, 4);
@@ -222,25 +221,25 @@ describe('Column Hiding UI #grid', () => {
             spyOn(grid.columnVisibilityChanging, 'emit');
 
             const name = 'ReleaseDate';
-            verifyCheckbox(name, true, false, columnChooserElement, fix);
+            verifyCheckbox(name, true, false, columnChooserElement);
             const column = grid.getColumnByName(name);
 
             column.hidden = true;
             fix.detectChanges();
 
-            verifyCheckbox(name, false, false, columnChooserElement, fix);
+            verifyCheckbox(name, false, false, columnChooserElement);
             verifyColumnIsHidden(column, true, 3);
 
             column.hidden = false;
             fix.detectChanges();
 
-            verifyCheckbox(name, true, false, columnChooserElement, fix);
+            verifyCheckbox(name, true, false, columnChooserElement);
             verifyColumnIsHidden(column, false, 4);
 
             column.hidden = undefined;
             fix.detectChanges();
 
-            verifyCheckbox(name, true, false, columnChooserElement, fix);
+            verifyCheckbox(name, true, false, columnChooserElement);
             verifyColumnIsHidden(column, undefined, 4);
 
             column.hidden = true;
@@ -250,7 +249,7 @@ describe('Column Hiding UI #grid', () => {
             column.hidden = null;
             fix.detectChanges();
 
-            verifyCheckbox(name, true, false, columnChooserElement, fix);
+            verifyCheckbox(name, true, false, columnChooserElement);
             verifyColumnIsHidden(column, null, 4);
             expect(grid.columnVisibilityChanging.emit).toHaveBeenCalledTimes(0);
             expect(grid.onColumnVisibilityChanged.emit).toHaveBeenCalledTimes(0);
@@ -265,7 +264,7 @@ describe('Column Hiding UI #grid', () => {
             const hideAll = GridFunctions.getColumnChooserButton(columnChooserElement, 'Hide All').nativeElement;
 
             const checkbox = GridFunctions.getColumnChooserItemElement(columnChooserElement, name);
-            verifyCheckbox(name, false, false, columnChooserElement, fix);
+            verifyCheckbox(name, false, false, columnChooserElement);
             ControlsFunction.verifyButtonIsDisabled(showAll, false);
             ControlsFunction.verifyButtonIsDisabled(hideAll);
 
@@ -294,7 +293,7 @@ describe('Column Hiding UI #grid', () => {
             const hideAll = GridFunctions.getColumnChooserButton(columnChooserElement, 'Hide All').nativeElement;
 
             const checkbox = GridFunctions.getColumnChooserItemElement(columnChooserElement, name);
-            verifyCheckbox(name, true, false, columnChooserElement, fix);
+            verifyCheckbox(name, true, false, columnChooserElement);
             ControlsFunction.verifyButtonIsDisabled(showAll);
             ControlsFunction.verifyButtonIsDisabled(hideAll, false);
 
@@ -722,16 +721,16 @@ describe('Column Hiding UI #grid', () => {
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'Person Details');
             fix.detectChanges();
 
-            verifyCheckbox('Person Details', false, false, columnChooserElement, fix);
-            verifyCheckbox('ContactName', false, false, columnChooserElement, fix);
-            verifyCheckbox('ContactTitle', false, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', false, false, columnChooserElement);
+            verifyCheckbox('ContactName', false, false, columnChooserElement);
+            verifyCheckbox('ContactTitle', false, false, columnChooserElement);
 
             verifyColumnIsHidden(grid.columns[3], true, 4);
             verifyColumnIsHidden(grid.columns[4], true, 4);
             verifyColumnIsHidden(grid.columns[5], true, 4);
 
-            verifyCheckbox('CompanyName', true, false, columnChooserElement, fix);
-            verifyCheckbox('General Information', true, false, columnChooserElement, fix);
+            verifyCheckbox('CompanyName', true, false, columnChooserElement);
+            verifyCheckbox('General Information', true, false, columnChooserElement);
 
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'Person Details');
             fix.detectChanges();
@@ -740,58 +739,58 @@ describe('Column Hiding UI #grid', () => {
             verifyColumnIsHidden(grid.columns[4], false, 7);
             verifyColumnIsHidden(grid.columns[5], false, 7);
 
-            verifyCheckbox('Person Details', true, false, columnChooserElement, fix);
-            verifyCheckbox('ContactName', true, false, columnChooserElement, fix);
-            verifyCheckbox('ContactTitle', true, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', true, false, columnChooserElement);
+            verifyCheckbox('ContactName', true, false, columnChooserElement);
+            verifyCheckbox('ContactTitle', true, false, columnChooserElement);
 
-            verifyCheckbox('CompanyName', true, false, columnChooserElement, fix);
-            verifyCheckbox('General Information', true, false, columnChooserElement, fix);
+            verifyCheckbox('CompanyName', true, false, columnChooserElement);
+            verifyCheckbox('General Information', true, false, columnChooserElement);
         });
 
         it('checks & hides all descendants when hiding top level parent.', () => {
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'General Information');
             fix.detectChanges();
 
-            verifyCheckbox('General Information', false, false, columnChooserElement, fix);
-            verifyCheckbox('CompanyName', false, false, columnChooserElement, fix);
+            verifyCheckbox('General Information', false, false, columnChooserElement);
+            verifyCheckbox('CompanyName', false, false, columnChooserElement);
 
-            verifyCheckbox('Person Details', false, false, columnChooserElement, fix);
-            verifyCheckbox('ContactName', false, false, columnChooserElement, fix);
-            verifyCheckbox('ContactTitle', false, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', false, false, columnChooserElement);
+            verifyCheckbox('ContactName', false, false, columnChooserElement);
+            verifyCheckbox('ContactTitle', false, false, columnChooserElement);
 
-            verifyCheckbox('Missing', true, false, columnChooserElement, fix);
-            verifyCheckbox('ID', true, false, columnChooserElement, fix);
+            verifyCheckbox('Missing', true, false, columnChooserElement);
+            verifyCheckbox('ID', true, false, columnChooserElement);
 
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'General Information');
             fix.detectChanges();
 
-            verifyCheckbox('General Information', true, false, columnChooserElement, fix);
-            verifyCheckbox('CompanyName', true, false, columnChooserElement, fix);
+            verifyCheckbox('General Information', true, false, columnChooserElement);
+            verifyCheckbox('CompanyName', true, false, columnChooserElement);
 
-            verifyCheckbox('Person Details', true, false, columnChooserElement, fix);
-            verifyCheckbox('ContactName', true, false, columnChooserElement, fix);
-            verifyCheckbox('ContactTitle', true, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', true, false, columnChooserElement);
+            verifyCheckbox('ContactName', true, false, columnChooserElement);
+            verifyCheckbox('ContactTitle', true, false, columnChooserElement);
         });
 
         it('checks/unchecks parent when all children are checked/unchecked.', () => {
-            verifyCheckbox('Person Details', true, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', true, false, columnChooserElement);
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'ContactName');
             fix.detectChanges();
 
-            verifyCheckbox('Person Details', true, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', true, false, columnChooserElement);
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'ContactTitle');
             fix.detectChanges();
 
-            verifyCheckbox('Person Details', false, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', false, false, columnChooserElement);
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'ContactName');
             fix.detectChanges();
 
-            verifyCheckbox('Person Details', true, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', true, false, columnChooserElement);
 
             GridFunctions.clickColumnChooserItem(columnChooserElement, 'ContactTitle');
             fix.detectChanges();
 
-            verifyCheckbox('Person Details', true, false, columnChooserElement, fix);
+            verifyCheckbox('Person Details', true, false, columnChooserElement);
         });
 
         it('filters group columns properly.', () => {

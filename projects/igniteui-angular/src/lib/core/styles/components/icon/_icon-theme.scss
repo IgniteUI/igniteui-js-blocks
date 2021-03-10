@@ -58,6 +58,7 @@
     $igx-icon-font-size: --var($theme, 'size');
 
     %igx-icon-display {
+        display: inline-flex;
         width: $igx-icon-font-size;
         height: $igx-icon-font-size;
         font-size: $igx-icon-font-size;

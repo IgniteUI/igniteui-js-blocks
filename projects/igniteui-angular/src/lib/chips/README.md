@@ -41,16 +41,16 @@ Example of customizing the select icon:
 
 #### Removing
 
-Removing can be enabled by setting the `removable` input to `true`. When enabled a remove button is rendered at the end of the chip. When the end-users performs any interaction like clicking on the remove button or pressing the `Delete` key while the chip is focused the `onRemove` event is emitted.
+Removing can be enabled by setting the `removable` input to `true`. When enabled a remove button is rendered at the end of the chip. When the end-users performs any interaction like clicking on the remove button or pressing the `Delete` key while the chip is focused the `remove` event is emitted.
 
-By default the chip does not remove itself from the template when the user wants to delete a chip. This needs to be handled manually using the `onRemove` event.
+By default the chip does not remove itself from the template when the user wants to delete a chip. This needs to be handled manually using the `remove` event.
 
 If you need to customize the remove icon use the `removeIcon` input. It takes a value of type `TemplateRef` and renders it instead of the default remove icon. This means that you can customize the remove button in any way while all the handling of it is still handled by the chip itself.
 
 Example of handling chip removing and custom remove icon:
 ```html
 <igx-chips-area #chipsArea>
-    <igx-chip *ngFor="let chip of chipList" [id]="chip.id" [removable]="true" [removeIcon]="removeTemplate" (onRemove)="chipRemoved($event)">
+    <igx-chip *ngFor="let chip of chipList" [id]="chip.id" [removable]="true" [removeIcon]="removeTemplate" (remove)="chipRemoved($event)">
         {{chip.text}}
     </igx-chip>
 </igx-chips-area>
@@ -127,13 +127,13 @@ The chips can be focused using the `Tab` key or by clicking on them. Chips can b
   - <kbd>LEFT</kbd> - Moves the focus to the chip on the left.
   - <kbd>RIGHT</kbd> - Focuses the chip on the right.
   - <kbd>SPACE</kbd> - Toggles chip selection if it is selectable.
-  - <kbd>DELETE</kbd> - Triggers the `onRemove` event for the `igxChip` so the chip deletion can be handled manually
+  - <kbd>DELETE</kbd> - Triggers the `remove` event for the `igxChip` so the chip deletion can be handled manually
   - <kbd>SHIFT</kbd> + <kbd>LEFT</kbd> - Triggers `onReorder` event for the `igxChipArea` when the currently focused chip should move position to the left.
   - <kbd>SHIFT</kbd> + <kbd>RIGHT</kbd> - Triggers `onReorder` event for the `igxChipArea` when the currently focused chip should move one position to the right
 
 - Keyboard controls when the remove button is focused:
 
-  - <kbd>SPACE</kbd> or <kbd>ENTER</kbd> Triggers the `onRemove` event so the chip deletion can be handled manually
+  - <kbd>SPACE</kbd> or <kbd>ENTER</kbd> Triggers the `remove` event so the chip deletion can be handled manually
 
 # API
 
@@ -158,13 +158,15 @@ The chips can be focused using the `Tab` key or by clicking on them. Chips can b
 ### Outputs
 | Name | Argument Type | Description |
 |:--:|:---|:---|
-| `onMoveStart` | `IBaseChipEventArgs` | Fired when the chip moving(dragging) starts. |
-| `onMoveEnd` | `IBaseChipEventArgs` | Fired when the chip moving(dragging) ends. |
-| `onRemove ` | `IBaseChipEventArgs` | Fired when the chip remove button is clicked. |
-| `onClick ` | `IChipClickEventArgs` | Fired when the chip is clicked instead of dragged. |
-| `onSelection` | `IChipSelectEventArgs` | Fired when the chip is being selected/deselected. |
-| `onKeyDown ` | `IChipKeyDownEventArgs` | Fired when the chip keyboard navigation is being used. |
-| `onDragEnter ` | `IChipEnterDragAreaEventArgs` | Fired when another chip has entered the current chip area. |
+| `moveStart` | `IBaseChipEventArgs` | Fired when the chip moving(dragging) starts. |
+| `moveEnd` | `IBaseChipEventArgs` | Fired when the chip moving(dragging) ends. |
+| `remove ` | `IBaseChipEventArgs` | Fired when the chip remove button is clicked. |
+| `chipClick ` | `IChipClickEventArgs` | Fired when the chip is clicked instead of dragged. |
+| `selectedChanging` | `IChipSelectEventArgs` | Fired when the chip is being selected/deselected. Cancellable |
+| `selectedChange`   | | 
+| `selectedChanging` | `IChipSelectEventArgs` | Fired when the chip is being selected/deselected. Cancellable |
+| `keyDown ` | `IChipKeyDownEventArgs` | Fired when the chip keyboard navigation is being used. |
+| `dragEnter ` | `IChipEnterDragAreaEventArgs` | Fired when another chip has entered the current chip area. |
 
 ## IgxChipsAreaComponent
 
@@ -177,10 +179,10 @@ The chips can be focused using the `Tab` key or by clicking on them. Chips can b
 ### Outputs
 | Name | Argument Type | Description |
 |:--:|:---|:---|
-| `onReorder ` | `IChipsAreaReorderEventArgs` | Fired when the chips order should be changed(from dragging). Requires custom logic for actual reorder. |
-| `onSelection ` | `IChipsAreaSelectEventArgs` | Fired for all initially selected chips and when chip is being selected/deselected. |
-| `onMoveStart  ` | `IBaseChipsAreaEventArgs` | Fired when any chip moving(dragging) starts. |
-| `onMoveEnd ` | `IBaseChipsAreaEventArgs` | Fired when any chip moving(dragging) ends. |
+| `reorder ` | `IChipsAreaReorderEventArgs` | Fired when the chips order should be changed(from dragging). Requires custom logic for actual reorder. |
+| `selectionChange ` | `IChipsAreaSelectEventArgs` | Fired for all initially selected chips and when chip is being selected/deselected. |
+| `moveStart  ` | `IBaseChipsAreaEventArgs` | Fired when any chip moving(dragging) starts. |
+| `moveEnd ` | `IBaseChipsAreaEventArgs` | Fired when any chip moving(dragging) ends. |
 
 ### Properties
 | Name   | Return Type | Description |

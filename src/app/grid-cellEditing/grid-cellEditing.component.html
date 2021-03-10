@@ -2,7 +2,7 @@
 <h3>Grid with primary key ProductID</h3>
 
 <div class="density-chooser" style="margin-bottom: 16px">
-    <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)" style="display: block; width: 500px"></igx-buttongroup>
+    <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)" style="display: block; width: 500px"></igx-buttongroup>
 </div>
 <igx-grid #grid1 [filterMode]="'excelStyleFilter'" locale="fr-FR" [data]="data" [primaryKey]="'ProductID'" [rowEditable]="true" [displayDensity]="density" width="800px" height="550px" [paging]="true" [rowSelection]="selectionMode">
     <igx-column field="OrderDate"  width="200px" [dataType]="'date'" filterable="true" [hasSummary]="true" [summaries]="earliest" editable="true" [resizable]="true" [movable]="true">

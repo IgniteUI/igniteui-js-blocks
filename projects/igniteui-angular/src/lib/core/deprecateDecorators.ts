@@ -30,8 +30,11 @@ export function DeprecateMethod(message: string): MethodDecorator {
             descriptor.value = function() {
                 const targetName = typeof target === 'function' ? target.name : target.constructor.name;
                 isMessageShown = showMessage(`${targetName}.${key}: ${message}`, isMessageShown);
-
-                return originalMethod.call(this, arguments);
+                const args = [];
+                for (const x of arguments) {
+                    args.push(x);
+                }
+                return originalMethod.call(this, args);
             };
 
             return descriptor;

@@ -518,24 +518,6 @@ export class IgxDatePickerComponent extends PickersBaseDirective implements Cont
         super(element, _localeId, _displayDensityOptions, _inputGroupType);
     }
 
-    // public subscribeToNativeEvents(): void {
-    //     fromEvent(this.getEditElement(), 'click')
-    //         .pipe(takeUntil(this._destroy$))
-    //         .subscribe(() => {
-    //             if (!this.isDropdown) {
-    //                 this.open();
-    //             }
-    //         });
-
-    //     fromEvent(this.getEditElement(), 'blur')
-    //         .pipe(takeUntil(this._destroy$))
-    //         .subscribe(() => {
-    //             if (this.collapsed) {
-    //                 this.updateValidityOnBlur();
-    //             }
-    //         });
-    // }
-
     /**
      * Gets the formatted date when `IgxDatePickerComponent` is in dialog mode.
      *
@@ -907,33 +889,6 @@ export class IgxDatePickerComponent extends PickersBaseDirective implements Cont
         this._destroy$.complete();
     }
 
-    /**
-     * Evaluates when calendar.onSelection event was fired
-     * and update the input value.
-     *
-     * @param event selected value from calendar.
-     *
-     * @hidden @internal
-     */
-    public handleSelection(date: Date): void {
-        if (this.shouldCancelSelecting()) {
-            return;
-        }
-        if (this.value) {
-            date.setHours(this.value.getHours());
-            date.setMinutes(this.value.getMinutes());
-            date.setSeconds(this.value.getSeconds());
-            date.setMilliseconds(this.value.getMilliseconds());
-        }
-        const oldValue = this.value;
-        this.value = date;
-
-        this.emitValueChange(oldValue, this.value);
-        this._calendar.viewDate = date;
-        this.close();
-        this.selected.emit(date);
-    }
-
     /** @hidden @internal */
     public onOpenClick(event: MouseEvent) {
         event.stopPropagation();
@@ -971,7 +926,7 @@ export class IgxDatePickerComponent extends PickersBaseDirective implements Cont
             });
     }
 
-    protected onStatusChanged = () => {
+    private onStatusChanged = () => {
         if ((this._ngControl.control.touched || this._ngControl.control.dirty) &&
             (this._ngControl.control.validator || this._ngControl.control.asyncValidator)) {
             if (this.inputGroup.isFocused) {
@@ -989,6 +944,25 @@ export class IgxDatePickerComponent extends PickersBaseDirective implements Cont
             this.inputGroup.isRequired = this.required;
         }
     };
+
+    private handleSelection(date: Date): void {
+        if (this.shouldCancelSelecting()) {
+            return;
+        }
+        if (this.value) {
+            date.setHours(this.value.getHours());
+            date.setMinutes(this.value.getMinutes());
+            date.setSeconds(this.value.getSeconds());
+            date.setMilliseconds(this.value.getMilliseconds());
+        }
+        const oldValue = this.value;
+        this.value = date;
+
+        this.emitValueChange(oldValue, this.value);
+        this._calendar.viewDate = date;
+        this.close();
+        this.selected.emit(date);
+    }
 
     private subscribeToDateEditorEvents(): void {
         this.dateTimeEditor.valueChange.pipe(

@@ -10,7 +10,7 @@
                 </igx-input-group>
             </div>
             <div class="density-chooser">
-                <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+                <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
             </div>
             <igx-grid
                 #grid1
@@ -26,6 +26,12 @@
                 [paging]="false"
                 [width]="'900px'"
                 >
+                <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+                    <igx-grid-toolbar-actions>
+                        <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                        <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                    </igx-grid-toolbar-actions>
+                  </igx-grid-toolbar>
                 <igx-column *ngFor="let c of columns" [field]="c.field"
                                                     [header]="c.field"
                                                     [movable]="c.movable"

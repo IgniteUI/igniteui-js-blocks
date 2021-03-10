@@ -53,7 +53,7 @@ export class IgxGridFilteringCellComponent implements AfterViewInit, OnInit, DoC
 
 
     @HostBinding('class')
-    get styleClasses(): string {
+    public get styleClasses(): string {
         let classes = this.column && this.column.selected ?
             'igx-grid__filtering-cell--selected' :
             'igx-grid__filtering-cell';
@@ -78,11 +78,11 @@ export class IgxGridFilteringCellComponent implements AfterViewInit, OnInit, DoC
         this.filteringService.subscribeToEvents();
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         this.filteringService.columnToMoreIconHidden.set(this.column.field, true);
     }
 
-    ngAfterViewInit(): void {
+    public ngAfterViewInit(): void {
         this.updateFilterCellArea();
     }
 
@@ -106,11 +106,11 @@ export class IgxGridFilteringCellComponent implements AfterViewInit, OnInit, DoC
         this.updateVisibleFilters();
     }
 
-    get displayDensity(): string {
+    public get displayDensity(): string {
         return this.column.grid.displayDensity === DisplayDensity.comfortable ? DisplayDensity.cosy : this.column.grid.displayDensity;
     }
 
-    get template(): TemplateRef<any> {
+    public get template(): TemplateRef<any> {
         if (!this.column.filterable) {
             return null;
         }
@@ -132,7 +132,7 @@ export class IgxGridFilteringCellComponent implements AfterViewInit, OnInit, DoC
      *
      * @memberof IgxGridFilteringCellComponent
      */
-    get context() {
+    public get context() {
         return { column: this.column };
     }
 

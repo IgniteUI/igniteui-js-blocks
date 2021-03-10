@@ -16,18 +16,20 @@
             <igx-switch (change)='onChange()' style="padding-left: 10px"> Right Column Pinning toggle</igx-switch>
         </div>
         <igx-grid [rowEditable]="true" [igxGridState]="options" [allowFiltering]='true' [primaryKey]='"ID"' [pinning]="pinningConfig" [paging]="true"
-            #grid1 [data]="data" [width]="'800px'"
-            [height]="'600px'" [rowSelection]="'multiple'">
-
+            #grid1 [data]="data" [width]="'800px'" [height]="'600px'" [rowSelection]="'multiple'">
+            <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+                <app-grid-search-box [grid]="grid1" [style.width]="'400px'"></app-grid-search-box>
+                <igx-grid-toolbar-actions>
+                   <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                   <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                </igx-grid-toolbar-actions>
+            </igx-grid-toolbar>
             <ng-template igxGridDetail let-dataItem>
                 <div>
                     <div><span class='categoryStyle'>Country:</span> {{dataItem.Country}}</div>
                     <div><span class='categoryStyle'>City:</span> {{dataItem.City}}</div>
                     <div><span class='categoryStyle'>Address:</span> {{dataItem.Address}}</div>
                 </div>
-            </ng-template>
-            <ng-template igxToolbarCustomContent>
-                <app-grid-search-box [grid]="grid1" [style.width]="'400px'"></app-grid-search-box>
             </ng-template>
             <igx-column width='150px' [filterable]='false'>
                 <ng-template igxCell let-cell="cell" let-val>
@@ -51,10 +53,14 @@
     <div class="sample-column">
         <div>igxHierarchicalGrid</div>
         <igx-hierarchical-grid #hGrid [width]="'800px'" [height]="'600px'" [paging]="true" [primaryKey]='"ID"' [allowFiltering]='true'
-            [showExpandAll]='true' [data]="hierarchicalData" [pinning]="pinningConfig" >
-            <ng-template igxToolbarCustomContent>
+            [showExpandAll]='true' [data]="hierarchicalData" [pinning]="pinningConfig" [rowSelection]="true" >
+            <igx-grid-toolbar [displayDensity]="hGrid.displayDensity">
                 <app-grid-search-box [grid]="hGrid" [style.width]="'400px'"></app-grid-search-box>
-            </ng-template>
+                <igx-grid-toolbar-actions>
+                   <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                   <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                </igx-grid-toolbar-actions>
+            </igx-grid-toolbar>
             <igx-column width='70px' [filterable]='false'>
                 <ng-template igxCell let-cell="cell" let-val>
                     <igx-icon class="pin-icon" (mouseup)="togglePining(cell.row, $event)">
@@ -79,8 +85,19 @@
     <div class="sample-column">
         <div>igxTreeGrid</div>
         <igx-tree-grid [paging]='true' [pinning]="pinningConfig" #treegrid [allowFiltering]='true' [data]="treeData" primaryKey="employeeID" foreignKey="PID" [rowSelection]="selectionMode"
-        [width]="'900px'" [height]="'800px'" >
-       <igx-column width='150px' [filterable]='false'>
+        [width]="'900px'" [height]="'800px'">
+        <igx-grid-toolbar [displayDensity]="treegrid.displayDensity">
+            <app-grid-search-box [grid]="treegrid" [style.width]="'450px'"></app-grid-search-box>
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                    <span excelText>Export to Excel 👌</span>
+                    <span csvText>Export to CSV 👍</span>
+                </igx-grid-toolbar-exporter>
+            </igx-grid-toolbar-actions>
+        </igx-grid-toolbar>
+        <igx-column width='150px' [filterable]='false'>
             <ng-template igxCell let-cell="cell" let-val>
                 <igx-icon class="pin-icon" (mouseup)="togglePining(cell.row, $event)">
                     {{cell.row.pinned ? 'lock' : 'lock_open'}}
@@ -92,10 +109,6 @@
             [sortable]="true" [filterable]="true" [editable]="true" [hidden]="c.hidden"
             [minWidth]="c.minWidth" [maxWidth]="c.maxWidth">
         </igx-column>
-
-        <ng-template igxToolbarCustomContent>
-            <app-grid-search-box [grid]="treegrid" [style.width]="'530px'"></app-grid-search-box>
-        </ng-template>
     </igx-tree-grid>
     </div>
 </div>

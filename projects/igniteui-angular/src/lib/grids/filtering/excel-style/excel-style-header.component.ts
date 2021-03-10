@@ -20,7 +20,7 @@ export class IgxExcelStyleHeaderComponent {
      * ```
      */
     @Input()
-    showPinning: boolean;
+    public showPinning: boolean;
 
     /**
      * Sets whether the column selecting icon should be shown in the header.
@@ -32,7 +32,7 @@ export class IgxExcelStyleHeaderComponent {
      * ```
      */
     @Input()
-    showSelecting: boolean;
+    public showSelecting: boolean;
 
     /**
      * Sets whether the column hiding icon should be shown in the header.
@@ -44,7 +44,7 @@ export class IgxExcelStyleHeaderComponent {
      * ```
      */
     @Input()
-    showHiding: boolean;
+    public showHiding: boolean;
 
     constructor(public esf: IgxGridExcelStyleFilteringComponent) { }
 }

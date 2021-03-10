@@ -2,14 +2,6 @@
     "$schema": "../../common/schema/binding.schema.json",
     "changes": [
         {
-            "name": "onToggle",
-            "replaceWith": "collapsedChange",
-            "owner": {
-                "selector": "igx-splitter-pane",
-                "type": "component"
-            }
-        },
-        {
             "name": "onTabItemSelected",
             "replaceWith": "tabItemSelected",
             "owner": {
@@ -230,6 +222,102 @@
             "replaceWith": "monthSelection",
             "owner": {
                 "selector": "igx-months-view",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onReorder",
+            "replaceWith": "reorder",
+            "owner": {
+                "selector": "igx-chips-area",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onSelection",
+            "replaceWith": "selectionChange",
+            "owner": {
+                "selector": "igx-chips-area",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onMoveStart",
+            "replaceWith": "moveStart",
+            "owner": {
+                "selector": "igx-chips-area",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onMoveEnd",
+            "replaceWith": "moveEnd",
+            "owner": {
+                "selector": "igx-chips-area",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onMoveStart",
+            "replaceWith": "moveStart",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onMoveEnd",
+            "replaceWith": "moveEnd",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onRemove",
+            "replaceWith": "remove",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onClick",
+            "replaceWith": "chipClick",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onSelection",
+            "replaceWith": "selectedChanging",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onSelectionDone",
+            "replaceWith": "selectedChanged",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onKeyDown",
+            "replaceWith": "keyDown",
+            "owner": {
+                "selector": "igx-chip",
+                "type": "component"
+            }
+        },
+        {
+            "name": "onDragEnter",
+            "replaceWith": "dragEnter",
+            "owner": {
+                "selector": "igx-chip",
                 "type": "component"
             }
         }

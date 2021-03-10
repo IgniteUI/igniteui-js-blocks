@@ -12,26 +12,23 @@
                 </igx-drop-down>
             </div>
             <div class="density-chooser">
-                <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+                <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
             </div>
-
-
             <igx-grid #grid1 [data]="data" [displayDensity]="density" [columnSelection]="'multiple'" [allowFiltering]="true"
                 [rowSelection]="'multiple'" [filterMode]="'excelStyleFilter'" [paging]="false" [width]="'900px'"
                 [height]="'800px'" (onColumnSelectionChange)="onColumnSelection($event)">
-                <igx-column *ngFor="let c of columns" [field]="c.field" [header]="c.field" [movable]="c.movable"
-                    [groupable]="c.groupable" [resizable]="c.resizable" [width]="c.width" [sortable]="c.sortable"
-                    [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="true"
-                    [selectable]="c.selectable" [dataType]="c.type">
-                </igx-column>
-
-                <ng-template igxToolbarCustomContent let-sampleGrid="grid">
+                <igx-grid-toolbar [displayDensity]="grid.displayDensity">
+                    <igx-grid-toolbar-actions>
+                       <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                       <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                        <!-- <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering> -->
+                    </igx-grid-toolbar-actions>
                     <button igxButton="outlined" #columnSelectionButton igxRipple (click)="toggleColumnSelection()"
-                        [displayDensity]="sampleGrid.displayDensity">
+                        [displayDensity]="grid1.displayDensity">
                         <div class="igx-grid-toolbar__button-space">
                             <igx-checkbox [checked]="true" [disableRipple]="true" [readonly]="true" [disabled]="true">
                             </igx-checkbox>
-                            <span>{{ sampleGrid.selectedColumns().length }}</span>
+                            <span>{{ grid1.selectedColumns().length }}</span>
                         </div>
                     </button>
                     <igx-drop-down #columnSelectionDropdown>
@@ -40,9 +37,9 @@
                                 [placeholder]="'Filter Column list ...'" autocomplete="off" />
                         </igx-input-group>
                         <div class="igx-column-hiding__columns"
-                            [style.max-height]="(sampleGrid.calcHeight) ? sampleGrid.calcHeight * 0.7 + 'px' : '100%'">
+                            [style.max-height]="(grid1.calcHeight) ? grid1.calcHeight * 0.7 + 'px' : '100%'">
                             <igx-checkbox
-                                *ngFor="let columnItem of sampleGrid.columns | filterColumns: searchSelectedColumn"
+                                *ngFor="let columnItem of grid1.columns | filterColumns: searchSelectedColumn"
                                 class="igx-column-hiding__columns-item"
                                 (change)="columnItem.selected = !columnItem.selected" [checked]="columnItem.selected"
                                 [disabled]="!columnItem.selectable">
@@ -50,12 +47,17 @@
                             </igx-checkbox>
                         </div>
                         <div class="igx-column-hiding__buttons">
-                            <button igxButton igxRipple (click)="sampleGrid.selectAllColumns()">Select All</button>
-                            <button igxButton igxRipple (click)="sampleGrid.deselectAllColumns()"
-                                [disabled]="sampleGrid.selectedColumns().length === 0">Deselect All</button>
+                            <button igxButton igxRipple (click)="grid1.selectAllColumns()">Select All</button>
+                            <button igxButton igxRipple (click)="grid1.deselectAllColumns()"
+                                [disabled]="grid1.selectedColumns().length === 0">Deselect All</button>
                         </div>
                     </igx-drop-down>
-                </ng-template>
+                </igx-grid-toolbar>
+                <igx-column *ngFor="let c of columns" [field]="c.field" [header]="c.field" [movable]="c.movable"
+                    [groupable]="c.groupable" [resizable]="c.resizable" [width]="c.width" [sortable]="c.sortable"
+                    [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="true"
+                    [selectable]="c.selectable" [dataType]="c.type">
+                </igx-column>
             </igx-grid>
 
             <h1>TEST EXAMPLE</h1>
@@ -83,7 +85,7 @@
                 </igx-column-group>
             </igx-grid>
             <div class="sample-buttons">
-                <igx-buttongroup [multiSelection]="false" [values]="filterModes" (onSelect)="selectFilterMode($event)">
+                <igx-buttongroup [multiSelection]="false" [values]="filterModes" (selected)="selectFilterMode($event)">
                 </igx-buttongroup>
             </div>
             <div class="sample-buttons">

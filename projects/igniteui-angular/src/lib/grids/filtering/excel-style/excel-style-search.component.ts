@@ -46,7 +46,8 @@ export class IgxExcelStyleSearchComponent implements AfterViewInit, OnDestroy {
     /**
      * @hidden @internal
      */
-    @HostBinding('class') class = 'igx-excel-filter__menu-main';
+    @HostBinding('class.igx-excel-filter__menu-main')
+    public defaultClass = true;
 
     /**
      * @hidden @internal
@@ -168,7 +169,7 @@ export class IgxExcelStyleSearchComponent implements AfterViewInit, OnDestroy {
         this.refreshSize();
     }
 
-    ngOnDestroy(): void {
+    public ngOnDestroy(): void {
         this.destroy$.next(true);
         this.destroy$.complete();
     }
@@ -245,6 +246,8 @@ export class IgxExcelStyleSearchComponent implements AfterViewInit, OnDestroy {
     public get type(): string {
         switch (this.esf.column?.dataType) {
             case DataType.Number:
+            case DataType.Currency:
+            case DataType.Percent:
                 return 'number';
             default:
                 return 'text';
@@ -264,7 +267,7 @@ export class IgxExcelStyleSearchComponent implements AfterViewInit, OnDestroy {
     /**
      * @hidden @internal
      */
-    get applyButtonDisabled(): boolean {
+    public get applyButtonDisabled(): boolean {
         return this.esf.listData[0] && !this.esf.listData[0].isSelected && !this.esf.listData[0].indeterminate ||
             this.displayedListData && this.displayedListData.length === 0;
     }
@@ -414,6 +417,8 @@ export class IgxExcelStyleSearchComponent implements AfterViewInit, OnDestroy {
             case DataType.Boolean:
                 return IgxBooleanFilteringOperand.instance().condition(conditionName);
             case DataType.Number:
+            case DataType.Currency:
+            case DataType.Percent:
                 return IgxNumberFilteringOperand.instance().condition(conditionName);
             case DataType.Date:
                 return IgxDateFilteringOperand.instance().condition(conditionName);

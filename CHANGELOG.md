@@ -1,62 +1,156 @@
 # Ignite UI for Angular Change Log
 
 All notable changes for each version of this project will be documented in this file.
+## 11.1.1
+
+### New Features
+- `IgxAutocomplete`
+    - Exported the component instance in the template with the name `igxAutocomplete`.
+
+    ```html
+    <input type="text" [igxAutocomplete]="townsPanel" #autocompleteRef="igxAutocomplete"/>
+    ```
+
 ## 11.1.0
-### General
-- `IgxGrid`, `IgxTreeGrid`, `IgxHierarchicalGrid`
-    - The following new events are introduced: `sorting`, `filtering`, `columnPinned`, `columnVisibilityChanging`.
-    - **Behavioral Change** -
-    - `onColumnPinning` to emit `IPinColumnCancellableEventArgs` instead of `IPinColumnEventArgs`.
 
 ### New Features
 - `IgxDropDown`
     - The `igx-drop-down-item` now allows for `igxPrefix`, `igxSuffix` and `igx-divider` directives to be passed as `ng-content` and they will be renderer accordingly in the item's content.
 - `IgxGrid`
     - Added support for exporting grouped data.
-- `IgxInput` now supports `type="file"` and its styling upon all themes.  
+- `IgxTreeGrid`
+    - Added `multipleCascade` row selection mode. In this mode, selecting a record results in the selection of all its children recursively. When only some children are selected, their parent's checkbox is in an indeterminate state.
+ 
+
+        ```html
+        <igx-tree-grid [rowSelection]="'multipleCascade'">           
+        </igx-tree-grid>
+        ```
+- `IgxGrid`, `IgxTreeGrid`, `IgxHierarchicalGrid`
+    - Support for `currency` type columns is added in the grid.
+    - Support for `percent` type columns is added in the grid.
+    - Added support for filtering based on the formatted cell values using the `FormattedValuesFilteringStrategy` for `IgxGrid`/`IgxHierarchicalGrid` and `TreeGridFormattedValuesFilteringStrategy` for `IgxTreeGrid`.
+    - The following new events are introduced: `sorting`, `filtering`, `columnPinned`, `columnVisibilityChanging`.
+    - **Behavioral Change** -
+    - `onColumnPinning` to emit `IPinColumnCancellableEventArgs` instead of `IPinColumnEventArgs`.
+    - `Column pinning`, `Column moving`, `paging` interactions now discard the editing value, instead of committing it.
+    - `Column Resizing` now does not exit edit mode.
+- `IgxInput` now supports `type="file"` and its styling upon all themes.
    _Note: validation of file type input is not yet supported._
+- `igxSplitter` now has the following additional outputs: 
+    - `resizeStart` - Emits when pane resizing starts.
+    - `resizing`- Emits while panes are being resized.
+    - `resizeEnd` - Emits when pane resizing ends.
+
+    All emit with the two panes affected by the resize operation as arguments.
 
 ### General
+- **Breaking Change** - Many outputs are renamed with the introduction of new rules in Ignite UI for Angular's naming convention. Please, ensure that when you update to 11.1 you do so through
+    ```
+    ng update igniteui-angular
+    ```
+    or execute the update migrations manually afterwards
+    ```
+    ng update igniteui-angular --migrate-only
+    ```
+    This will ensure your application is updated to use the new output names.
+- `IgxCheckbox, IgxRadio, IgxSwitch` now follow the Google Material spec for focus behavior. See [checkbox](https://material.io/components/checkboxes), [radio](https://material.io/components/radio-buttons), and [switch](https://material.io/components/switches).
 - `IgxDialog`
     - The dialog content has been moved inside the dialog window container in the template. This means that if you have added something in-between the opening and closing tags of the dialog, you may have to adjust its styling a bit since that content is now rendered inside a container that has padding on it.
 - `IgxCalendar`
+    - **Breaking Change**
     - A new string enumeration `IgxCalendarView` is exported. Either the new one or the current `CalendarView` can be used. `CalendarView` will be deprecated in a future release.
-    - `onSelection` is now `selected` 
+    - `onSelection` is now `selected`
     - `onViewChanging` is now `viewChanging`
     - `onDateSelection` is now `dateSelection`
     - `onYearSelection` is now `yearSelection`
     - `onMonthSelection` is now `monthSelection`
 - `IgxYearsViewComponent`
+    - **Breaking Change**
     - `onSelection` is now `selected`
     - `onYearSelection` is now `yearSelection`
 - `IgxDaysViewComponent`
+    - **Breaking Change**
     - `onDateSelection` is now `dateSelection`
     - `onViewChanging` is now `viewChanging`
 - `IgxMonthsViewComponent`
+    - **Breaking Change**
     - `onSelection` is now `selected`
     - `onMonthSelection` is now `monthSelection`
 - `IgxMonthPickerComponent`
+    - **Breaking Change**
     - `onSelection` is now `selected`
 - `IgxRadioGroup`
     - Added new property `alignment` that determines the radio group alignment. Available options are `horizontal` (default) and `vertical`.
 - `IgxDialog`
     - Added new `onOpened` and `onClosed` events.
 - `IgxIcon`
-    - **Deprecated** - The `color` input property has been deprecated. 
+    - **Deprecated** - The `color` input property has been deprecated.
     - **Renamed inputs**
         `isActive` to `active`
         `fontSet` to `family`
 - `IgxToast`
-    - **Breaking Change** - 
+    - **Breaking Change** -
     `show` and `hide` methods have been deprecated. `open` and `close` should be used instead.
     `onShowing`,`onShown`,`onHiding` and `onHiden` events have been deprecated. `onOpening`, `onOpened`, `onClosing` and `onClosed`should be used instead.
 - `IgxInputGroup`
     - Added new property `theme` that allows you to set the theme explicitly and at runtime.
 - `IgxSnackbar`
     - `show` and `hide` methods have been deprecated. `open` and `close` should be used instead.
+- `IgxSplitter`
+    - **Breaking Change** - the `onToggle` output is deprecated. A new output is introduced to replace it - `collapsedChange`. This allows for the `collapsed` state to be two-way bindable using the syntax ```[(collapsed)]="paneCollapse"```
+- `IgxChip`
+    - **Breaking Change** - The following outputs are renamed:
+        - `onMoveStart` to `moveStart`
+        - `onMoveEnd` to `moveEnd`
+        - `onRemove` to `remove`
+        - `onClick` to `chipClick`
+        - `onSelection` to `selectedChanging`
+        - `onSelectionDone` to `selectedChanged`
+        - `onKeyDown` to `keyDown`
+        - `onDragEnter` to `dragEnter`
+- `IgxChipArea`
+    - **Breaking Change** - The following outputs are renamed:
+        - `onReorder` to `reorder`
+        - `onSelection` to `selectionChange`
+        - `onMoveStart` to `moveStart`
+        - `onMoveEnd` to `moveEnd`
 - `IgxGrid`, `IgxHierarchicalGrid`, `IgxTreeGrid`
     - Added new property `selectRowOnClick` that determines whether clicking over a row will change its selection state or not. Set to `true` by default.
     - `GridPagingMode` enum members rename - `local` to `Local` and `remote` to `Remote`. Example:  `GridPagingMode.Local`.
+- IgxButton
+    - IgxIcon(s) placed in a button now include margin if there are one or more sibling elements to give them some breathing room. The amount of margin applied depends on the display density of the button.
+- `IgxListComponent`
+    - **Breaking Change** - The following outputs are renamed:
+        - `onLeftPan` to `leftPan`
+        - `onRightPan` to `rightPan`
+        - `onPanStateChange` to `panStateChange`
+        - `onItemClicked` to `itemClicked`
+- `IgxNavbarComponent`
+    - **Breaking Change** - The `onAction` output is renamed to `action`.
+- `IgxTabsComponent`
+    - **Breaking Change** - The following outputs are renamed:
+        - `onTabItemSelected` to `tabItemSelected`
+        - `onTabItemDeselected` to `tabItemDeselected`
+- `IgxTooltipTargetDirective`
+    - **Breaking Change** - The following outputs are renamed:
+        - `onTooltipShow` to `tooltipShow`
+        - `onTooltipHide` to `tooltipHide`
+- `IgxBaseExporter`, `IgxExcelExporterService`, `IgxCsvExporterService`
+    - **Breaking Change** - The following outputs are renamed:
+        - `onColumnExport` to `columnExporting`
+        - `onRowExport` to `rowExporting`
+        - `onExportEnded` to `exportEnded`
+
+## 11.0.15
+
+### New Features
+- `IgxAutocomplete`
+    - Exported the component instance in the template with the name `igxAutocomplete`.
+
+    ```html
+    <input type="text" [igxAutocomplete]="townsPanel" #autocompleteRef="igxAutocomplete"/>
+    ```
 
 ## 11.0.4
 
@@ -94,6 +188,16 @@ All notable changes for each version of this project will be documented in this 
 ### Improvements
 - `IgxOverlay`
     - New functionality to automatically determine the correct animation that is needed when showing an overlay content. This is used with Auto Position strategy, where the `IgxOverlay` content is flipped, depending on the available space.
+
+## 10.2.15
+
+### New Features
+- `IgxAutocomplete`
+    - Exported the component instance in the template with the name `igxAutocomplete`.
+
+    ```html
+    <input type="text" [igxAutocomplete]="townsPanel" #autocompleteRef="igxAutocomplete"/>
+    ```
 
 ## 10.2.0
 

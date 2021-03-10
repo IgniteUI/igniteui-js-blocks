@@ -1598,7 +1598,7 @@ const testColumnPinning = (column: IgxColumnComponent, isPinned: boolean) => {
 type PinUnpinFunc = (component: ColumnGroupFourLevelTestComponent) => void;
 
 class PinningTests {
-    static testColumnGroupPinning(pinGenInfoColFunc: PinUnpinFunc, unpinGenInfoColFunc: PinUnpinFunc) {
+    public static testColumnGroupPinning(pinGenInfoColFunc: PinUnpinFunc, unpinGenInfoColFunc: PinUnpinFunc) {
         const fixture = TestBed.createComponent(ColumnGroupFourLevelTestComponent);
         fixture.detectChanges();
         const ci = fixture.componentInstance;
@@ -1634,7 +1634,7 @@ class PinningTests {
 }
 
 class NestedColGroupsTests {
-    static testHeadersRendering(fixture: ComponentFixture<NestedColumnGroupsGridComponent>) {
+    public static testHeadersRendering(fixture: ComponentFixture<NestedColumnGroupsGridComponent>) {
         const ci = fixture.componentInstance;
         const grid = ci.grid;
         const firstSlaveColGroup = fixture.debugElement.query(By.css('.firstSlaveColGroup'));

@@ -77,7 +77,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
      * @internal
      */
     @HostBinding('attr.class')
-    get hostClass() {
+    public get hostClass() {
         const classes = ['igx-chip-area'];
         classes.push(this.class);
 
@@ -118,7 +118,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
      * ```
      */
     @Output()
-    public onReorder = new EventEmitter<IChipsAreaReorderEventArgs>();
+    public reorder = new EventEmitter<IChipsAreaReorderEventArgs>();
 
     /**
      * Emits an event when an `IgxChipComponent` in the `IgxChipsAreaComponent` is selected/deselected.
@@ -127,33 +127,33 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
      *
      * @example
      * ```html
-     * <igx-chips-area #chipsArea [width]="'300'" [height]="'10'" (onSelection)="selection($event)"></igx-chips-area>
+     * <igx-chips-area #chipsArea [width]="'300'" [height]="'10'" (selectionChange)="selection($event)"></igx-chips-area>
      * ```
      */
     @Output()
-    public onSelection = new EventEmitter<IChipsAreaSelectEventArgs>();
+    public selectionChange = new EventEmitter<IChipsAreaSelectEventArgs>();
 
     /**
      * Emits an event when an `IgxChipComponent` in the `IgxChipsAreaComponent` is moved.
      *
      * @example
      * ```html
-     * <igx-chips-area #chipsArea [width]="'300'" [height]="'10'" (onMoveStart)="moveStart($event)"></igx-chips-area>
+     * <igx-chips-area #chipsArea [width]="'300'" [height]="'10'" (moveStart)="moveStart($event)"></igx-chips-area>
      * ```
      */
     @Output()
-    public onMoveStart = new EventEmitter<IBaseChipsAreaEventArgs>();
+    public moveStart = new EventEmitter<IBaseChipsAreaEventArgs>();
 
     /**
      * Emits an event after an `IgxChipComponent` in the `IgxChipsAreaComponent` is moved.
      *
      * @example
      * ```html
-     * <igx-chips-area #chipsArea [width]="'300'" [height]="'10'" (onMoveEnd)="moveEnd($event)"></igx-chips-area>
+     * <igx-chips-area #chipsArea [width]="'300'" [height]="'10'" (moveEnd)="moveEnd($event)"></igx-chips-area>
      * ```
      */
     @Output()
-    public onMoveEnd = new EventEmitter<IBaseChipsAreaEventArgs>();
+    public moveEnd = new EventEmitter<IBaseChipsAreaEventArgs>();
 
     /**
      * Holds the `IgxChipComponent` in the `IgxChipsAreaComponent`.
@@ -187,7 +187,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
         if (this.chipsList.length) {
             const selectedChips = this.chipsList.filter((item: IgxChipComponent) => item.selected);
             if (selectedChips.length) {
-                this.onSelection.emit({
+                this.selectionChange.emit({
                     originalEvent: null,
                     newSelection: selectedChips,
                     owner: this
@@ -205,20 +205,20 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
             const changes = this._differ.diff(this.chipsList.toArray());
             if (changes) {
                 changes.forEachAddedItem((addedChip) => {
-                    addedChip.item.onMoveStart.pipe(takeUntil(this.destroy$)).subscribe((args) => {
+                    addedChip.item.moveStart.pipe(takeUntil(this.destroy$)).subscribe((args) => {
                         this.onChipMoveStart(args);
                     });
-                    addedChip.item.onMoveEnd.pipe(takeUntil(this.destroy$)).subscribe((args) => {
+                    addedChip.item.moveEnd.pipe(takeUntil(this.destroy$)).subscribe((args) => {
                         this.onChipMoveEnd(args);
                     });
-                    addedChip.item.onDragEnter.pipe(takeUntil(this.destroy$)).subscribe((args) => {
+                    addedChip.item.dragEnter.pipe(takeUntil(this.destroy$)).subscribe((args) => {
                         this.onChipDragEnter(args);
                     });
-                    addedChip.item.onKeyDown.pipe(takeUntil(this.destroy$)).subscribe((args) => {
+                    addedChip.item.keyDown.pipe(takeUntil(this.destroy$)).subscribe((args) => {
                         this.onChipKeyDown(args);
                     });
                     if (addedChip.item.selectable) {
-                        addedChip.item.onSelection.pipe(takeUntil(this.destroy$)).subscribe((args) => {
+                        addedChip.item.selectedChanging.pipe(takeUntil(this.destroy$)).subscribe((args) => {
                             this.onChipSelectionChange(args);
                         });
                     }
@@ -271,7 +271,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
      * @internal
      */
     protected onChipMoveStart(event: IBaseChipEventArgs) {
-        this.onMoveStart.emit({
+        this.moveStart.emit({
             originalEvent: event.originalEvent,
             owner: this
         });
@@ -282,7 +282,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
      * @internal
      */
     protected onChipMoveEnd(event: IBaseChipEventArgs) {
-        this.onMoveEnd.emit({
+        this.moveEnd.emit({
             originalEvent: event.originalEvent,
             owner: this
         });
@@ -342,7 +342,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
             originalEvent,
             owner: this
         };
-        this.onReorder.emit(eventData);
+        this.reorder.emit(eventData);
         return true;
     }
 
@@ -357,7 +357,7 @@ export class IgxChipsAreaComponent implements DoCheck, AfterViewInit, OnDestroy 
         } else if (!event.selected && selectedChips.includes(event.owner)) {
             selectedChips = selectedChips.filter((chip) => chip.id !== event.owner.id);
         }
-        this.onSelection.emit({
+        this.selectionChange.emit({
             originalEvent: event.originalEvent,
             newSelection: selectedChips,
             owner: this

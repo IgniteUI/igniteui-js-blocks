@@ -376,7 +376,6 @@
     }
 
     %cbx-ripple--focused {
-        @include animation('scale-in-out' 1s $ease-out-quad infinite);
         background: --var($theme, 'empty-color');
         transition: background .2s $ease-out-quad;
         opacity: .12;

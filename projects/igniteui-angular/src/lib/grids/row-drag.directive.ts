@@ -95,7 +95,7 @@ export class IgxRowDragDirective extends IgxDragDirective implements OnDestroy {
     }
 
     protected createGhost(pageX, pageY) {
-        this.row.grid.endEdit(true);
+        this.row.grid.endEdit(false);
         this.row.grid.markForCheck();
         this.ghostContext = {
             $implicit: this.row.rowData,

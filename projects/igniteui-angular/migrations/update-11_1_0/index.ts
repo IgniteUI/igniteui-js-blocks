@@ -14,6 +14,7 @@ export default (): Rule => (host: Tree, context: SchematicContext) => {
         { member: 'remote', replaceWith: 'Remote', definedIn: [targetEnum] },
         { member: 'local', replaceWith: 'Local', definedIn: [targetEnum] }
     ];
+    update.applyChanges();
     for (const entryPath of tsFiles) {
         const ls = update.getDefaultLanguageService(entryPath);
         let content = host.read(entryPath).toString();
@@ -31,5 +32,4 @@ export default (): Rule => (host: Tree, context: SchematicContext) => {
             }
         }
     }
-    update.applyChanges();
 };

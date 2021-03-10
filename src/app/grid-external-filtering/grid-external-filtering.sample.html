@@ -1,7 +1,7 @@
 <div class="sample-content">
     <div igxFlex igxLayout igxLayoutDir="column">
         <div class="density-chooser">
-            <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+            <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
         </div>
 
         <div igxFlex igxLayout>
@@ -28,6 +28,16 @@
                     [paging]="false"
                     [width]="'100%'"
                     [height]="'450px'">
+                    <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+                        <igx-grid-toolbar-actions>
+                            <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                            <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                            <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                                <span excelText>Export to Excel 👌</span>
+                                <span csvText>Export to CSV 👍</span>
+                            </igx-grid-toolbar-exporter>
+                        </igx-grid-toolbar-actions>
+                    </igx-grid-toolbar>
                     <igx-column *ngFor="let c of columns"
                         [field]="c.field"
                         [header]="c.field"
@@ -54,7 +64,7 @@
 
         <div class="sample-buttons">
             <igx-checkbox [checked]="grid1.allowFiltering" (change)="onAllowFilteringChanged($event)">Allow Filtering</igx-checkbox>
-            <igx-buttongroup [multiSelection]="false" [values]="filterModes" (onSelect)="selectFilterMode($event)"></igx-buttongroup>
+            <igx-buttongroup [multiSelection]="false" [values]="filterModes" (selected)="selectFilterMode($event)"></igx-buttongroup>
         </div>
         <div class="sample-buttons">
             <igx-checkbox [(ngModel)]="grid1.allowAdvancedFiltering">Allow Advanced Filtering</igx-checkbox>

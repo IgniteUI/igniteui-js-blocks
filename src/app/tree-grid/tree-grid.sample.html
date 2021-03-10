@@ -1,21 +1,29 @@
 <div class="sample-column">
     <div class="density-chooser">
-        <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+        <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
     </div>
 
     <app-tree-grid-with-transactions>
         <igx-tree-grid #grid1 selectionType='multi' [data]="data" childDataKey="ChildCompanies" primaryKey="ID" expansionDepth="1"
             [rowSelection]="selectionMode" [paging]="false" [displayDensity]="density" [width]="'900px'" [height]="'500px'"
             [allowFiltering]="true" [filterMode]="'excelStyleFilter'">
+            <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+                <app-grid-search-box [grid]="grid1" [style.width]="'300px'"></app-grid-search-box>
+                <igx-grid-toolbar-actions>
+                    <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                    <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                    <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                    <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                        <span excelText>Export to Excel 👌</span>
+                        <span csvText>Export to CSV 👍</span>
+                    </igx-grid-toolbar-exporter>
+                </igx-grid-toolbar-actions>
+            </igx-grid-toolbar>
             <igx-column *ngFor="let c of columns" [field]="c.field" [header]="c.field" [pinned]="c.pinned"
                 [movable]="c.movable" [groupable]="false" [resizable]="c.resizable" [width]="c.width"
                 [sortable]="true" [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="c.summary"
                 [minWidth]="c.minWidth" [maxWidth]="c.maxWidth">
             </igx-column>
-
-            <ng-template igxToolbarCustomContent>
-                <app-grid-search-box [grid]="grid1" [style.width]="'530px'"></app-grid-search-box>
-            </ng-template>
         </igx-tree-grid>
     </app-tree-grid-with-transactions>
 
@@ -23,6 +31,12 @@
         <igx-switch [(ngModel)]="grid1.paging">Enable Paging</igx-switch>
         <igx-switch [(ngModel)]="grid1.rowEditable">Enable RowEditing</igx-switch>
         <div class="sample-buttons">
+            <button igxButton="raised" [igxToggleAction]="dropDownRowSelection" [igxDropDownItemNavigation]="dropDownRowSelection" displayDensity="comfortable">Row Selection: {{grid1.rowSelection}}</button>
+            <igx-drop-down #dropDownRowSelection (onSelection)="selectionMode = $event.newSelection.value"  displayDensity="comfortable">
+                <igx-drop-down-item *ngFor="let item of selectionModes" [value]="item">
+                        {{ item }}
+                </igx-drop-down-item>
+            </igx-drop-down>
             <button igxButton="raised" (click)="addRow()">Add row</button>
             <button igxButton="raised" (click)="addChildRow()">Add child row</button>
             <button igxButton="raised" (click)="deleteRow()">Delete Selected Row</button>

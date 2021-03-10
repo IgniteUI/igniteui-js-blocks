@@ -1021,6 +1021,41 @@ describe('IgxTreeGrid - Expanding / Collapsing #tGrid', () => {
                 TreeGridFunctions.verifyTreeRowSelectionByIndex(fix, 4, true);
                 expect(treeGrid.selectedRows).toEqual([1, 6, 10]);
             });
+
+            it('check row selection within multipleCascade selection mode when expand a row', fakeAsync(() => {
+                treeGrid.rowSelection = GridSelectionMode.multipleCascade;
+                fix.detectChanges();
+
+                treeGrid.selectRows([1]);
+                fix.detectChanges();
+
+                expect(treeGrid.selectedRows).toEqual([1]);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, true, true);
+
+                treeGrid.expandRow(1);
+                fix.detectChanges();
+                tick(1000);
+                fix.detectChanges();
+
+                expect(treeGrid.rowList.length).toBe(5);
+                expect(treeGrid.selectedRows.length).toBe(3);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, true, true);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 1, true, true);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, true, true);
+
+                treeGrid.expandRow(2);
+                fix.detectChanges();
+                tick(1000);
+                fix.detectChanges();
+
+                expect(treeGrid.rowList.length).toBe(7);
+                expect(treeGrid.selectedRows.length).toBe(5);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, true, true);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 1, true, true);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, true, true);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+                TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+            }));
         });
 
         describe('ChildDataKey', () => {

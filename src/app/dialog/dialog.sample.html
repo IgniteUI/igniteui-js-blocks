@@ -67,9 +67,10 @@
         <br>
         <button igxButton="raised" igxRipple (click)="form.open()">Trigger Custom</button>
 
-        <igx-dialog #form title="Sign In" leftButtonLabel="Cancel" (onClose)="closeDialog($event)"
+        <igx-dialog #form title="Custom Content" leftButtonLabel="Cancel" (onClose)="closeDialog($event)"
                     (onLeftButtonSelect)="form.close()" rightButtonLabel="Sign In" backgroundClick="true"
                     [closeOnOutsideSelect]="true">
+            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur dolor doloremque itaque nesciunt nostrum quas, quasi sequi sint tempora voluptatem! Asperiores, distinctio doloribus eaque harum ipsam iure minima mollitia nisi quod rem repudiandae saepe, ullam unde, vel veniam! Consequuntur, praesentium.</span>
             <div class="login-form">
                 <igx-input-group>
                     <igx-prefix>

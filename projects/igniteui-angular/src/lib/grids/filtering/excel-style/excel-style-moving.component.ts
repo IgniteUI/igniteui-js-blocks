@@ -15,7 +15,8 @@ export class IgxExcelStyleMovingComponent {
     /**
      * @hidden @internal
      */
-    @HostBinding('class') class = 'igx-excel-filter__move';
+    @HostBinding('class.igx-excel-filter__move')
+    public defaultClass = true;
 
     constructor(public esf: IgxGridExcelStyleFilteringComponent) { }
 
@@ -26,7 +27,7 @@ export class IgxExcelStyleMovingComponent {
     /**
      * @hidden @internal
      */
-    get canNotMoveLeft() {
+    public get canNotMoveLeft() {
         return this.esf.column.visibleIndex === 0 ||
             (this.esf.grid.unpinnedColumns.indexOf(this.esf.column) === 0 && this.esf.column.disablePinning) ||
             (this.esf.column.level !== 0 && !this.findColumn(0, this.visibleColumns));
@@ -35,7 +36,7 @@ export class IgxExcelStyleMovingComponent {
     /**
      * @hidden @internal
      */
-    get canNotMoveRight() {
+    public get canNotMoveRight() {
         return this.esf.column.visibleIndex === this.visibleColumns.length - 1 ||
             (this.esf.column.level !== 0 && !this.findColumn(1, this.visibleColumns));
     }

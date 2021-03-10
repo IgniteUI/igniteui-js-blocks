@@ -132,7 +132,7 @@
     }
 
     %igx-navbar-icon-display {
-        igx-icon {
+        > igx-icon {
             cursor: pointer;
             color: --var($theme, 'idle-icon-color');
             transition: color .15s $ease-out-quad;

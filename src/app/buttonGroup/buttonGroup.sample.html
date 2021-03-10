@@ -42,11 +42,11 @@
         <igx-buttongroup [multiSelection]="false">
             <button igxButton>
                 <igx-icon>alarm_on</igx-icon>
-                Button 1 text
+                <span>Button 1 text</span>
             </button>
             <button igxButton>
                 <igx-icon>autorenew</igx-icon>
-                Button 2 text
+                <span>Button 2 text</span>
             </button>
         </igx-buttongroup>
     </article>
@@ -54,16 +54,28 @@
     <article class="sample-column">
         <h4 class="sample-title">Templated buttons. <i class="light">Vertical</i></h4>
         <igx-buttongroup [multiSelection]="false" [alignment]="alignment" displayDensity="compact">
-            <button igxButton displayDensity="comfortable"><igx-icon>alarm_on</igx-icon>Button 1 text</button>
-            <button igxButton><igx-icon>autorenew</igx-icon>Button 2 text</button>
+            <button igxButton displayDensity="comfortable">
+                <igx-icon>alarm_on</igx-icon>
+                <span>Button 1 text</span>
+            </button>
+            <button igxButton>
+                <igx-icon>autorenew</igx-icon>
+                <span>Button 2 text</span>
+            </button>
         </igx-buttongroup>
     </article>
 
     <article class="sample-column">
         <h4 class="sample-title">Templated buttons. <i class="light">Multiple selection</i></h4>
         <igx-buttongroup [multiSelection]="true" [alignment]="alignment">
-            <button igxButton [selected]="true"><igx-icon>alarm_on</igx-icon>Button 1 text</button>
-            <button igxButton><igx-icon>autorenew</igx-icon>Button 2 text</button>
+            <button igxButton [selected]="true">
+                <igx-icon>alarm_on</igx-icon>
+                <span>Button 1 text</span>
+            </button>
+            <button igxButton>
+                <igx-icon>autorenew</igx-icon>
+                <span>Button 2 text</span>
+            </button>
         </igx-buttongroup>
     </article>
 </section>

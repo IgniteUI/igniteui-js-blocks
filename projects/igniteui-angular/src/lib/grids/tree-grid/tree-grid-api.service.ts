@@ -1,11 +1,13 @@
 import { GridBaseAPIService } from '../api.service';
 import { IgxTreeGridComponent } from './tree-grid.component';
-import { DataType } from '../../data-operations/data-util';
+import { DataType, DataUtil } from '../../data-operations/data-util';
 import { ITreeGridRecord } from './tree-grid.interfaces';
 import { HierarchicalTransaction, TransactionType, State } from '../../services/public_api';
 import { Injectable } from '@angular/core';
 import { ColumnType } from '../common/column.interface';
-import { mergeObjects } from '../../core/utils';
+import { cloneArray, mergeObjects } from '../../core/utils';
+import { IFilteringExpressionsTree } from '../../data-operations/filtering-expressions-tree';
+import { TreeGridFilteringStrategy } from './tree-grid.filtering.strategy';
 
 @Injectable()
 export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridComponent> {
@@ -38,7 +40,7 @@ export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridCompone
         const row = grid.records.get(rowID);
         if (row.expanded === expanded ||
             ((!row.children || !row.children.length) && (!grid.loadChildrenOnDemand ||
-            (grid.hasChildrenKey && !row.data[grid.hasChildrenKey])))) {
+                (grid.hasChildrenKey && !row.data[grid.hasChildrenKey])))) {
             return false;
         }
         return true;
@@ -59,7 +61,7 @@ export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridCompone
         grid.expansionStates = expandedStates;
 
         if (grid.rowEditable) {
-            grid.endEdit(true);
+            grid.endEdit(false);
         }
     }
 
@@ -82,10 +84,10 @@ export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridCompone
     public deleteRowById(rowID: any) {
         const treeGrid = this.grid;
         const flatDataWithCascadeOnDeleteAndTransactions =
-        treeGrid.primaryKey &&
-        treeGrid.foreignKey &&
-        treeGrid.cascadeOnDelete &&
-        treeGrid.transactions.enabled;
+            treeGrid.primaryKey &&
+            treeGrid.foreignKey &&
+            treeGrid.cascadeOnDelete &&
+            treeGrid.transactions.enabled;
 
         if (flatDataWithCascadeOnDeleteAndTransactions) {
             treeGrid.transactions.startPending();
@@ -178,7 +180,7 @@ export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridCompone
             if (!parentRecord) {
                 throw Error('Invalid parent row ID!');
             }
-            this.grid.summaryService.clearSummaryCache({rowID: parentRecord.rowID});
+            this.grid.summaryService.clearSummaryCache({ rowID: parentRecord.rowID });
             if (this.grid.primaryKey && this.grid.foreignKey) {
                 data[this.grid.foreignKey] = parentRowID;
                 super.addRowToData(data);
@@ -207,6 +209,23 @@ export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridCompone
         } else {
             super.addRowToData(data);
         }
+    }
+
+    public filterDataByExpressions(expressionsTree: IFilteringExpressionsTree): any[] {
+        let records = this.grid.rootRecords;
+
+        if (expressionsTree.filteringOperands.length) {
+            const state = {
+                expressionsTree,
+                strategy: this.grid.filterStrategy ?? new TreeGridFilteringStrategy()
+            };
+            records = DataUtil.filter(cloneArray(records), state, this.grid);
+        }
+
+        const data = [];
+        this.getFlatDataFromFilteredRecords(records, data);
+
+        return data;
     }
 
     protected update_row_in_array(value: any, rowID: any, index: number) {
@@ -267,5 +286,18 @@ export class IgxTreeGridAPIService extends GridBaseAPIService<IgxTreeGridCompone
             }
         }
         return false;
+    }
+
+    private getFlatDataFromFilteredRecords(records: ITreeGridRecord[], data: any[]) {
+        if (!records || records.length === 0) {
+            return;
+        }
+
+        for (const record of records) {
+            if (!record.isFilteredOutParent) {
+                data.push(record.data);
+            }
+            this.getFlatDataFromFilteredRecords(record.children, data);
+        }
     }
 }

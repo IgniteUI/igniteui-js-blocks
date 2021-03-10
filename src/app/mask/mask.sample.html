@@ -25,7 +25,7 @@
                        [(ngModel)]="person.phone"/>
                 <label igxLabel for="phone">Phone</label>
             </igx-input-group>
-            <igx-snackbar #snackbar [displayTime]="1000" (onAction)="snackbar.hide()"></igx-snackbar>
+            <igx-snackbar #snackbar [displayTime]="1000" (clicked)="snackbar.hide()"></igx-snackbar>
         </form>
     </article>
     <article class="sample-column">

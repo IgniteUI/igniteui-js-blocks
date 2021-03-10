@@ -1,12 +1,13 @@
 
 import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { IgxTreeGridModule, IgxTreeGridComponent, IgxTreeGridRowComponent } from './public_api';
+import { IgxTreeGridModule, IgxTreeGridComponent } from './public_api';
 import { IgxTreeGridFilteringComponent, IgxTreeGridFilteringRowEditingComponent } from '../../test-utils/tree-grid-components.spec';
 import { TreeGridFunctions } from '../../test-utils/tree-grid-functions.spec';
 import { configureTestSuite } from '../../test-utils/configure-suite';
 import { IgxStringFilteringOperand, IgxNumberFilteringOperand, IgxDateFilteringOperand } from '../../data-operations/filtering-condition';
 import { FilteringStrategy } from '../../data-operations/filtering-strategy';
+import { TreeGridFormattedValuesFilteringStrategy } from './tree-grid.filtering.strategy';
 
 describe('IgxTreeGrid - Filtering actions #tGrid', () => {
     configureTestSuite();
@@ -276,7 +277,25 @@ describe('IgxTreeGrid - Filtering actions #tGrid', () => {
         TreeGridFunctions.verifyTreeRowHasExpandedIcon(rows[0]);
     });
 
-    describe('Filtering: Row editing', () => {
+    it('should filter cell by its formatted data when using FormattedValuesFilteringStrategy', () => {
+        const formattedStrategy = new TreeGridFormattedValuesFilteringStrategy();
+        grid.filterStrategy = formattedStrategy;
+        const idFormatter = (val: number): number => val % 2;
+        grid.columns[0].formatter = idFormatter;
+        fix.detectChanges();
+
+        grid.filter('ID', 0, IgxNumberFilteringOperand.instance().condition('equals'));
+        fix.detectChanges();
+        let rows = TreeGridFunctions.getAllRows(fix);
+        expect(rows.length).toEqual(5, 'Wrong rows count');
+
+        grid.filter('ID', 1, IgxNumberFilteringOperand.instance().condition('equals'));
+        fix.detectChanges();
+        rows = TreeGridFunctions.getAllRows(fix);
+        expect(rows.length).toEqual(16, 'Wrong rows count');
+    });
+
+       describe('Filtering: Row editing', () => {
         let treeGrid: IgxTreeGridComponent;
         beforeEach(fakeAsync(/** height/width setter rAF */() => {
             fix = TestBed.createComponent(IgxTreeGridFilteringRowEditingComponent);
@@ -397,7 +416,7 @@ describe('IgxTreeGrid - Filtering actions #tGrid', () => {
 
                 treeGrid.clearFilter();
                 fix.detectChanges();
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
                 const customFilter = new CustomTreeGridFilterStrategy();
                 // apply the same filter condition but with custu
                 treeGrid.filterStrategy = customFilter;

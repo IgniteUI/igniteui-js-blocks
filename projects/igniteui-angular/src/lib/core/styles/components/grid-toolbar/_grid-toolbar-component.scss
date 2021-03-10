@@ -39,10 +39,6 @@
         @extend %igx-grid-toolbar__dd-list-items !optional;
     }
 
-    @include e(button-space){
-        @extend %igx-grid-toolbar__button-space !optional;
-    }
-
     @include e(dd-list){
         @extend %igx-grid-toolbar__dd-list !optional;
     }

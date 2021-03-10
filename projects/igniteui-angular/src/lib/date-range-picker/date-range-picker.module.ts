@@ -13,9 +13,9 @@ import {
     IgxDateRangeInputsBaseComponent
 } from './date-range-picker-inputs.common';
 import { IgxDateTimeEditorModule } from '../directives/date-time-editor/public_api';
-import { IgxPickerIconsModule } from '../date-common/picker-icons.common';
+import { IgxPickersCommonModule } from '../date-common/picker-icons.common';
 
-/** @hidden @internal */
+/** @hidden */
 @NgModule({
     declarations: [
         IgxDateRangePickerComponent,
@@ -32,7 +32,7 @@ import { IgxPickerIconsModule } from '../date-common/picker-icons.common';
         IgxToggleModule,
         IgxCalendarModule,
         IgxInputGroupModule,
-        IgxPickerIconsModule,
+        IgxPickersCommonModule,
         IgxDateTimeEditorModule
     ],
     exports: [

@@ -616,6 +616,20 @@ export class SampleTestData {
         { ProductID: 10, ProductName: 'Chocolate', InStock: true, UnitsInStock: 20000, OrderDate: new Date('2018-03-01') }
     ]);
 
+    public static foodPercentProductData = () => ([
+        { ProductID: 1, ProductName: 'Chai', InStock: true, UnitsInStock: 2760, OrderDate: new Date('2005-03-21'), Discount: 0.27 },
+        { ProductID: 2, ProductName: 'Syrup', InStock: false, UnitsInStock: 198, OrderDate: new Date('2008-01-15'), Discount: 0.83 },
+        { ProductID: 3, ProductName: 'Seasoning', InStock: true, UnitsInStock: 5, OrderDate: new Date('2010-11-20'), Discount: -0.7 },
+        { ProductID: 4, ProductName: 'Spread', InStock: false, UnitsInStock: 0, OrderDate: new Date('2007-10-11'), Discount: 11 },
+        { ProductID: 5, ProductName: 'Bobs Pears', InStock: false, UnitsInStock: 0, OrderDate: new Date('2001-07-27'), Discount: -0.5},
+        { ProductID: 6, ProductName: 'Sauce', InStock: true, UnitsInStock: 1098, OrderDate: new Date('1990-05-17'), Discount: 0.027 },
+        { ProductID: 7, ProductName: 'Queso Cabrale', InStock: false, UnitsInStock: 0, OrderDate: new Date('2005-03-03'), Discount: 0.099 },
+        { ProductID: 8, ProductName: 'Tofu', InStock: true, UnitsInStock: 7898, OrderDate: new Date('2017-09-09'), Discount: 10 },
+        { ProductID: 9, ProductName: 'Chocolate', InStock: true, UnitsInStock: 698, OrderDate: new Date('2025-12-25'), Discount: .123},
+        { ProductID: 10, ProductName: 'Biscuits', InStock: true, UnitsInStock: 20000, OrderDate: new Date('2018-03-01'), Discount: 0.39 }
+    ]);
+
+
     /* Data fields: ProductID: number, ProductName: string, InStock: boolean, UnitsInStock: number, OrderDate: Date;
         19 items, sorted by ID. */
     public static foodProductDataExtended = () => ([

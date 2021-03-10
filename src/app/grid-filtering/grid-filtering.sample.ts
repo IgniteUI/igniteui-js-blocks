@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { IgxGridComponent, FilteringExpressionsTree, IgxStringFilteringOperand,
-    FilteringLogic, IgxCheckboxComponent, IChangeCheckboxEventArgs, FilterMode, GridSelectionMode } from 'igniteui-angular';
+    FilteringLogic, IgxCheckboxComponent, IChangeCheckboxEventArgs, FilterMode, GridSelectionMode,
+    FormattedValuesFilteringStrategy } from 'igniteui-angular';
 
 @Component({
     providers: [],
@@ -22,6 +23,7 @@ export class GridFilteringComponent implements OnInit {
     public density = 'comfortable';
     public advancedFilteringTree: FilteringExpressionsTree;
     public selectionMode;
+    public filterStrategy = new FormattedValuesFilteringStrategy();
 
     public ngOnInit(): void {
         this.displayDensities = [
@@ -73,7 +75,9 @@ export class GridFilteringComponent implements OnInit {
                 Fax: '030-0076545',
                 Employees: 68,
                 DateCreated: new Date(2018, 8, 17),
-                Contract: true
+                Contract: true,
+                Capital: 100000.5,
+                Index: 1
             },
             {
                 ID: 'ANATR',
@@ -89,7 +93,9 @@ export class GridFilteringComponent implements OnInit {
                 Fax: '(5) 555-3745',
                 Employees: 47,
                 DateCreated: new Date(2015, 10, 1),
-                Contract: true
+                Contract: true,
+                Capital: 100000.6,
+                Index: 2
             },
             {
                 ID: 'ANTON',
@@ -105,7 +111,9 @@ export class GridFilteringComponent implements OnInit {
                 Fax: null,
                 Employees: 16,
                 DateCreated: new Date(2016, 5, 5),
-                Contract: false
+                Contract: false,
+                Capital: 200000,
+                Index: 3
             },
             {
                 ID: 'AROUT',
@@ -121,7 +129,9 @@ export class GridFilteringComponent implements OnInit {
                 Fax: '(171) 555-6750',
                 Employees: 71,
                 DateCreated: new Date(2010, 2, 15),
-                Contract: false
+                Contract: false,
+                Capital: 300000,
+                Index: 4
             },
             {
                 ID: 'BERGS',
@@ -137,7 +147,9 @@ export class GridFilteringComponent implements OnInit {
                 Fax: '0921-12 34 67',
                 Employees: 213,
                 DateCreated: new Date(2015, 2, 5),
-                Contract: true
+                Contract: true,
+                Capital: 100001,
+                Index: 5
             },
             {
                 ID: 'BLAUS',
@@ -153,7 +165,9 @@ export class GridFilteringComponent implements OnInit {
                 Fax: '0621-08924',
                 Employees: 347,
                 DateCreated: new Date(2016, 7, 1),
-                Contract: true
+                Contract: true,
+                Capital: 200000,
+                Index: 6
             },
             {
                 ID: 'BLONP',
@@ -549,5 +563,13 @@ export class GridFilteringComponent implements OnInit {
 
     public onAllowFilteringChanged(event: IChangeCheckboxEventArgs) {
         this.grid1.allowFiltering = event.checked;
+    }
+
+    public formatNumber(value: number) {
+        return value ? Math.round(value) : value;
+    }
+
+    public formatEvenOdd(value: number) {
+        return value ? value % 2 ? 'even' : 'odd' : value;
     }
 }

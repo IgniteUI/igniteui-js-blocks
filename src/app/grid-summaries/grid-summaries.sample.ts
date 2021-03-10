@@ -36,9 +36,6 @@ export class GridSummaryComponent {
     private grid1: IgxGridComponent;
 
     public showToolbar = false;
-    public hidingEnabled = false;
-    public pinningEnabled = false;
-
     public mySummary = MySummary;
     public w = '1200px';
     public h = '500px';
@@ -50,7 +47,8 @@ export class GridSummaryComponent {
     public disablePinning = false;
     public hasSummaryUnit = true;
     public hasHidden = false;
-
+    public columnHiding = false;
+    public columnPinning = false;
     public pinningConfig: IPinningConfig = { columns: ColumnPinningPosition.End };
 
 

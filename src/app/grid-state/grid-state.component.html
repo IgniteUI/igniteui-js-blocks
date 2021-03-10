@@ -21,6 +21,13 @@
                     [displayDensity]="'cosy'"
                     [cellSelection]="'multiple'"
                     [rowSelection]="'multiple'">
+                    <igx-grid-toolbar [displayDensity]="grid.displayDensity">
+                        <igx-grid-toolbar-actions>
+                            <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                            <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                            <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                        </igx-grid-toolbar-actions>
+                    </igx-grid-toolbar>
                         <igx-column *ngFor="let c of initialColumns"
                             [sortable]="c.sortable"
                             [movable]="c.movable"
@@ -39,7 +46,7 @@
                         <ng-template igxGridDetail let-dataItem>
                             <span>Detail view</span>
                         </ng-template>
-                
+
                 </igx-grid>
             </div>
         </igx-expansion-panel-body>
@@ -64,7 +71,12 @@
                 <igx-hierarchical-grid #hierGrid [id]="hGridId" [data]="hierData" [showExpandAll]='true' [hasChildrenKey]='"hasChild"' igxGridState [columnSelection]="'multiple'"
                     displayDensity="cosy" [rowSelection]="true" [autoGenerate]="false" [allowFiltering]='true' [paging]="true" primaryKey="ID"
                     [height]="'1300px'" [width]="'100%'" #hGrid>
-
+                    <igx-grid-toolbar [displayDensity]="hierGrid.displayDensity">
+                        <igx-grid-toolbar-actions>
+                            <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                            <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                        </igx-grid-toolbar-actions>
+                    </igx-grid-toolbar>
                     <igx-column *ngFor="let c of hierGridColumns"
                         [sortable]="c.sortable"
                         [movable]="c.movable"
@@ -78,8 +90,14 @@
                         [hidden]="c.hidden">
                     </igx-column>
 
-                    <igx-row-island primaryKey="ID" [key]="'childData'"
-                        [height]='"450px"' [showExpandAll]='true' [autoGenerate]="false" [allowFiltering]='true' rowSelection='multiple' #layout1>
+                    <igx-row-island primaryKey="ID" [key]="'childData'"[height]='"450px"' [showExpandAll]='true'
+                        [autoGenerate]="false" [allowFiltering]='true' rowSelection='multiple' #layout1>
+                        <igx-grid-toolbar [displayDensity]="hierGrid.displayDensity">
+                            <igx-grid-toolbar-actions>
+                                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                            </igx-grid-toolbar-actions>
+                        </igx-grid-toolbar>
                         <igx-column *ngFor="let c of hierGridColumns"
                             [sortable]="c.sortable"
                             [movable]="c.movable"
@@ -150,6 +168,12 @@
                     [rowSelection]="'multiple'"
                     [paging]="false"
                     [width]="'900px'" [height]="'800px'" >
+                    <igx-grid-toolbar [displayDensity]="treeGrid.displayDensity">
+                        <igx-grid-toolbar-actions>
+                            <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                            <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                        </igx-grid-toolbar-actions>
+                    </igx-grid-toolbar>
                     <igx-column *ngFor="let c of treeGridColumns" [field]="c.field" [dataType]="c.dataType" [header]="c.label"
                         [pinned]="c.pinned" [movable]="c.movable" [groupable]="false" [resizable]="c.resizable" [width]="c.width"
                         [sortable]="true" [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="c.hasSummary"
@@ -178,11 +202,17 @@
                                 [data]="employees"
                                 childDataKey="Employees"
                                 displayDensity="cosy"
-                                width="100%" height="800px" 
+                                width="100%" height="800px"
                                 [autoGenerate]="false"
                                 [rowSelection]="'multiple'"
                                 [paging]="true"
                                 [allowFiltering]="true">
+                    <igx-grid-toolbar [displayDensity]="treeGridHier.displayDensity">
+                        <igx-grid-toolbar-actions>
+                            <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                            <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                        </igx-grid-toolbar-actions>
+                    </igx-grid-toolbar>
                     <igx-column field="Name" dataType="string" [sortable]="true" [editable]="true" [movable]="true" [resizable]="true" [hasSummary]="true"></igx-column>
                     <igx-column field="HireDate" dataType="date" [sortable]="true" [editable]="true" [movable]="true" [resizable]="true"></igx-column>
                     <igx-column field="Age" dataType="number" [sortable]="true" [editable]="true" [movable]="true" [resizable]="true"></igx-column>

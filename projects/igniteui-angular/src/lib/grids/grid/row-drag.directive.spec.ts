@@ -847,7 +847,7 @@ describe('Row Drag Tests #grid', () => {
             groupRow = groupHeader.records.find(element => element['ID'] === rowCells[1].value);
             expect(groupRow).toBeDefined();
         });
-        it('should exit edit mode and commit changes on row dragging', () => {
+        it('should exit edit mode and discard changes on row dragging', () => {
             dragGrid.rowEditable = true;
             fixture.detectChanges();
 
@@ -863,6 +863,7 @@ describe('Row Drag Tests #grid', () => {
             pointerUpEvent = UIInteractions.createPointerEvent('pointerup', dropPoint);
 
             const dragCell = dragGrid.getCellByColumn(1, 'Downloads');
+            const cacheValue = dragCell.value;
             const cellElement = dragCell.nativeElement;
             let cellInput = null;
 
@@ -898,8 +899,8 @@ describe('Row Drag Tests #grid', () => {
             expect(row.grid.rowDragging).toBeFalsy();
 
             const dropCell = dropGrid.getCellByColumn(0, 'Downloads');
-            expect(dropCell.value).toEqual(newCellValue);
-            expect(dragCell.value).toEqual(newCellValue);
+            expect(dropCell.value).toEqual(cacheValue);
+            expect(dragCell.value).toEqual(cacheValue);
         });
     });
 });

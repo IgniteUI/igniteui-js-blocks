@@ -1,9 +1,15 @@
 <section style="height: 800px" class="sample-content">
     <div class="density-chooser" style="margin-bottom: 16px">
-        <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)" style="display: block; width: 500px"></igx-buttongroup>
+        <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)" style="display: block; width: 500px"></igx-buttongroup>
     </div>
     <igx-grid #grid [data]="data" [rowEditable]="true" [rowSelection]="selectionMode"
             primaryKey="PostalCode" [displayDensity]="density" [width]="'100%'" [height]="'500px'">
+        <igx-grid-toolbar [displayDensity]="grid.displayDensity">
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+            </igx-grid-toolbar-actions>
+        </igx-grid-toolbar>
         <igx-column-layout field='group1'>
             <igx-column [groupable]="true" [rowStart]="1" [colStart]="1" [rowEnd]="4" field="ID" [width]="'20%'" [resizable]='true' [minWidth]="'10%'" [maxWidth]="'30%'"></igx-column>
         </igx-column-layout>

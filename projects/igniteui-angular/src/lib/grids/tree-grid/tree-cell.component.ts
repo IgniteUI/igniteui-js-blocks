@@ -23,13 +23,13 @@ export class IgxTreeGridCellComponent extends IgxGridExpandableCellComponent {
      * @hidden
      */
     @Input()
-    level = 0;
+    public level = 0;
 
     /**
      * @hidden
      */
     @Input()
-    showIndicator = false;
+    public showIndicator = false;
 
     /**
      * @hidden

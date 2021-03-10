@@ -2,6 +2,7 @@ import {
     Component,
     EventEmitter,
     HostBinding,
+    HostListener,
     Input,
     Output,
     ViewChild,
@@ -70,7 +71,7 @@ export class IgxRadioComponent implements ControlValueAccessor, EditorProvider {
      * @memberof IgxSwitchComponent
      */
     @ViewChild('nativeLabel', { static: true })
-    public nativeLabel;
+    public nativeLabel: ElementRef;
 
     /**
      * Returns reference to the label placeholder element.
@@ -81,7 +82,7 @@ export class IgxRadioComponent implements ControlValueAccessor, EditorProvider {
      * @memberof IgxSwitchComponent
      */
     @ViewChild('placeholderLabel', { static: true })
-    public placeholderLabel;
+    public placeholderLabel: ElementRef;
 
     /**
      * Sets/gets the `id` of the radio component.
@@ -316,6 +317,16 @@ export class IgxRadioComponent implements ControlValueAccessor, EditorProvider {
 
     /**
      * @hidden
+     * @internal
+     */
+    @HostListener('keyup', ['$event'])
+    public onKeyUp(event: KeyboardEvent) {
+        event.stopPropagation();
+        this.focused = true;
+    }
+
+    /**
+     * @hidden
      */
     public _clicked(event: MouseEvent) {
         event.stopPropagation();
@@ -331,12 +342,13 @@ export class IgxRadioComponent implements ControlValueAccessor, EditorProvider {
      * @memberof IgxRadioComponent
      */
     public select() {
+        this.nativeRadio.nativeElement.focus();
+
         if (isIE()) {
             this.nativeRadio.nativeElement.blur();
         }
 
         this.checked = true;
-        this.focused = false;
         this.change.emit({ value: this.value, radio: this });
         this._onChangeCallback(this.value);
     }
@@ -353,7 +365,6 @@ export class IgxRadioComponent implements ControlValueAccessor, EditorProvider {
         this.checked = false;
         this.focused = false;
         this.cdr.markForCheck();
-        this.change.emit({ value: this.value, radio: this });
     }
 
     /**
@@ -389,13 +400,6 @@ export class IgxRadioComponent implements ControlValueAccessor, EditorProvider {
             default:
                 return `${this.cssClass}__label`;
         }
-    }
-
-    /**
-     * @hidden
-     */
-    public onFocus() {
-        this.focused = true;
     }
 
     /**

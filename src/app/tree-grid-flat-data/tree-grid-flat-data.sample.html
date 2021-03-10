@@ -1,9 +1,9 @@
 <div class="sample-column">
     <div class="density-chooser">
-        <igx-buttongroup [values]="summaryModes" (onSelect)="selectSummaryMode($event)"></igx-buttongroup>
+        <igx-buttongroup [values]="summaryModes" (selected)="selectSummaryMode($event)"></igx-buttongroup>
     </div>
     <div class="density-chooser" style="margin-bottom: 16px">
-        <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+        <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
     </div>
     <button class="show-summary" igxButton="outlined" (click)="grid1.showSummaryOnCollapse = !grid1.showSummaryOnCollapse"> {{ grid1.showSummaryOnCollapse }}</button>
 
@@ -14,10 +14,18 @@
             [sortable]="true" [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="c.hasSummary"
             [minWidth]="c.minWidth" [maxWidth]="c.maxWidth">
         </igx-column>
-
-        <ng-template igxToolbarCustomContent>
-            <app-grid-search-box [grid]="grid1" [style.width]="'530px'"></app-grid-search-box>
-        </ng-template>
+        <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+            <app-grid-search-box [grid]="grid1" [style.width]="'300px'"></app-grid-search-box>
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                    <span excelText>Export to Excel 👌</span>
+                    <span csvText>Export to CSV 👍</span>
+                </igx-grid-toolbar-exporter>
+            </igx-grid-toolbar-actions>
+        </igx-grid-toolbar>
     </igx-tree-grid>
 
     <div class="topMargin">

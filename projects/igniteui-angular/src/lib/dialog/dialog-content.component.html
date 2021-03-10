@@ -7,7 +7,7 @@
         <ng-content *ngIf="!title" select="igx-dialog-title,[igxDialogTitle]"></ng-content>
 
         <div class="igx-dialog__window-content">
-            {{ message }}
+            <span *ngIf="message" class="igx-dialog__window-message">{{ message }}</span>
             <ng-content *ngIf="!message"></ng-content>
         </div>
 

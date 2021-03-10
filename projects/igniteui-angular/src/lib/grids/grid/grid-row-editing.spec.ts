@@ -1153,6 +1153,7 @@ describe('IgxGrid - Row Editing #grid', () => {
             grid.perPage = 7;
             fix.detectChanges();
 
+            const cacheValue = cell.value;
             let rowElement = grid.getRowByIndex(0).nativeElement;
             expect(rowElement.classList).not.toContain(ROW_EDITED_CLASS);
 
@@ -1176,16 +1177,17 @@ describe('IgxGrid - Row Editing #grid', () => {
             // Previous page button click
             GridFunctions.navigateToPrevPage(grid.nativeElement);
             fix.detectChanges();
-            expect(cell.value).toBe('IG');
+            expect(cell.value).toBe(cacheValue);
             rowElement = grid.getRowByIndex(0).nativeElement;
             expect(rowElement.classList).not.toContain(ROW_EDITED_CLASS);
         });
 
-        it(`Paging: Should save changes when changing page while editing`, () => {
+        it(`Paging: Should discard changes when changing page while editing`, () => {
             grid.paging = true;
             grid.perPage = 7;
             fix.detectChanges();
 
+            const cacheValeue = cell.value;
             cell.setEditMode(true);
             cell.update('IG');
 
@@ -1204,7 +1206,7 @@ describe('IgxGrid - Row Editing #grid', () => {
             fix.detectChanges();
 
             expect(cell.editMode).toBeFalsy();
-            expect(cell.value).toBe('IG');
+            expect(cell.value).toBe(cacheValeue);
         });
 
         it(`Paging: Should exit edit mode when changing the page size while editing`, () => {
@@ -1452,7 +1454,7 @@ describe('IgxGrid - Row Editing #grid', () => {
 
             expect(cell.editMode).toBeFalsy();
             expect(grid.endEdit).toHaveBeenCalled();
-            expect(grid.endEdit).toHaveBeenCalledWith(true);
+            expect(grid.endEdit).toHaveBeenCalledWith(false);
             expect(grid.rowEditingOverlay.collapsed).toEqual(true);
         });
 
@@ -1467,7 +1469,7 @@ describe('IgxGrid - Row Editing #grid', () => {
             fix.detectChanges();
 
             expect(grid.endEdit).toHaveBeenCalled();
-            expect(grid.endEdit).toHaveBeenCalledWith(true);
+            expect(grid.endEdit).toHaveBeenCalledWith(false);
             expect(grid.endEdit).toHaveBeenCalledTimes(1);
             expect(cell.editMode).toBeFalsy();
 
@@ -1481,12 +1483,12 @@ describe('IgxGrid - Row Editing #grid', () => {
             fix.detectChanges();
 
             expect(grid.endEdit).toHaveBeenCalled();
-            expect(grid.endEdit).toHaveBeenCalledWith(true);
+            expect(grid.endEdit).toHaveBeenCalledWith(false);
             expect(grid.endEdit).toHaveBeenCalledTimes(2);
             expect(cell.editMode).toBeFalsy();
         });
 
-        it(`Resizing: Should exit edit mode when resizing a column`, fakeAsync(() => {
+        it(`Resizing: Should keep edit mode when resizing a column`, fakeAsync(() => {
             spyOn(grid, 'endEdit').and.callThrough();
 
             // put cell in edit mode
@@ -1506,9 +1508,8 @@ describe('IgxGrid - Row Editing #grid', () => {
             UIInteractions.simulateMouseEvent('mouseup', resizer, 550, 0);
             fix.detectChanges();
 
-            expect(grid.endEdit).toHaveBeenCalled();
-            expect(grid.endEdit).toHaveBeenCalledWith(true);
-            expect(cell.editMode).toBeFalsy();
+            expect(grid.endEdit).toHaveBeenCalledTimes(0);
+            expect(cell.editMode).toBeTruthy();
         }));
 
         it(`Hiding: Should exit edit mode when hiding a column`, () => {

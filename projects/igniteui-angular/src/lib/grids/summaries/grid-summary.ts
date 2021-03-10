@@ -1,4 +1,4 @@
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { DecimalPipe, DatePipe, CurrencyPipe, getLocaleCurrencyCode, PercentPipe } from '@angular/common';
 import { IColumnPipeArgs } from '../columns/interfaces';
 
 export interface ISummaryExpression {
@@ -267,3 +267,65 @@ export class IgxDateSummaryOperand extends IgxSummaryOperand {
         return result;
     }
 }
+
+export class IgxCurrencySummaryOperand extends IgxSummaryOperand {
+
+    public operate(data: any[] = [], allData: any[] = [], fieldName?: string, locale: string = 'en-US',
+        pipeArgs: IColumnPipeArgs = {}): IgxSummaryResult[] {
+        const result = super.operate(data, allData, fieldName, locale);
+        const currencyCode = pipeArgs.currencyCode ? pipeArgs.currencyCode : getLocaleCurrencyCode(locale);
+        const pipe = new CurrencyPipe(locale, currencyCode);
+        result.push({
+            key: 'min',
+            label: 'Min',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.min(data), currencyCode, pipeArgs.display, pipeArgs.digitsInfo)
+        });
+        result.push({
+            key: 'max',
+            label: 'Max',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.max(data), currencyCode, pipeArgs.display, pipeArgs.digitsInfo)
+        });
+        result.push({
+            key: 'sum',
+            label: 'Sum',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.sum(data), currencyCode, pipeArgs.display, pipeArgs.digitsInfo)
+        });
+        result.push({
+            key: 'average',
+            label: 'Avg',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.average(data), currencyCode, pipeArgs.display, pipeArgs.digitsInfo)
+        });
+        return result;
+    }
+}
+
+export class IgxPercentSummaryOperand extends IgxSummaryOperand {
+
+    public operate(data: any[] = [], allData: any[] = [], fieldName?: string, locale: string = 'en-US',
+        pipeArgs: IColumnPipeArgs = {}): IgxSummaryResult[] {
+        const result = super.operate(data, allData, fieldName, locale);
+        const pipe = new PercentPipe(locale);
+        result.push({
+            key: 'min',
+            label: 'Min',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.min(data), pipeArgs.digitsInfo)
+        });
+        result.push({
+            key: 'max',
+            label: 'Max',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.max(data), pipeArgs.digitsInfo)
+        });
+        result.push({
+            key: 'sum',
+            label: 'Sum',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.sum(data), pipeArgs.digitsInfo)
+        });
+        result.push({
+            key: 'average',
+            label: 'Avg',
+            summaryResult: pipe.transform(IgxNumberSummaryOperand.average(data), pipeArgs.digitsInfo)
+        });
+        return result;
+    }
+}
+

@@ -47,6 +47,7 @@ import {
 import { GridSelectionMode, FilterMode } from '../common/enums';
 import { ControlsFunction } from '../../test-utils/controls-functions.spec';
 import localeFR from '@angular/common/locales/fr';
+import { FormattedValuesFilteringStrategy } from '../../data-operations/filtering-strategy';
 
 const DEBOUNCETIME = 30;
 const FILTER_UI_ROW = 'igx-grid-filtering-row';
@@ -74,7 +75,6 @@ describe('IgxGrid - Filtering Row UI actions #grid', () => {
     describe(null, () => {
         let fix: ComponentFixture<any>;
         let grid: IgxGridComponent;
-        const cal = SampleTestData.timeGenerator;
         const today = SampleTestData.today;
 
         beforeEach(fakeAsync(() => {
@@ -655,7 +655,7 @@ describe('IgxGrid - Filtering Row UI actions #grid', () => {
             GridFunctions.clickFilterCellChip(fix, 'Downloads');
 
             const columnProductName = GridFunctions.getColumnHeader('ProductName', fix);
-            columnProductName.triggerEventHandler('click', { stopPropagation: (e: any) => { } });
+            columnProductName.triggerEventHandler('click', { stopPropagation: () => { } });
             fix.detectChanges();
 
             const filterUIRow = fix.debugElement.query(By.css(FILTER_UI_ROW));
@@ -1163,7 +1163,6 @@ describe('IgxGrid - Filtering Row UI actions #grid', () => {
 
             const editingBtns = filteringRow.query(By.css('.igx-grid__filtering-row-editing-buttons'));
             const reset = editingBtns.queryAll(By.css('button'))[0];
-            const close = editingBtns.queryAll(By.css('button'))[1];
 
             expect(reset.nativeElement.childNodes[1].textContent.trim()).toBe('Reset');
         }));
@@ -2153,6 +2152,34 @@ describe('IgxGrid - Filtering Row UI actions #grid', () => {
             // Verify filtered data
             expect(grid.filteredData).toBeNull();
         }));
+
+        it('Should filter by cells formatted data when using FormattedValuesFilteringStrategy', fakeAsync(() => {
+            const formattedStrategy = new FormattedValuesFilteringStrategy(['Downloads']);
+            grid.filterStrategy = formattedStrategy;
+            const downloadsFormatter = (val: number): number => {
+                if (!val || val > 0 && val < 100) {
+                    return 1;
+                } else if (val >= 100 && val < 500) {
+                    return 2;
+                } else {
+                    return 3;
+                }
+            };
+            grid.columns[2].formatter = downloadsFormatter;
+            fix.detectChanges();
+
+            GridFunctions.clickFilterCellChipUI(fix, 'Downloads');
+            fix.detectChanges();
+
+            GridFunctions.typeValueInFilterRowInput('3', fix);
+            tick(DEBOUNCETIME);
+            GridFunctions.closeFilterRow(fix);
+            fix.detectChanges();
+
+            // const cells = GridFunctions.getColumnCells(fix, 'Downloads');
+            const rows = GridFunctions.getRows(fix);
+            expect(rows.length).toEqual(2);
+        }));
     });
 
     describe('Integration scenarios', () => {
@@ -2458,6 +2485,32 @@ describe('IgxGrid - Filtering Row UI actions #grid', () => {
             expect(colOperands[0].nativeElement.innerText).toEqual('AND');
             expect(colIndicator.length).toEqual(0);
         }));
+
+        it('UI focusing grid\'s body content does not throw a console error after filtering. (issue 8930)', fakeAsync(() => {
+            spyOn(console, 'error');
+            GridFunctions.clickFilterCellChipUI(fix, 'ProductName');
+            fix.detectChanges();
+
+            GridFunctions.applyFilter('Jav', fix);
+            tick(DEBOUNCETIME);
+            fix.detectChanges();
+
+            GridFunctions.applyFilter('xy', fix);
+            tick(DEBOUNCETIME);
+            fix.detectChanges();
+
+            const tBodyContent = GridFunctions.getGridContent(fix);
+            tBodyContent.triggerEventHandler('focus', null);
+
+            const filterUIRow = fix.debugElement.query(By.css(FILTER_UI_ROW));
+            GridFunctions.removeFilterChipByIndex(1, filterUIRow);
+            tick();
+            fix.detectChanges();
+
+            tBodyContent.triggerEventHandler('focus', null);
+            tick();
+            expect(console.error).not.toHaveBeenCalled();
+        }));
     });
 
     describe(null, () => {
@@ -2626,7 +2679,6 @@ describe('IgxGrid - Filtering Row UI actions #grid', () => {
     describe(null, () => {
         let fix: ComponentFixture<any>;
         let grid: IgxGridComponent;
-        const cal = SampleTestData.timeGenerator;
         const today = SampleTestData.today;
 
         beforeEach(fakeAsync(() => {
@@ -2932,7 +2984,7 @@ describe('IgxGrid - Filtering actions - Excel style filtering #grid', () => {
             expect(grid.onColumnVisibilityChanged.emit).toHaveBeenCalledTimes(1);
             expect(grid.onColumnVisibilityChanged.emit).toHaveBeenCalledWith(args);
 
-            expect(grid.columns[2].hidden).toBeTruthy();
+            GridFunctions.verifyColumnIsHidden(grid.columns[2], true, 5);
         }));
 
         it('Should not select values in list if two values with And operator are entered.', fakeAsync(() => {
@@ -5108,6 +5160,50 @@ describe('IgxGrid - Filtering actions - Excel style filtering #grid', () => {
             expect(inputNativeElement.type).toBe('number', 'input type of number column is not number');
 
         }));
+
+        it('Should filter cell by its formatted data when using FormattedValueFilteringStrategy', async () => {
+            const formattedFilterStrategy = new FormattedValuesFilteringStrategy();
+            grid.filterStrategy = formattedFilterStrategy;
+            const productNameFormatter = (value: string): string => {
+                const val = value ? value.toLowerCase() : '';
+                if (val.includes('script')) {
+                    return 'Web';
+                } else if (val.includes('netadvantage')) {
+                    return 'Desktop';
+                } else {
+                    return 'Other';
+                }
+            };
+            grid.columns[1].formatter = productNameFormatter;
+
+            GridFunctions.clickExcelFilterIcon(fix, grid.columns[1].field);
+            await wait(200);
+            fix.detectChanges();
+
+            const searchComponent = GridFunctions.getExcelStyleSearchComponent(fix);
+            const inputNativeElement = GridFunctions.getExcelStyleSearchComponentInput(fix, searchComponent);
+            UIInteractions.clickAndSendInputElementValue(inputNativeElement, 'script', fix);
+            await wait(100);
+            fix.detectChanges();
+
+            let items = GridFunctions.getExcelStyleSearchComponentListItems(fix);
+            expect(items.length).toBe(0);
+
+            UIInteractions.clickAndSendInputElementValue(inputNativeElement, 'web', fix);
+            await wait(100);
+            fix.detectChanges();
+            items = GridFunctions.getExcelStyleSearchComponentListItems(fix);
+            expect(items.length).toBe(3);
+            verifyExcelStyleFilterAvailableOptions(fix,
+                ['Select all search results', 'Add current selection to filter', 'Web'],
+                [true, false, true]);
+
+            inputNativeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+            await wait(100);
+            fix.detectChanges();
+            const cellValues = GridFunctions.getColumnCells(fix, 'ProductName').map(c => c.nativeElement.innerText).sort();
+            expect(cellValues).toEqual(['Web', 'Web']);
+        });
     });
 
     describe('Templates: ', () => {
@@ -5610,7 +5706,6 @@ describe('IgxGrid - Filtering actions - Excel style filtering #grid', () => {
         }));
 
         it('Should not execute done callback for null column', fakeAsync(() => {
-            const compInstance = fix.componentInstance as IgxGridFilteringESFLoadOnDemandComponent;
             GridFunctions.clickExcelFilterIcon(fix, 'ProductName');
             fix.detectChanges();
 

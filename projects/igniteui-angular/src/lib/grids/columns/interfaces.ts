@@ -35,4 +35,11 @@ export interface IColumnPipeArgs {
      * `maxFractionDigits`: The maximum number of digits after the decimal point. Default is 3.
      */
     digitsInfo?: string;
+    /** The currency code of type string, default value undefined */
+    currencyCode?: string;
+    /**
+     * Allow us to display currency 'symbol' or 'code' or 'symbol-narrow' or our own string.
+     * The value is of type string. By default is set to 'symbol'
+     */
+    display?: string;
 }

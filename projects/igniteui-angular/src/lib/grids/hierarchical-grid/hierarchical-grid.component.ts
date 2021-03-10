@@ -242,7 +242,7 @@ export class IgxHierarchicalGridComponent extends IgxHierarchicalGridBaseDirecti
      */
     @Input()
     public set expandChildren(value: boolean) {
-        this._defaultExpandState  = value;
+        this._defaultExpandState = value;
         this.expansionStates = new Map<any, boolean>();
     }
 
@@ -256,7 +256,7 @@ export class IgxHierarchicalGridComponent extends IgxHierarchicalGridBaseDirecti
      * @memberof IgxHierarchicalGridComponent
      */
     public get expandChildren(): boolean {
-        return this._defaultExpandState ;
+        return this._defaultExpandState;
     }
 
     /**
@@ -358,16 +358,16 @@ export class IgxHierarchicalGridComponent extends IgxHierarchicalGridBaseDirecti
         this.dragIndicatorIconTemplate = this.parentIsland ?
             this.parentIsland.dragIndicatorIconTemplate :
             this.dragIndicatorIconTemplate;
-        this.rowExpandedIndicatorTemplate  = this.rootGrid.rowExpandedIndicatorTemplate;
-        this.rowCollapsedIndicatorTemplate   = this.rootGrid.rowCollapsedIndicatorTemplate;
+        this.rowExpandedIndicatorTemplate = this.rootGrid.rowExpandedIndicatorTemplate;
+        this.rowCollapsedIndicatorTemplate = this.rootGrid.rowCollapsedIndicatorTemplate;
         this.headerCollapseIndicatorTemplate = this.rootGrid.headerCollapseIndicatorTemplate;
         this.headerExpandIndicatorTemplate = this.rootGrid.headerExpandIndicatorTemplate;
         this.excelStyleHeaderIconTemplate = this.rootGrid.excelStyleHeaderIconTemplate;
         this.hasChildrenKey = this.parentIsland ?
-         this.parentIsland.hasChildrenKey || this.rootGrid.hasChildrenKey :
-         this.rootGrid.hasChildrenKey;
-         this.showExpandAll = this.parentIsland ?
-         this.parentIsland.showExpandAll : this.rootGrid.showExpandAll;
+            this.parentIsland.hasChildrenKey || this.rootGrid.hasChildrenKey :
+            this.rootGrid.hasChildrenKey;
+        this.showExpandAll = this.parentIsland ?
+            this.parentIsland.showExpandAll : this.rootGrid.showExpandAll;
 
         this.excelStyleFilteringComponents = this.parentIsland ?
             this.parentIsland.excelStyleFilteringComponents :
@@ -572,14 +572,14 @@ export class IgxHierarchicalGridComponent extends IgxHierarchicalGridBaseDirecti
      * @internal
      */
     public hasExpandedRecords() {
-       if (this.expandChildren) {
+        if (this.expandChildren) {
             return true;
-       }
-       let hasExpandedEntry = false;
-       this.expansionStates.forEach(value => {
-           if (value) {
-            hasExpandedEntry = value;
-           }
+        }
+        let hasExpandedEntry = false;
+        this.expansionStates.forEach(value => {
+            if (value) {
+                hasExpandedEntry = value;
+            }
         });
         return hasExpandedEntry;
     }

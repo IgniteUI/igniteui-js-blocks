@@ -1,6 +1,12 @@
 <div style="height: 100vh; width: 100wh">
     <span> Fixed Size Rows</span>
     <igx-grid #grid1 [rowHeight]="20" displayDensity="compact" [data]="localData" [rowSelection]="selectionMode" [allowFiltering]="true" [filterMode]="'excelStyleFilter'">
+        <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+            </igx-grid-toolbar-actions>
+        </igx-grid-toolbar>
         <igx-column *ngFor="let c of columns" [sortable]="true" [filterable]="true" [resizable]="true" [field]="c.field" [header]="c.field" [width]="c.width">
         </igx-column>
     </igx-grid>

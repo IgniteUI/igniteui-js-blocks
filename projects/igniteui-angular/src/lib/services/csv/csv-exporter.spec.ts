@@ -19,8 +19,8 @@ describe('CSV exporter', () => {
         spyOn(ExportUtilities as any, 'saveBlobToFile');
     });
     afterEach(() => {
-        exporter.onColumnExport.unsubscribe();
-        exporter.onRowExport.unsubscribe();
+        exporter.columnExporting.unsubscribe();
+        exporter.rowExporting.unsubscribe();
     });
 
     /* ExportData() tests */
@@ -95,10 +95,10 @@ describe('CSV exporter', () => {
         expect(options.fileName.endsWith('.tab')).toBe(true);
     });
 
-    it('should fire \'onColumnExport\' for each data field.', async () => {
+    it('should fire \'columnExporting\' for each data field.', async () => {
         const options = new IgxCsvExporterOptions('ExportEvents', CsvFileTypes.CSV);
         const cols = [];
-        exporter.onColumnExport.subscribe((value) => {
+        exporter.columnExporting.subscribe((value) => {
             cols.push({ header: value.header, index: value.columnIndex });
         });
 
@@ -112,10 +112,10 @@ describe('CSV exporter', () => {
         expect(cols[2].index).toBe(2);
     });
 
-    it('should fire \'onRowExport\' for each data row.', async () => {
+    it('should fire \'rowExporting\' for each data row.', async () => {
         const options = new IgxCsvExporterOptions('ExportEvents', CsvFileTypes.CSV);
         const rows = [];
-        exporter.onRowExport.subscribe((value) => {
+        exporter.rowExporting.subscribe((value) => {
             rows.push({ data: value.rowData, index: value.rowIndex });
         });
 

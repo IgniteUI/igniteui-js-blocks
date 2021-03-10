@@ -136,13 +136,6 @@
             font-size: rem(18px);
             width: rem(18px);
             height: rem(18px);
-            margin-right: rem(8px);
-        }
-
-        @include if-rtl() {
-            igx-icon {
-                margin-left: rem(8px);
-            }
         }
     }
 
@@ -185,34 +178,19 @@
         display: flex;
         justify-content: space-between;
 
-        [igxButton] {
-            flex-grow: 1;
-            width: rem(104px);
+        @include if-rtl() {
+            flex-direction: row-reverse;
 
-            @include if-rtl() {
-                &:last-of-type {
-                    order: -1;
+            [igxButton] {
+                flex-direction: row-reverse;
+
+                span,
+                igx-icon {
+                    margin: initial;
                 }
 
-                &:last-of-type > igx-icon {
-                    order: -1;
-                }
-
-                &:first-of-type > igx-icon {
-                    order: 2;
-                }
+                @include _icon-w-margin(rem(8px), $right);
             }
-        }
-
-        igx-icon {
-            font-size: rem(18px);
-            width: rem(18px);
-            height: rem(18px);
-        }
-
-        igx-icon + span,
-        span + igx-icon {
-            margin-left: rem(8px);
         }
     }
 
@@ -307,10 +285,6 @@
 
             igx-buttongroup {
                 width: rem(208px);
-
-                [igxButton] > igx-icon + span {
-                    margin-#{$left}: rem(8px);
-                }
             }
         }
 
@@ -435,7 +409,6 @@
             width: rem(18px);
             height: rem(18px);
             font-size: rem(18px);
-            margin-#{$right}: rem(8px);
         }
     }
 

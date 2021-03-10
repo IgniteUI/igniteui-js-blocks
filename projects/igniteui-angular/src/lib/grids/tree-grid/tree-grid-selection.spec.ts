@@ -9,7 +9,9 @@ import {
     IgxTreeGridSelectionRowEditingComponent,
     IgxTreeGridSelectionWithTransactionComponent,
     IgxTreeGridRowEditingTransactionComponent,
-    IgxTreeGridCustomRowSelectorsComponent
+    IgxTreeGridCustomRowSelectorsComponent,
+    IgxTreeGridCascadingSelectionComponent,
+    IgxTreeGridCascadingSelectionTransactionComponent
 } from '../../test-utils/tree-grid-components.spec';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -22,14 +24,25 @@ import { IgxStringFilteringOperand, IgxNumberFilteringOperand } from '../../data
 import { configureTestSuite } from '../../test-utils/configure-suite';
 import { wait, UIInteractions } from '../../test-utils/ui-interactions.spec';
 import { IgxGridSelectionModule } from '../selection/selection.module';
+import { IgxActionStripModule, IgxActionStripComponent } from '../../action-strip/public_api';
 import { GridFunctions } from '../../test-utils/grid-functions.spec';
 import { GridSelectionMode } from '../common/enums';
+import { By } from '@angular/platform-browser';
+import { FilteringExpressionsTree } from '../../data-operations/filtering-expressions-tree';
+import { FilteringLogic } from '../../data-operations/filtering-expression.interface';
+import { IRowSelectionEventArgs } from '../common/events';
 
 describe('IgxTreeGrid - Selection #tGrid', () => {
     configureTestSuite();
     let fix;
     let treeGrid: IgxTreeGridComponent;
-
+    let actionStrip: IgxActionStripComponent;
+    const endTransition = () => {
+        // transition end needs to be simulated
+        const animationElem = fix.nativeElement.querySelector('.igx-grid__tr--inner');
+        const endEvent = new AnimationEvent('animationend');
+        animationElem.dispatchEvent(endEvent);
+    };
     beforeAll(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -38,9 +51,11 @@ describe('IgxTreeGrid - Selection #tGrid', () => {
                 IgxTreeGridSelectionRowEditingComponent,
                 IgxTreeGridSelectionWithTransactionComponent,
                 IgxTreeGridRowEditingTransactionComponent,
-                IgxTreeGridCustomRowSelectorsComponent
+                IgxTreeGridCustomRowSelectorsComponent,
+                IgxTreeGridCascadingSelectionComponent,
+                IgxTreeGridCascadingSelectionTransactionComponent
             ],
-            imports: [IgxTreeGridModule, NoopAnimationsModule, IgxGridSelectionModule]
+            imports: [IgxTreeGridModule, NoopAnimationsModule, IgxGridSelectionModule, IgxActionStripModule]
         })
             .compileComponents();
     }));
@@ -1023,6 +1038,888 @@ describe('IgxTreeGrid - Selection #tGrid', () => {
         }));
     });
 
+    describe('Cascading Row Selection', () => {
+        beforeEach(fakeAsync(() => {
+            fix = TestBed.createComponent(IgxTreeGridCascadingSelectionComponent);
+            fix.detectChanges();
+            treeGrid = fix.componentInstance.treeGrid;
+            actionStrip = fix.componentInstance.actionStrip;
+        }));
+
+        it('Should select/deselect all leaf nodes and set the correct state to their checkboxes on parent rows checkbox click', () => {
+            TreeGridFunctions.clickRowSelectionCheckbox(fix, 0);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(7);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            // Deselect rows
+            TreeGridFunctions.clickRowSelectionCheckbox(fix, 0);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], false);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, false);
+        });
+
+        it('Should select/deselect parent row by selecting/deselecting all its children', () => {
+            treeGrid.selectRows([475, 957, 711, 998, 299], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(7);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            // Deselect rows
+            treeGrid.deselectRows([475, 957, 711, 998, 299]);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], false);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, false);
+        });
+
+        it('Should select/deselect parent row by selecting/deselecting the last deselected/selected child', () => {
+            treeGrid.selectRows([475, 957, 711, 998], true);
+            fix.detectChanges();
+
+            TreeGridFunctions.clickRowSelectionCheckbox(fix, 6);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(7);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            // Deselect rows
+            treeGrid.deselectRows([475, 957, 711, 998]);
+            fix.detectChanges();
+
+            TreeGridFunctions.clickRowSelectionCheckbox(fix, 6);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], false);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, false);
+        });
+
+        it(`Should set parent row checkbox to indeterminate by selecting/deselecting
+            a child row when all child rows are deselected/selected`, () => {
+            TreeGridFunctions.clickRowSelectionCheckbox(fix, 6);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            // Deselect one row
+            treeGrid.selectRows([475, 957, 711, 998, 299], true);
+            fix.detectChanges();
+
+            TreeGridFunctions.clickRowSelectionCheckbox(fix, 6);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('Should select all children of record on Shift + click even if they are not in the selected range. ', () => {
+            const firstRow = treeGrid.getRowByIndex(1);
+            const secondRow = treeGrid.getRowByIndex(4);
+            const mockEvent = new MouseEvent('click', { shiftKey: true });
+
+            UIInteractions.simulateClickEvent(firstRow.nativeElement);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toEqual(1);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [1], true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            // Click on other row holding Shift key
+            secondRow.nativeElement.dispatchEvent(mockEvent);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(7);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('Should select only the newly clicked parent row and its children and deselect the previous selection.', () => {
+            treeGrid.selectRows([19, 847], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+
+            const firstRow = treeGrid.getRowByIndex(0);
+            UIInteractions.simulateClickEvent(firstRow.nativeElement);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(7);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6], true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('Should add a row and its children to the selected rows collection using Ctrl + click.', () => {
+            treeGrid.selectRows([847], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+
+            // select a child of the first parent and all of its children
+            const firstRow = treeGrid.getRowByIndex(3);
+            UIInteractions.simulateClickEvent(firstRow.nativeElement, false, true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(6);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [3, 4, 5, 6, 8, 9], true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            // select the first parent and all of its children
+            const secondRow = treeGrid.getRowByIndex(0);
+            UIInteractions.simulateClickEvent(secondRow.nativeElement, false, true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(9);
+            TreeGridFunctions.verifyDataRowsSelection(fix, [0, 1, 2, 3, 4, 5, 6, 8, 9], true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('After adding a new child row to a selected parent its checkbox state SHOULD be indeterminate.', async () => {
+            treeGrid.selectRows([847], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 8, true, true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            const row = treeGrid.getRowByIndex(8);
+            actionStrip.show(row);
+            fix.detectChanges();
+
+            // add new child through the UI
+            const editActions = fix.debugElement.queryAll(By.css(`igx-grid-action-button`));
+            const addChildBtn = editActions[2].componentInstance;
+            addChildBtn.actionClick.emit();
+            fix.detectChanges();
+            endTransition();
+
+            const addRow = treeGrid.getRowByIndex(9);
+            expect(addRow.addRow).toBeTrue();
+
+            treeGrid.endEdit(true);
+            await wait(100);
+            fix.detectChanges();
+            const addedRow = treeGrid.getRowByIndex(10);
+            expect(addedRow.rowData.Name).toBe(undefined);
+
+            TreeGridFunctions.verifyDataRowsSelection(fix, [9], true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 8, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('After adding child to a selected parent with no children, parent checkbox state SHOULD NOT be selected.', async () => {
+            treeGrid.selectRows([957], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            treeGrid.addRow({
+                ID: -1,
+                Name: undefined,
+                HireDate: undefined,
+                Age: undefined
+            }, 957);
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+            const addedRow = treeGrid.getRowByIndex(3);
+            expect(addedRow.rowData.Name).toBe(undefined);
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, false);
+        });
+
+        it('If parent and its children are selected and we delete a child, parent SHOULD be still selected.', async () => {
+            treeGrid.selectRows([147], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(7);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, true, true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            expect(treeGrid.dataRowList.length).toBe(10);
+
+            const childRow = treeGrid.getRowByIndex(5);
+            actionStrip.show(childRow);
+            fix.detectChanges();
+
+            // delete the child through the UI
+            const editActions = fix.debugElement.queryAll(By.css(`igx-grid-action-button`));
+            const deleteBtn = editActions[2].componentInstance;
+            deleteBtn.actionClick.emit();
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(treeGrid.dataRowList.length).toBe(9);
+            expect(getVisibleSelectedRows(fix).length).toBe(6);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, true, true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('If parent has one non-selected child and we delete it, the parent checkbox state SHOULD be selected.', async () => {
+            treeGrid.selectRows([711, 299], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            expect(treeGrid.dataRowList.length).toBe(10);
+
+            const childRow = treeGrid.getRowByIndex(5);
+            actionStrip.show(childRow);
+            fix.detectChanges();
+
+            // delete the child through the UI
+            const editActions = fix.debugElement.queryAll(By.css(`igx-grid-action-button`));
+            const deleteBtn = editActions[2].componentInstance;
+            deleteBtn.actionClick.emit();
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(treeGrid.dataRowList.length).toBe(9);
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('If we delete the only selected child of a parent row, the parent checkbox state SHOULD be deselected', async () => {
+            treeGrid.selectRows([711], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            expect(treeGrid.dataRowList.length).toBe(10);
+
+            // delete the child through the API
+            const childRow = treeGrid.getRowByIndex(4);
+            childRow.delete();
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(treeGrid.dataRowList.length).toBe(9);
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, false);
+        });
+
+        it(`If there is only one selected leaf row for a particular parent and we filter it out parent's checkbox state -> non-selected.
+        All non-direct parents’ checkbox states should be set correctly as well`, async () => {
+            treeGrid.selectRows([711], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+
+            treeGrid.filter('ID', 711, IgxNumberFilteringOperand.instance().condition('doesNotEqual'));
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+        });
+
+        it(`If there is only one non-selected row for a particular parent and we filter it out parent's checkbox state -> selected.
+        All non-direct parents’ checkbox states should be set correctly as well`, async () => {
+            treeGrid.selectRows([711, 998], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 5, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 6, false, false);
+
+            treeGrid.filter('ID', 299, IgxNumberFilteringOperand.instance().condition('doesNotEqual'));
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 5, true, true);
+        });
+
+        it(`No rows are selected. Filter out all children for certain parent. Select this parent. It should be the only one within
+        the selectedRows collection. Remove filtering. The selectedRows collection should be empty.
+        All non-direct parents’ checkbox states should be set correctly as well`, async () => {
+
+            const expressionTree = new FilteringExpressionsTree(FilteringLogic.And, 'ID');
+            expressionTree.filteringOperands = [
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 711
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 998
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 299
+                }
+            ];
+            treeGrid.filter('ID', null, expressionTree);
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+
+            treeGrid.selectRows([317], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+
+            treeGrid.clearFilter();
+
+            await wait(100);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+        });
+
+        it(`Filter out all selected children for a certain parent and explicitly deselect it.
+        Remove filtering. Parent row should be selected again. All non-direct parents’
+        checkbox states should be set correctly as well`, async () => {
+
+            treeGrid.selectRows([317], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+
+            const expressionTree = new FilteringExpressionsTree(FilteringLogic.And, 'ID');
+            expressionTree.filteringOperands = [
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 711
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 998
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 299
+                }
+            ];
+            treeGrid.filter('ID', null, expressionTree);
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+
+            treeGrid.deselectRows([317]);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+
+            treeGrid.clearFilter();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+        });
+
+        it(`Parent in indeterminate state. Filter out its children -> parent not selected. Select parent and add new child.
+        Parent -> not selected. Revert filtering so that previous records are back in the view and parent should become in
+        indeterminate state because one of it children is selected`, fakeAsync(() => {
+
+            treeGrid.selectRows([998], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+
+            const expressionTree = new FilteringExpressionsTree(FilteringLogic.And, 'ID');
+            expressionTree.filteringOperands = [
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 711
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 998
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 299
+                }
+            ];
+            treeGrid.filter('ID', null, expressionTree);
+            fix.detectChanges();
+
+            tick(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+
+            treeGrid.selectRows([317]);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+
+            treeGrid.addRow({
+                ID: -1,
+                Name: undefined,
+                HireDate: undefined,
+                Age: undefined
+            }, 317);
+            fix.detectChanges();
+
+            tick(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+
+            treeGrid.clearFilter();
+            fix.detectChanges();
+
+            tick(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+        }));
+
+        it(`Selected parent. Filter out some of the children and delete otheres.
+        Parent should be not selected`, fakeAsync(() => {
+
+            treeGrid.selectRows([317], true);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+
+            const expressionTree = new FilteringExpressionsTree(FilteringLogic.And, 'ID');
+            expressionTree.filteringOperands = [
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 711
+                },
+                {
+                    condition: IgxNumberFilteringOperand.instance().condition('doesNotEqual'),
+                    fieldName: 'ID',
+                    searchVal: 998
+                }
+            ];
+            treeGrid.filter('ID', null, expressionTree);
+            fix.detectChanges();
+
+            tick(100);
+            fix.detectChanges();
+
+            treeGrid.deleteRow(299);
+            fix.detectChanges();
+
+            tick(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+        }));
+
+        it(`Set nested child row, that has its own children, as initially selected and verify
+        that both direct and indirect parent's checkboxes are set in the correct state.`, fakeAsync(() => {
+
+            treeGrid.selectedRows = [317];
+            fix.detectChanges();
+            tick(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 5, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 6, true, true);
+        }));
+
+        it(`Setting true to the cancel property of the onRowSelectionChange event should not modify the selected rows collection`, () => {
+
+            treeGrid.onRowSelectionChange.subscribe((e: IRowSelectionEventArgs) => {
+                e.cancel = true;
+            });
+
+            spyOn(treeGrid.onRowSelectionChange, 'emit').and.callThrough();
+
+            treeGrid.selectionService.selectRowsWithNoEvent([317]);
+            fix.detectChanges();
+
+            treeGrid.selectionService.deselectRow(299);
+            fix.detectChanges();
+
+            const args: IRowSelectionEventArgs = {
+                oldSelection: [317, 711, 998, 299],
+                newSelection: [711, 998],
+                added: [],
+                removed: [317, 299],
+                event: undefined,
+                cancel: true
+            };
+
+            expect(treeGrid.onRowSelectionChange.emit).toHaveBeenCalledWith(args);
+
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 5, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 6, true, true);
+        });
+
+        it(`selectionService clearRowSelection method should work correctly`, () => {
+            treeGrid.selectionService.selectRowsWithNoEvent([711]);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            expect(treeGrid.selectionService.indeterminateRows.size).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 1, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+
+            treeGrid.selectionService.clearRowSelection();
+            treeGrid.cdr.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            expect(treeGrid.selectionService.indeterminateRows.size).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 1, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, false, false);
+        });
+
+        it(`selectionService selectAllRows method should work correctly`, () => {
+            treeGrid.selectionService.selectRowsWithNoEvent([711]);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            expect(treeGrid.selectionService.indeterminateRows.size).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 1, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+
+            treeGrid.selectionService.selectAllRows();
+            treeGrid.cdr.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(10);
+            expect(treeGrid.selectionService.indeterminateRows.size).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 1, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 2, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+        });
+
+        it('selectRowById event SHOULD be emitted correctly with valid arguments.', () => {
+            spyOn(treeGrid.onRowSelectionChange, 'emit').and.callThrough();
+            treeGrid.selectionService.selectRowsWithNoEvent([317]);
+            fix.detectChanges();
+
+            expect(treeGrid.onRowSelectionChange.emit).toHaveBeenCalledTimes(0);
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 5, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 6, true, true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            treeGrid.selectionService.selectRowById(847, true);
+
+            const args: IRowSelectionEventArgs = {
+                oldSelection: [317, 711, 998, 299],
+                newSelection: [847, 663],
+                added: [847, 663],
+                removed: [317, 711, 998, 299],
+                event: undefined,
+                cancel: false
+            };
+
+            expect(treeGrid.onRowSelectionChange.emit).toHaveBeenCalledWith(args);
+
+            treeGrid.cdr.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 4, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 5, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 6, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 8, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 9, true, true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+
+        it('After changing the newSelection arguments of onSelectedRowChange, the arguments SHOULD be correct.', () => {
+            treeGrid.onRowSelectionChange.subscribe((e: IRowSelectionEventArgs) => {
+                e.newSelection = [847, 663];
+            });
+            spyOn(treeGrid.onRowSelectionChange, 'emit').and.callThrough();
+
+            treeGrid.selectionService.selectRowsWithNoEvent([317], true);
+            fix.detectChanges();
+
+            treeGrid.selectionService.selectRowById(19, true);
+
+            const selectionArgs: IRowSelectionEventArgs = {
+                oldSelection: [317, 711, 998, 299],
+                newSelection: [847, 663],
+                added: [19],
+                removed: [317, 711, 998, 299],
+                event: undefined,
+                cancel: false
+            };
+
+            expect(treeGrid.onRowSelectionChange.emit).toHaveBeenCalledWith(selectionArgs);
+
+            treeGrid.cdr.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 8, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 9, true, true);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+    });
+
+    describe('Cascading Row Selection with Transaction', () => {
+        beforeEach(fakeAsync(() => {
+            fix = TestBed.createComponent(IgxTreeGridCascadingSelectionTransactionComponent);
+            fix.detectChanges();
+            treeGrid = fix.componentInstance.treeGrid;
+            actionStrip = fix.componentInstance.actionStrip;
+        }));
+
+        it('Add a new leaf row to a selected parent and revert the transaction. The parent SHOULD be selected.', async () => {
+            const trans = treeGrid.transactions;
+
+            treeGrid.selectRows([317], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            treeGrid.addRow({
+                ID: -1,
+                Name: undefined,
+                HireDate: undefined,
+                Age: undefined
+            }, 317);
+
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            trans.undo();
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+        it('Add a new row to a selected parent and commit the transaction.The parent checkbox state SHOULD be indeterminate', async () => {
+            const trans = treeGrid.transactions;
+
+            treeGrid.selectRows([317], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            treeGrid.addRow({
+                ID: -1,
+                Name: undefined,
+                HireDate: undefined,
+                Age: undefined
+            }, 317);
+
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            trans.commit(treeGrid.data);
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+        it('Delete one of the children of selected parent. Parent checkbox state SHOULD be selected.', async () => {
+            const trans = treeGrid.transactions;
+            treeGrid.selectRows([317], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(4);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            const childRow = treeGrid.getRowByIndex(4);
+            childRow.delete();
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            trans.undo();
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            trans.redo();
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+        it('After delete the only non-selected child, the parent checkbox state SHOULD be selected.', async () => {
+            treeGrid.selectRows([711, 299], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(2);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            const childRow = treeGrid.getRowByIndex(5);
+            actionStrip.show(childRow);
+            fix.detectChanges();
+
+            // delete the child through the UI
+            const editActions = fix.debugElement.queryAll(By.css(`igx-grid-action-button`));
+            const deleteBtn = editActions[2].componentInstance;
+            deleteBtn.actionClick.emit();
+            fix.detectChanges();
+
+            await wait(100);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(3);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, true, true);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+        });
+        it('Delete the only selected child of a parent row. Parent checkbox state SHOULD NOT be selected.', async () => {
+            treeGrid.selectRows([998], true);
+            fix.detectChanges();
+            expect(getVisibleSelectedRows(fix).length).toBe(1);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, null);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, null);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, null);
+
+            const row = treeGrid.getRowByIndex(5);
+            row.delete();
+            fix.detectChanges();
+            await wait(100);
+            fix.detectChanges();
+
+            expect(getVisibleSelectedRows(fix).length).toBe(0);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 3, false, false);
+            TreeGridFunctions.verifyRowByIndexSelectionAndCheckboxState(fix, 0, false, false);
+            TreeGridFunctions.verifyHeaderCheckboxSelection(fix, false);
+        });
+
+    });
+
     describe('Custom row selectors', () => {
         beforeEach(fakeAsync(() => {
             fix = TestBed.createComponent(IgxTreeGridCustomRowSelectorsComponent);
@@ -1080,4 +1977,4 @@ describe('IgxTreeGrid - Selection #tGrid', () => {
 
 
 const getVisibleSelectedRows = (fix) => TreeGridFunctions.getAllRows(fix).filter(
-        (row) => row.nativeElement.classList.contains(TREE_ROW_SELECTION_CSS_CLASS));
+    (row) => row.nativeElement.classList.contains(TREE_ROW_SELECTION_CSS_CLASS));

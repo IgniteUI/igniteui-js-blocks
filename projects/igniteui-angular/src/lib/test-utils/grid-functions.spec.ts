@@ -220,7 +220,7 @@ export class GridFunctions {
         return element.getBoundingClientRect().top >= gridTop && element.getBoundingClientRect().bottom <= gridBottom;
     }
 
-    public static toggleMasterRowByClick = (fix, row: IgxGridRowComponent, debounceTime) => new Promise<void>(async (resolve, reject) => {
+    public static toggleMasterRowByClick = (fix, row: IgxGridRowComponent, debounceTime) => new Promise<void>(async (resolve) => {
         const icon = row.element.nativeElement.querySelector('igx-icon');
         UIInteractions.simulateClickAndSelectEvent(icon.parentElement);
         await wait(debounceTime);
@@ -694,7 +694,7 @@ export class GridFunctions {
         UIInteractions.simulateClickAndSelectEvent(icon);
     }
 
-    public static clickExcelFilterIconFromCode(fix: ComponentFixture<any>, grid: IgxGridComponent, columnField: string) {
+    public static clickExcelFilterIconFromCode(fix: ComponentFixture<any>, grid: IgxGridBaseDirective, columnField: string) {
         const event = { stopPropagation: () => { }, preventDefault: () => { } };
         const header = grid.getColumnByName(columnField).headerCell;
         header.onFilteringIconClick(event);
@@ -702,15 +702,15 @@ export class GridFunctions {
         fix.detectChanges();
     }
 
-    public static getApplyButtonExcelStyleFiltering(fix: ComponentFixture<any>, menu = null) {
-        const excelMenu = menu ? menu : GridFunctions.getExcelStyleFilteringComponent(fix);
+    public static getApplyButtonExcelStyleFiltering(fix: ComponentFixture<any>, menu = null, grid = 'igx-grid') {
+        const excelMenu = menu ? menu : GridFunctions.getExcelStyleFilteringComponent(fix, grid);
         const raisedButtons = Array.from(excelMenu.querySelectorAll('.igx-button--raised'));
         const applyButton: any = raisedButtons.find((rb: any) => rb.innerText === 'apply');
         return applyButton;
     }
 
-    public static clickApplyExcelStyleFiltering(fix: ComponentFixture<any>, menu = null) {
-        const applyButton = GridFunctions.getApplyButtonExcelStyleFiltering(fix, menu);
+    public static clickApplyExcelStyleFiltering(fix: ComponentFixture<any>, menu = null, grid = 'igx-grid') {
+        const applyButton = GridFunctions.getApplyButtonExcelStyleFiltering(fix, menu, grid);
         applyButton.click();
     }
 
@@ -966,8 +966,8 @@ export class GridFunctions {
         fix.detectChanges();
     }
 
-    public static getExcelStyleFilteringComponent(fix) {
-        const gridNativeElement = fix.debugElement.query(By.css('igx-grid')).nativeElement;
+    public static getExcelStyleFilteringComponent(fix, grid = 'igx-grid') {
+        const gridNativeElement = fix.debugElement.query(By.css(grid)).nativeElement;
         let excelMenu = gridNativeElement.querySelector(ESF_MENU_CLASS);
         if (!excelMenu) {
             excelMenu = fix.nativeElement.querySelector(ESF_MENU_CLASS);
@@ -999,8 +999,8 @@ export class GridFunctions {
         return moveContainer.querySelectorAll('.igx-button--flat');
     }
 
-    public static getExcelStyleSearchComponent(fix, menu = null) {
-        const excelMenu = menu ? menu : GridFunctions.getExcelStyleFilteringComponent(fix);
+    public static getExcelStyleSearchComponent(fix, menu = null, grid = 'igx-grid') {
+        const excelMenu = menu ? menu : GridFunctions.getExcelStyleFilteringComponent(fix, grid);
         const searchComponent = excelMenu.querySelector('.igx-excel-filter__menu-main');
         return searchComponent;
     }
@@ -1011,13 +1011,13 @@ export class GridFunctions {
         return scrollbar;
     }
 
-    public static getExcelStyleSearchComponentInput(fix, comp = null): HTMLInputElement {
-        const searchComponent = comp ? comp : GridFunctions.getExcelStyleSearchComponent(fix);
+    public static getExcelStyleSearchComponentInput(fix, comp = null, grid = 'igx-grid'): HTMLInputElement {
+        const searchComponent = comp ? comp : GridFunctions.getExcelStyleSearchComponent(fix, null, grid);
         return searchComponent.querySelector('.igx-input-group__input');
     }
 
-    public static getExcelStyleSearchComponentListItems(fix, comp = null): HTMLElement[] {
-        const searchComponent = comp ? comp : GridFunctions.getExcelStyleSearchComponent(fix);
+    public static getExcelStyleSearchComponentListItems(fix, comp = null, grid = 'igx-grid'): HTMLElement[] {
+        const searchComponent = comp ? comp : GridFunctions.getExcelStyleSearchComponent(fix, null, grid);
         return GridFunctions.sortNativeElementsVertically(Array.from(searchComponent.querySelectorAll('igx-list-item')));
     }
 
@@ -1060,7 +1060,7 @@ export class GridFunctions {
     }
 
     public static getColumnHeaderByIndex(fix: ComponentFixture<any>, index: number) {
-        return fix.debugElement.queryAll(By.css(GRID_COL_THEAD_CLASS))[3];
+        return fix.debugElement.queryAll(By.css(GRID_COL_THEAD_CLASS))[index];
     }
 
 
@@ -1173,8 +1173,8 @@ export class GridFunctions {
         return loadingIndicator;
     }
 
-    public static getColumnCells(fix, columnKey) {
-        const allCells = fix.debugElement.queryAll(By.css('igx-grid-cell'));
+    public static getColumnCells(fix, columnKey, gridCell = 'igx-grid-cell') {
+        const allCells = fix.debugElement.queryAll(By.css(gridCell));
         return allCells.filter((cell) => cell.componentInstance.column.field === columnKey);
     }
 
@@ -2032,7 +2032,7 @@ export class GridSummaryFunctions {
     public static calcMaxSummaryHeight(columnList, summaries: DebugElement[], defaultRowHeight) {
         let maxSummaryLength = 0;
         let index = 0;
-        columnList.filter((col) => col.hasSummary).forEach((column) => {
+        columnList.filter((col) => col.hasSummary).forEach(() => {
             const currentLength = summaries[index].queryAll(By.css(SUMMARY_LABEL_CLASS)).length;
             if (maxSummaryLength < currentLength) {
                 maxSummaryLength = currentLength;

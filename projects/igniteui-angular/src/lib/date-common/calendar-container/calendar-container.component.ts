@@ -28,11 +28,9 @@ export class IgxCalendarContainerComponent {
     @Input()
     public datePickerActions: IgxDatePickerActionsDirective;
 
-    /** @hidden @internal */
     @Output()
     public calendarClose = new EventEmitter();
 
-    /** @hidden @internal */
     @Output()
     public todaySelection = new EventEmitter();
 

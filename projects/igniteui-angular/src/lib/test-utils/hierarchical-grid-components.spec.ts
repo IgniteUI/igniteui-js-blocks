@@ -278,3 +278,30 @@ export class IgxHierarchicalGridActionStripComponent extends IgxHierarchicalGrid
     @ViewChild('actionStrip2', { read: IgxActionStripComponent, static: true })
     public actionStripChild: IgxActionStripComponent;
 }
+
+@Component({
+    template: `
+    <igx-hierarchical-grid #grid1 [data]="data" [height]="'300px'" [width]="'700px'" #hierarchicalGrid [primaryKey]="'ID'">
+        <igx-column field="ID" ></igx-column>
+        <igx-column field="ChildLevels"></igx-column>
+        <igx-column field="ProductName"></igx-column>
+        <igx-row-island [key]="'childData'" #rowIsland [primaryKey]="'ID'" [rowSelection]="'single'">
+            <igx-column field="ID"> </igx-column>
+            <igx-column field="ChildLevels"></igx-column>
+            <igx-column field="ProductName"></igx-column>
+            <igx-row-island [key]="'childData'" #rowIsland2 [primaryKey]="'ID'" [rowSelection]="'none'">
+                <igx-column field="ID"></igx-column>
+                <igx-column field="ChildLevels"></igx-column>
+                <igx-column field="ProductName"></igx-column>
+            </igx-row-island>
+        </igx-row-island>
+    </igx-hierarchical-grid>
+    <igx-advanced-filtering-dialog [grid]="grid1">
+    </igx-advanced-filtering-dialog>`
+})
+export class IgxHierGridExternalAdvancedFilteringComponent extends IgxHierarchicalGridTestBaseComponent {
+    // @ViewChild('hierarchicalGrid', { read: IgxHierarchicalGridComponent, static: true })
+    // public hgrid: IgxHierarchicalGridComponent;
+
+    public data = SampleTestData.generateHGridData(5, 3);
+}

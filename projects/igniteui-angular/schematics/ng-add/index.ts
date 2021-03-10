@@ -6,35 +6,33 @@ import {
   logSuccess, addDependencies, getConfigFile
 } from '../utils/dependency-handler';
 import { addResetCss } from './add-normalize';
-import { createHost, getDefaultProject } from '../utils/util';
+import { createHost } from '../utils/util';
 
-const enablePolyfills = async (tree: Tree, context: SchematicContext): Promise<string> => {
-  const project = await getDefaultProject(tree);
-  const targetFile = getConfigFile(project, 'polyfills');
-  if (!tree.exists(targetFile)) {
-    context.logger.warn(`${targetFile} not found. You may need to update polyfills.ts manually.`);
-    return;
+const enableIESupport = (tree: Tree, context: SchematicContext) => {
+  const targetFile = '/.browserslistrc';
+  let updateFile = false;
+  let content = (tree.read(targetFile)?.toString());
+  while (content?.includes('not IE')) {
+    content = content.replace('not IE', 'IE');
+    updateFile = true;
   }
-
-  // Match all commented import statements that are core-js/es6/*
-  const pattern = /\/{2}\s{0,}(import\s{0,}\'core\-js\/es6\/.+)/;
-  let polyfillsData = tree.read(targetFile).toString();
-  if (pattern.test(polyfillsData)) {
-    let result: any;
-    // eslint-disable-next-line no-cond-assign
-    while (result = pattern.exec(polyfillsData)) {
-      polyfillsData = polyfillsData.replace(result[0], result[1]);
-    }
+  if (updateFile) {
+    tree.overwrite(targetFile, content);
+  } else {
+    context.logger.warn(`Either IE support is already enabled OR you may need to update ${targetFile} file manually.`);
   }
-
-  return polyfillsData;
 };
 
-const enableWebAnimationsAndGridSupport = (tree: Tree, targetFile: string, polyfillsData: any): void => {
+// Only required if AnimationBuilder is used (igniteui-angular does) & using IE/Edge or Safari
+const updatePolyfillsForIESupport = (tree: Tree, targetFile: string, polyfillsData: any): void => {
   // Target the web-animations-js commented import statement and uncomment it.
   const webAnimationsLine = '// import \'web-animations-js\';';
+  const classlistLine = '// import \'classlist.js\';';
   polyfillsData = polyfillsData.replace(webAnimationsLine,
     webAnimationsLine.substring(3, webAnimationsLine.length));
+
+  polyfillsData = polyfillsData.replace(classlistLine,
+    classlistLine.substring(3, classlistLine.length));
 
   tree.overwrite(targetFile, polyfillsData);
 };
@@ -44,20 +42,25 @@ const readInput = (options: Options): Rule =>
     const workspaceHost = createHost(tree);
     const { workspace } = await workspaces.readWorkspace(tree.root.path, workspaceHost);
     if (options.polyfills) {
-      const targetProperty = 'es5BrowserSupport';
       const project = workspace.projects.get(workspace.extensions['defaultProject'] as string);
-      const polyfillsFile = getConfigFile(project, 'polyfills');
-      const build = project.targets.get('build');
-      let polyfillsData = tree.read(polyfillsFile).toString();
-      if (build.options[targetProperty] !== undefined) {
-        // If project targets angular cli version >= 7.3
-        build.options[targetProperty] = true;
-        enableWebAnimationsAndGridSupport(tree, polyfillsFile, polyfillsData);
-        await workspaces.writeWorkspace(workspace, workspaceHost);
+      const polyfillsFilePath = getConfigFile(project, 'polyfills', context);
+      const browserslistrcFile = (tree.read('/.browserslistrc'));
+      const animationsWarn = 'You may want to manually uncomment \'// import \'web-animations-js\' in polyfills.ts';
+      // .browserslistrc --> If project targets angular cli version >= 10.0
+      if (browserslistrcFile) {
+        enableIESupport(tree, context);
       } else {
-        // If project targets angular cli version < 7.3
-        polyfillsData = await enablePolyfills(tree, context);
-        enableWebAnimationsAndGridSupport(tree, polyfillsFile, polyfillsData);
+        context.logger.warn('.browserslistrc file not found. You may want to manually add it and enable IE support.');
+      }
+      if (polyfillsFilePath) {
+        const polyfillsData = tree.read(polyfillsFilePath)?.toString();
+        if (polyfillsData) {
+          updatePolyfillsForIESupport(tree, polyfillsFilePath, polyfillsData);
+        } else {
+          context.logger.warn('polyfills.ts file not found OR empty. ' + animationsWarn);
+        }
+      } else {
+        context.logger.warn('polyfills.ts file path not found. ' + animationsWarn);
       }
     }
   };
@@ -65,7 +68,7 @@ const readInput = (options: Options): Rule =>
 const addNormalize = (options: Options): Rule =>
   async (tree: Tree, context: SchematicContext) => {
     if (options.resetCss) {
-      const workspaceHost = createHost(tree);
+    const workspaceHost = createHost(tree);
       const { workspace } = await workspaces.readWorkspace(tree.root.path, createHost(tree));
       const result = addResetCss(workspace, tree);
       await workspaces.writeWorkspace(workspace, workspaceHost);

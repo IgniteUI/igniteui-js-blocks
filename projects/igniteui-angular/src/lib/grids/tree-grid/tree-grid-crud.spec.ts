@@ -825,7 +825,6 @@ describe('IgxTreeGrid - CRUD #tGrid', () => {
             }));
 
             it('should be able to enter edit mode of a tree-grid column on dblclick, enter and F2', () => {
-                const allCells = fix.debugElement.queryAll(By.css(CELL_CSS_CLASS));
                 const cell = treeGrid.getCellByColumn(0, 'ID');
 
                 UIInteractions.simulateDoubleClickAndSelectEvent(cell);
@@ -855,8 +854,6 @@ describe('IgxTreeGrid - CRUD #tGrid', () => {
             });
 
             it('should be able to enter edit mode of a non-tree-grid column on dblclick, enter and F2', () => {
-                const allCells = fix.debugElement.queryAll(By.css(CELL_CSS_CLASS));
-                const cellDOM = allCells[1];
                 const cell = treeGrid.getCellByColumn(0, 'Name');
 
                 UIInteractions.simulateDoubleClickAndSelectEvent(cell);
@@ -969,8 +966,6 @@ describe('IgxTreeGrid - CRUD #tGrid', () => {
             }));
 
             it('should be able to enter edit mode of a tree-grid column on dblclick, enter and F2', () => {
-                const allCells = fix.debugElement.queryAll(By.css(CELL_CSS_CLASS));
-                const cellDOM = allCells[0];
                 const cell = treeGrid.getCellByColumn(0, 'ID');
 
                 UIInteractions.simulateDoubleClickAndSelectEvent(cell);
@@ -999,8 +994,6 @@ describe('IgxTreeGrid - CRUD #tGrid', () => {
             });
 
             it('should be able to enter edit mode of a non-tree-grid column on dblclick, enter and F2', () => {
-                const allCells = fix.debugElement.queryAll(By.css(CELL_CSS_CLASS));
-                const cellDOM = allCells[2];
                 const cell = treeGrid.getCellByColumn(0, 'Name');
 
                 UIInteractions.simulateDoubleClickAndSelectEvent(cell);

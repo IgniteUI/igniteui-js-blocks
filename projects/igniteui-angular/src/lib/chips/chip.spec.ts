@@ -20,7 +20,7 @@ import { ControlsFunction } from '../test-utils/controls-functions.spec';
             <igx-chip #chipElem *ngFor="let chip of chipList"
             [id]="chip.id" [draggable]="chip.draggable"
             [removable]="chip.removable" [selectable]="chip.selectable"
-            [displayDensity]="chip.density" (onRemove)="chipRemoved($event)">
+            [displayDensity]="chip.density" (remove)="chipRemoved($event)">
                 <span #label [class]="'igx-chip__text'">{{chip.text}}</span>
                 <igx-icon igxPrefix>drag_indicator</igx-icon>
             </igx-chip>
@@ -59,7 +59,7 @@ class TestChipComponent {
 
     constructor(public cdr: ChangeDetectorRef) { }
 
-    chipRemoved(event) {
+    public chipRemoved(event) {
         this.chipList = this.chipList.filter((item) => item.id !== event.owner.id);
         this.cdr.detectChanges();
     }
@@ -254,24 +254,24 @@ describe('IgxChip', () => {
             fix.detectChanges();
         });
 
-        it('should not trigger onRemove event when delete button is pressed when not removable', () => {
+        it('should not trigger remove event when delete button is pressed when not removable', () => {
             const firstChipComp = fix.componentInstance.chips.toArray()[0];
 
-            spyOn(firstChipComp.onRemove, 'emit');
+            spyOn(firstChipComp.remove, 'emit');
             UIInteractions.triggerKeyDownEvtUponElem('Delete', firstChipComp.chipArea.nativeElement, true);
             fix.detectChanges();
 
-            expect(firstChipComp.onRemove.emit).not.toHaveBeenCalled();
+            expect(firstChipComp.remove.emit).not.toHaveBeenCalled();
         });
 
-        it('should trigger onRemove event when delete button is pressed when removable', () => {
+        it('should trigger remove event when delete button is pressed when removable', () => {
             const secondChipComp = fix.componentInstance.chips.toArray()[1];
 
-            spyOn(secondChipComp.onRemove, 'emit');
+            spyOn(secondChipComp.remove, 'emit');
             UIInteractions.triggerKeyDownEvtUponElem('Delete', secondChipComp.chipArea.nativeElement, true);
             fix.detectChanges();
 
-            expect(secondChipComp.onRemove.emit).toHaveBeenCalled();
+            expect(secondChipComp.remove.emit).toHaveBeenCalled();
         });
 
         it('should delete chip when space button is pressed on delete button', () => {
@@ -326,23 +326,23 @@ describe('IgxChip', () => {
             expect(thirdChip.dragDirective.ghostElement.classList.contains(CHIP_GHOST_COMP_CLASS)).toBeTruthy();
         });
 
-        it('should fire onSelection event when selectable is true', () => {
+        it('should fire selectedChanging event when selectable is true', () => {
             const secondChipComp = fix.componentInstance.chips.toArray()[1];
-            spyOn(secondChipComp.onSelection, 'emit');
-            spyOn(secondChipComp.onSelectionDone, 'emit');
+            spyOn(secondChipComp.selectedChanging, 'emit');
+            spyOn(secondChipComp.selectedChanged, 'emit');
 
             UIInteractions.triggerKeyDownEvtUponElem(' ', secondChipComp.chipArea.nativeElement, true);
             fix.detectChanges();
-            expect(secondChipComp.onSelection.emit).toHaveBeenCalled();
-            expect(secondChipComp.onSelectionDone.emit).not.toHaveBeenCalled();
-            expect(secondChipComp.onSelection.emit).not.toHaveBeenCalledWith({
+            expect(secondChipComp.selectedChanging.emit).toHaveBeenCalled();
+            expect(secondChipComp.selectedChanged.emit).not.toHaveBeenCalled();
+            expect(secondChipComp.selectedChanging.emit).not.toHaveBeenCalledWith({
                 originalEvent: null,
                 owner: secondChipComp,
                 cancel: false,
                 selected: true
             });
 
-            expect(secondChipComp.onSelection.emit).toHaveBeenCalledWith({
+            expect(secondChipComp.selectedChanging.emit).toHaveBeenCalledWith({
                 originalEvent: jasmine.anything(),
                 owner: secondChipComp,
                 cancel: false,
@@ -350,19 +350,19 @@ describe('IgxChip', () => {
             });
         });
 
-        it('should fire onSelectionDone event when selectable is true', (async () => {
+        it('should fire selectedChanged event when selectable is true', (async () => {
             pending('This should be tested in the e2e test');
-            const secondChipComp = fix.componentInstance.chips.toArray()[1];
+            const secondChipComp: IgxChipComponent = fix.componentInstance.chips.toArray()[1];
 
-            spyOn(secondChipComp.onSelection, 'emit');
-            spyOn(secondChipComp.onSelectionDone, 'emit');
+            spyOn(secondChipComp.selectedChanging, 'emit');
+            spyOn(secondChipComp.selectedChanged, 'emit');
             secondChipComp.chipArea.nativeElement.focus();
 
             UIInteractions.triggerKeyDownEvtUponElem(' ', secondChipComp.chipArea.nativeElement, true);
             fix.detectChanges();
-            expect(secondChipComp.onSelection.emit).toHaveBeenCalled();
-            expect(secondChipComp.onSelectionDone.emit).not.toHaveBeenCalled();
-            expect(secondChipComp.onSelection.emit).not.toHaveBeenCalledWith({
+            expect(secondChipComp.selectedChanging.emit).toHaveBeenCalled();
+            expect(secondChipComp.selectedChanged.emit).not.toHaveBeenCalled();
+            expect(secondChipComp.selectedChanging.emit).not.toHaveBeenCalledWith({
                 originalEvent: null,
                 owner: secondChipComp,
                 cancel: false,
@@ -370,31 +370,31 @@ describe('IgxChip', () => {
             });
 
             await wait(400);
-            expect(secondChipComp.onSelectionDone.emit).toHaveBeenCalledTimes(1);
-            expect(secondChipComp.onSelectionDone.emit).not.toHaveBeenCalledWith({
+            expect(secondChipComp.selectedChanged.emit).toHaveBeenCalledTimes(1);
+            expect(secondChipComp.selectedChanged.emit).not.toHaveBeenCalledWith({
                 originalEvent: null,
                 owner: secondChipComp
             });
         }));
 
-        it('should not fire onSelection event when selectable is false', () => {
-            const firstChipComp = fix.componentInstance.chips.toArray()[0];
+        it('should not fire selectedChanging event when selectable is false', () => {
+            const firstChipComp: IgxChipComponent = fix.componentInstance.chips.toArray()[0];
 
-            spyOn(firstChipComp.onSelection, 'emit');
-            spyOn(firstChipComp.onSelectionDone, 'emit');
+            spyOn(firstChipComp.selectedChanging, 'emit');
+            spyOn(firstChipComp.selectedChanged, 'emit');
             firstChipComp.elementRef.nativeElement.focus();
 
             UIInteractions.triggerKeyDownEvtUponElem(' ', firstChipComp.chipArea.nativeElement, true);
             fix.detectChanges();
-            expect(firstChipComp.onSelection.emit).toHaveBeenCalledTimes(0);
-            expect(firstChipComp.onSelectionDone.emit).toHaveBeenCalledTimes(0);
+            expect(firstChipComp.selectedChanging.emit).toHaveBeenCalledTimes(0);
+            expect(firstChipComp.selectedChanged.emit).toHaveBeenCalledTimes(0);
         });
 
-        it('should not fire onSelection event when the remove button is clicked', () => {
-            const secondChipComp = fix.componentInstance.chips.toArray()[1];
+        it('should not fire selectedChanging event when the remove button is clicked', () => {
+            const secondChipComp: IgxChipComponent = fix.componentInstance.chips.toArray()[1];
 
-            spyOn(secondChipComp.onSelection, 'emit');
-            spyOn(secondChipComp.onSelectionDone, 'emit');
+            spyOn(secondChipComp.selectedChanging, 'emit');
+            spyOn(secondChipComp.selectedChanged, 'emit');
 
             const chipRemoveButton = ControlsFunction.getChipRemoveButton(secondChipComp.chipArea.nativeElement);
 
@@ -406,8 +406,8 @@ describe('IgxChip', () => {
             UIInteractions.simulatePointerEvent('pointerup', chipRemoveButton, removeBtnLeft, removeBtnTop);
             fix.detectChanges();
 
-            expect(secondChipComp.onSelection.emit).not.toHaveBeenCalled();
-            expect(secondChipComp.onSelectionDone.emit).not.toHaveBeenCalled();
+            expect(secondChipComp.selectedChanging.emit).not.toHaveBeenCalled();
+            expect(secondChipComp.selectedChanged.emit).not.toHaveBeenCalled();
         });
     });
 

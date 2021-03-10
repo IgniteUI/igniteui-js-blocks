@@ -1,15 +1,14 @@
 <div class="igx-grid-toolbar__dropdown" id="btnExport">
     <button [title]="grid?.resourceStrings.igx_grid_toolbar_exporter_button_tooltip" [disabled]="isExporting"
         igxButton="outlined" [displayDensity]="grid.displayDensity" igxRipple #btn (click)="toggle(btn, toggleRef)">
-        <span class="igx-grid-toolbar__button-space">
-            <igx-icon>import_export</igx-icon>
-            <span #ref>
-                <ng-content></ng-content>
-            </span>
-            <span
-                *ngIf="!ref.childNodes.length">{{ grid.exportText || grid?.resourceStrings.igx_grid_toolbar_exporter_button_label }}</span>
-            <igx-icon>arrow_drop_down</igx-icon>
+        <igx-icon>import_export</igx-icon>
+        <span #ref>
+            <ng-content></ng-content>
         </span>
+        <span *ngIf="!ref.childNodes.length">
+            {{ grid.exportText || grid?.resourceStrings.igx_grid_toolbar_exporter_button_label }}
+        </span>
+        <igx-icon>arrow_drop_down</igx-icon>
     </button>
 
     <ul class="igx-grid-toolbar__dd-list" igxToggle #toggleRef="toggle">

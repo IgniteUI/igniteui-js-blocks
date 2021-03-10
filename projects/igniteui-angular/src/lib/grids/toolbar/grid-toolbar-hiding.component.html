@@ -1,11 +1,9 @@
 <ng-container *ngIf="grid.rendered$ | async">
     <button [title]="grid?.resourceStrings.igx_grid_toolbar_hiding_button_tooltip" #btn igxButton="outlined"
         name="btnColumnHiding" (click)="toggle(btn, ref, actions)" [displayDensity]="grid.displayDensity">
-        <div class="igx-grid-toolbar__button-space">
-            <igx-icon>{{ !grid.hiddenColumnsCount ? 'visibility' : 'visibility_off' }}</igx-icon>
-            <span>{{ grid.hiddenColumnsCount }}</span>
-            <span>{{ grid.hiddenColumnsText }}</span>
-        </div>
+        <igx-icon>{{ !grid.hiddenColumnsCount ? 'visibility' : 'visibility_off' }}</igx-icon>
+        <span>{{ grid.hiddenColumnsCount }}</span>
+        <span>{{ grid.hiddenColumnsText }}</span>
     </button>
     <igx-column-actions #actions igxColumnHiding igxToggle (onOpened)="focusSearch(ref.element)" #ref="toggle"
         [grid]="grid" [title]="grid.columnHidingTitleInternal || title || grid?.resourceStrings.igx_grid_toolbar_hiding_title"

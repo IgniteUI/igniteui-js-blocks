@@ -94,7 +94,7 @@ describe('Column Pinning UI #grid', () => {
 
         it(`- toggling column checkbox checked state successfully changes the column's pinned state.`, () => {
             const checkbox = GridFunctions.getColumnChooserItemElement(columnChooserElement, 'ReleaseDate');
-            verifyCheckbox('ReleaseDate', false, false, columnChooserElement, fix);
+            verifyCheckbox('ReleaseDate', false, false, columnChooserElement);
 
             const column = grid.getColumnByName('ReleaseDate');
             verifyColumnIsPinned(column, false, 0);
@@ -135,25 +135,25 @@ describe('Column Pinning UI #grid', () => {
 
         it('reflects properly grid column pinned value changes.', () => {
             const name = 'ReleaseDate';
-            verifyCheckbox(name, false, false, columnChooserElement, fix);
+            verifyCheckbox(name, false, false, columnChooserElement);
             const column = grid.getColumnByName(name);
 
             column.pinned = true;
             fix.detectChanges();
 
-            verifyCheckbox(name, true, false, columnChooserElement, fix);
+            verifyCheckbox(name, true, false, columnChooserElement);
             verifyColumnIsPinned(column, true, 1);
 
             column.pinned = false;
             fix.detectChanges();
 
-            verifyCheckbox(name, false, false, columnChooserElement, fix);
+            verifyCheckbox(name, false, false, columnChooserElement);
             verifyColumnIsPinned(column, false, 0);
 
             column.pinned = undefined;
             fix.detectChanges();
 
-            verifyCheckbox(name, false, false, columnChooserElement, fix);
+            verifyCheckbox(name, false, false, columnChooserElement);
             verifyColumnIsPinned(column, false, 0);
 
             column.pinned = true;
@@ -163,7 +163,7 @@ describe('Column Pinning UI #grid', () => {
             column.pinned = null;
             fix.detectChanges();
 
-            verifyCheckbox(name, false, false, columnChooserElement, fix);
+            verifyCheckbox(name, false, false, columnChooserElement);
             verifyColumnIsPinned(column, false, 0);
         });
 
@@ -332,7 +332,7 @@ describe('Column Pinning UI #grid', () => {
             GridFunctions.clickColumnChooserItem(columnChooserElement, columnName);
             fix.detectChanges();
 
-            verifyCheckbox(columnName, true, false, columnChooserElement, fix);
+            verifyCheckbox(columnName, true, false, columnChooserElement);
             expect(grid.columns[1].allChildren.every((col) => col.pinned)).toBe(true);
         });
 
@@ -342,12 +342,12 @@ describe('Column Pinning UI #grid', () => {
             grid.columns[1].pin();
             fix.detectChanges();
 
-            verifyCheckbox(columnName, true, false, columnChooserElement, fix);
+            verifyCheckbox(columnName, true, false, columnChooserElement);
             expect(grid.columns[1].allChildren.every((col) => col.pinned)).toBe(true);
 
             GridFunctions.clickColumnChooserItem(columnChooserElement, columnName);
             fix.detectChanges();
-            verifyCheckbox(columnName, false, false, columnChooserElement, fix);
+            verifyCheckbox(columnName, false, false, columnChooserElement);
             expect(grid.columns[1].allChildren.every((col) => !col.pinned)).toBe(true);
         });
     });

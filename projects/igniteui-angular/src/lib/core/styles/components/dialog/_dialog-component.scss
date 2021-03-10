@@ -23,6 +23,10 @@
         @extend %igx-dialog-content !optional;
     }
 
+    @include e(window-message) {
+        @extend %igx-dialog-message !optional;
+    }
+
     @include e(window-actions) {
         @extend %igx-dialog-actions !optional;
     }

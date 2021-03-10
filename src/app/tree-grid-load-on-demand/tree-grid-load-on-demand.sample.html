@@ -1,26 +1,33 @@
 <div class="sample-column">
     <div class="density-chooser">
-        <igx-buttongroup [values]="summaryModes" (onSelect)="selectSummaryMode($event)"></igx-buttongroup>
+        <igx-buttongroup [values]="summaryModes" (selected)="selectSummaryMode($event)"></igx-buttongroup>
     </div>
     <div class="density-chooser">
-        <igx-buttongroup [values]="displayDensities" (onSelect)="selectDensity($event)"></igx-buttongroup>
+        <igx-buttongroup [values]="displayDensities" (selected)="selectDensity($event)"></igx-buttongroup>
     </div>
 
     <h4>Primary/Foreign key</h4>
     <igx-tree-grid #grid1 [data]="data1" primaryKey="employeeID" foreignKey="PID"
         [loadChildrenOnDemand]="loadChildren" hasChildrenKey="hasEmployees"
-        [rowSelection]="selectionMode" [displayDensity]="density" [width]="'900px'" [height]="'800px'"
-        [summaryCalculationMode]="summaryMode" [allowFiltering]="true" [filterMode]="'excelStyleFilter'">
+        [rowSelection]="selectionMode" [displayDensity]="density" [width]="'900px'" [height]="'800px'" [summaryCalculationMode]="summaryMode"
+        [allowFiltering]="true" [filterMode]="'excelStyleFilter'">
+        <igx-grid-toolbar [displayDensity]="grid1.displayDensity">
+            <app-grid-search-box [grid]="grid1" [style.width]="'300px'"></app-grid-search-box>
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                    <span excelText>Export to Excel 👌</span>
+                    <span csvText>Export to CSV 👍</span>
+                </igx-grid-toolbar-exporter>
+            </igx-grid-toolbar-actions>
+        </igx-grid-toolbar>
         <igx-column *ngFor="let c of columns" [field]="c.field" [dataType]="c.dataType" [header]="c.label"
             [pinned]="c.pinned" [movable]="c.movable" [groupable]="false" [resizable]="c.resizable" [width]="c.width"
             [sortable]="true" [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="c.hasSummary"
             [minWidth]="c.minWidth" [maxWidth]="c.maxWidth">
         </igx-column>
-
-        <ng-template igxToolbarCustomContent>
-            <app-grid-search-box [grid]="grid1" [style.width]="'530px'"></app-grid-search-box>
-        </ng-template>
-
         <!-- <ng-template igxRowLoadingIndicator>
             <igx-icon>loop</igx-icon>
         </ng-template> -->
@@ -55,16 +62,24 @@
     <h4>ChildData key</h4>
     <igx-tree-grid #grid2 [data]="data2" primaryKey="employeeID" childDataKey="employees"
         [loadChildrenOnDemand]="loadChildren" hasChildrenKey="hasEmployees"
-        [rowSelection]="selectionMode" [displayDensity]="density" [width]="'900px'" [height]="'800px'"
-        [summaryCalculationMode]="summaryMode" [allowFiltering]="true" [filterMode]="'excelStyleFilter'">
+        [rowSelection]="selectionMode" [displayDensity]="density" [width]="'900px'" [height]="'800px'" [summaryCalculationMode]="summaryMode"
+        [allowFiltering]="true" [filterMode]="'excelStyleFilter'">
+        <igx-grid-toolbar [displayDensity]="grid2.displayDensity">
+            <app-grid-search-box [grid]="grid2" [style.width]="'300px'"></app-grid-search-box>
+            <igx-grid-toolbar-actions>
+                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                <igx-grid-toolbar-exporter [exportCSV]="true" [exportExcel]="true">
+                    <span excelText>Export to Excel 👌</span>
+                    <span csvText>Export to CSV 👍</span>
+                </igx-grid-toolbar-exporter>
+            </igx-grid-toolbar-actions>
+        </igx-grid-toolbar>
         <igx-column *ngFor="let c of columns" [field]="c.field" [dataType]="c.dataType" [header]="c.label"
             [pinned]="c.pinned" [movable]="c.movable" [groupable]="false" [resizable]="c.resizable" [width]="c.width"
             [sortable]="true" [filterable]="true" [editable]="true" [hidden]="c.hidden" [hasSummary]="c.hasSummary"
             [minWidth]="c.minWidth" [maxWidth]="c.maxWidth">
         </igx-column>
-
-        <ng-template igxToolbarCustomContent>
-            <app-grid-search-box [grid]="grid2" [style.width]="'530px'"></app-grid-search-box>
-        </ng-template>
     </igx-tree-grid>
 </div>

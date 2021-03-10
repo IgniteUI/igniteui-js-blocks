@@ -2,12 +2,12 @@
     <ng-template igxCollapsibleIndicator let-column="column" #ind >
         <igx-icon [attr.draggable]="false">{{column.expanded ? 'remove' : 'add'}} </igx-icon>
     </ng-template>
-    <igx-grid [allowFiltering]="true" [pinning]="pinningConfig" [rowSelection]="selectionMode" #grid [data]="data" displayDensity="compact" [allowAdvancedFiltering]="true">
-        <igx-grid-toolbar>
-            <igx-grid-toolbar-title>Grid Toolbar</igx-grid-toolbar-title>
+    <igx-grid [allowFiltering]="true" [pinning]="pinningConfig" [rowSelection]="selectionMode" #grid [data]="data" displayDensity="compact">
+        <igx-grid-toolbar [displayDensity]="grid.displayDensity">
             <igx-grid-toolbar-actions>
-                <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
-                <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+               <igx-grid-toolbar-pinning></igx-grid-toolbar-pinning>
+               <igx-grid-toolbar-hiding></igx-grid-toolbar-hiding>
+                <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
             </igx-grid-toolbar-actions>
         </igx-grid-toolbar>
         <igx-column [movable]="true"  [resizable]="true"  field="Missing"></igx-column>

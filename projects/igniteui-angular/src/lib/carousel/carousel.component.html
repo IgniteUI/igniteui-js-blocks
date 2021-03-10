@@ -1,24 +1,21 @@
 <ng-template #defaultIndicator let-slide>
     <div class="igx-nav-dot"
-        [class.igx-nav-dot--active]="slide.active"
-    >
+        [class.igx-nav-dot--active]="slide.active">
     </div>
 </ng-template>
 
 <ng-template #defaultNextButton let-disabled>
-    <a class="igx-nav-arrow"
-        [class.igx-nav-arrow--disabled]="disabled"
-    >
+    <span class="igx-nav-arrow"
+          [class.igx-nav-arrow--disabled]="disabled">
         <igx-icon>arrow_forward</igx-icon>
-    </a>
+    </span>
 </ng-template>
 
 <ng-template #defaultPrevButton let-disabled>
-    <a class="igx-nav-arrow"
-        [class.igx-nav-arrow--disabled]="disabled"
-    >
+    <span class="igx-nav-arrow"
+          [class.igx-nav-arrow--disabled]="disabled">
         <igx-icon>arrow_back</igx-icon>
-    </a>
+    </span>
 </ng-template>
 
 <div *ngIf="showIndicators" [ngClass]="indicatorsOrientationClass" [attr.role]="'tablist'">

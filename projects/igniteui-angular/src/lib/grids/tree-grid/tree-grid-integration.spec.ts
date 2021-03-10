@@ -499,7 +499,6 @@ describe('IgxTreeGrid - Integration #tGrid', () => {
 
         it('TAB navigation should not leave the edited row and the banner.', async () => {
             const grid = fix.componentInstance.treeGrid as IgxTreeGridComponent;
-            const row = grid.getRowByIndex(2);
             const dateCell = grid.getCellByColumn(2, 'HireDate');
             const nameCell = grid.getCellByColumn(2, 'Name');
             const idCell = grid.getCellByColumn(2, 'ID');

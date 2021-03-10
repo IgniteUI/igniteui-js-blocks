@@ -21,22 +21,6 @@
     justify-self: center;
 }
 
-.igx-button--flat .igx-icon,
-.igx-button--raised .igx-icon,
-.igx-button--outlined .igx-icon {
-    margin-right: 8px;
-}
-
-[dir='rtl'].igx-button--flat .igx-icon,
-[dir='rtl'].igx-button--raised .igx-icon,
-[dir='rtl'].igx-button--outlined .igx-icon,
-[dir='rtl'] .igx-button--flat .igx-icon,
-[dir='rtl'] .igx-button--raised .igx-icon,
-[dir='rtl'] .igx-button--outlined .igx-icon {
-    margin-left: 8px;
-    margin-right: 0;
-}
-
 .density-chooser {
     margin-bottom: 16px;
 }

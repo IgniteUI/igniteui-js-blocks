@@ -5,7 +5,7 @@
     [ghost]="false"
     [dragTolerance]="0"
     (dragStart)="dragStart($event)"
-    (dragEnd)="dragEnd($event)"
+    (dragEnd)="dragEnd()"
     (dragMove)="onDragMove($event)"
     (keydown)="onKeyDown($event)"
     [ngClass]="{
@@ -96,8 +96,8 @@
                           (keydown)="invokeClick($event)"
                           (click)="onChipClick(expressionItem)"
                           (dblclick)="onChipDblClick(expressionItem)"
-                          (onRemove)="onChipRemove(expressionItem)"
-                          (onSelectionDone)="onChipSelectionEnd()"
+                          (remove)="onChipRemove(expressionItem)"
+                          (selectedChanged)="onChipSelectionEnd()"
                     >
                     <span igxPrefix class="igx-filter-tree__expression-column">{{ expressionItem.columnHeader || expressionItem.expression.fieldName }}</span>
                     <igx-prefix>

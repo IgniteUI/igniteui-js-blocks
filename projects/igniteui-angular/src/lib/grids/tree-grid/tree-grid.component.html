@@ -74,12 +74,12 @@
             class="igx-grid__scroll-on-drag-pinned" [style.left.px]="pinnedWidth"></span>
         <ng-template #pinnedRecordsTemplate>
             <ng-container *ngIf='data
-            | treeGridTransaction:id:pipeTrigger
+            | treeGridTransaction:pipeTrigger
             | visibleColumns:hasVisibleColumns
             | treeGridNormalizeRecord:pipeTrigger
             | gridRowPinning:id:true:pipeTrigger
-            | treeGridFiltering:filteringExpressionsTree:filterStrategy:advancedFilteringExpressionsTree:id:pipeTrigger:filteringPipeTrigger:true
-            | treeGridSorting:sortingExpressions:sortStrategy:id:pipeTrigger:true
+            | treeGridFiltering:filteringExpressionsTree:filterStrategy:advancedFilteringExpressionsTree:pipeTrigger:filteringPipeTrigger:true
+            | treeGridSorting:sortingExpressions:sortStrategy:pipeTrigger:true
             | gridAddRow:true:pipeTrigger as pinnedData'>
                 <div #pinContainer *ngIf='pinnedData.length > 0'
                     [ngClass]="{
@@ -96,14 +96,14 @@
         </ng-template>
         <ng-container *ngTemplateOutlet="hasPinnedRecords && isRowPinningToTop ? pinnedRecordsTemplate : null"></ng-container>
         <ng-template igxGridFor let-rowData [igxGridForOf]="data
-        | treeGridTransaction:id:pipeTrigger
+        | treeGridTransaction:pipeTrigger
         | visibleColumns:hasVisibleColumns
-        | treeGridHierarchizing:primaryKey:foreignKey:childDataKey:id:pipeTrigger
-        | treeGridFiltering:filteringExpressionsTree:filterStrategy:advancedFilteringExpressionsTree:id:pipeTrigger:filteringPipeTrigger
-        | treeGridSorting:sortingExpressions:sortStrategy:id:pipeTrigger
-        | treeGridFlattening:id:expansionDepth:expansionStates:pipeTrigger
-        | treeGridPaging:page:perPage:id:pipeTrigger
-        | treeGridSummary:hasSummarizedColumns:summaryCalculationMode:summaryPosition:showSummaryOnCollapse:id:pipeTrigger:summaryPipeTrigger
+        | treeGridHierarchizing:primaryKey:foreignKey:childDataKey:pipeTrigger
+        | treeGridFiltering:filteringExpressionsTree:filterStrategy:advancedFilteringExpressionsTree:pipeTrigger:filteringPipeTrigger
+        | treeGridSorting:sortingExpressions:sortStrategy:pipeTrigger
+        | treeGridFlattening:expansionDepth:expansionStates:pipeTrigger
+        | treeGridPaging:page:perPage:pipeTrigger
+        | treeGridSummary:hasSummarizedColumns:summaryCalculationMode:summaryPosition:showSummaryOnCollapse:pipeTrigger:summaryPipeTrigger
         | gridRowPinning:id:false:pipeTrigger
         | gridAddRow:false:pipeTrigger"
             let-rowIndex="index" [igxForScrollOrientation]="'vertical'" [igxForScrollContainer]='verticalScroll'

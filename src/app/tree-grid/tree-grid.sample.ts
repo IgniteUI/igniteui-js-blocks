@@ -18,6 +18,7 @@ export class TreeGridSampleComponent implements OnInit {
     public selectionMode;
     public density = '';
     public displayDensities;
+    public selectionModes: GridSelectionMode[] = ['none', 'single', 'multiple', 'multipleCascade'];
 
     private nextRow = 1;
 

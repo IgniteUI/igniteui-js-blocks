@@ -1268,6 +1268,7 @@ describe('IgxHierarchicalGrid selection #hGrid', () => {
             rowIsland1.rowSelection = GridSelectionMode.multiple;
             fix.componentInstance.selectedRows = ['0', '2', '3'];
             fix.detectChanges();
+
             expect(hierarchicalGrid.getRowByKey('0').selected).toBeTrue();
             expect(hierarchicalGrid.getRowByKey('1').selected).toBeFalse();
 

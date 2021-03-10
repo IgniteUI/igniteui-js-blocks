@@ -3,45 +3,36 @@
         <article class="grid-sample">
             <h4 class="sample-title">Toolbar</h4>
 
-            <igx-grid #grid1 [data]="data" [autoGenerate]="true" height="400px" width="900px" [allowFiltering]="true"
-                (onColumnInit)="initColumns($event)">
-
+            <igx-grid #grid1 [data]="data" [autoGenerate]="true" height="400px" width="1100px" [allowFiltering]="true" (onColumnInit)="initColumns($event)">
                 <igx-grid-toolbar *ngIf="showToolbar" [displayDensity]="grid1.displayDensity">
-                    <igx-grid-toolbar-title>{{ title }}</igx-grid-toolbar-title>
+                    <igx-grid-toolbar-title>{{ toolbarTitle }}</igx-grid-toolbar-title>
+                    <button igxButton="flat" igxRipple igxRippleCentered="true" (click)="grid1.clearFilter()">
+                        <igx-icon fontSet="material" name="clear"></igx-icon>
+                        Clear Filter
+                    </button>
+                    <button igxButton="flat" igxRipple igxRippleCentered="true" (click)="grid1.clearSort()">
+                        <igx-icon fontSet="material" name="clear"></igx-icon>
+                        Clear Sort
+                    </button>
                     <igx-grid-toolbar-actions>
-                        <igx-grid-toolbar-pinning *ngIf="pinningEnabled"></igx-grid-toolbar-pinning>
-                        <igx-grid-toolbar-hiding *ngIf="hidingEnabled"></igx-grid-toolbar-hiding>
-                        <igx-grid-toolbar-exporter [exportCSV]="csv" [exportExcel]="excel">
-                            <span excelText>Transform to Excel</span>
-                            <span csvText>Transform to CSV</span>
+                        <igx-grid-toolbar-pinning *ngIf="columnPinning"></igx-grid-toolbar-pinning>
+                        <igx-grid-toolbar-hiding *ngIf="columnHiding"></igx-grid-toolbar-hiding>
+                        <igx-grid-toolbar-advanced-filtering></igx-grid-toolbar-advanced-filtering>
+                        <igx-grid-toolbar-exporter [exportCSV]="exportCsv" [exportExcel]="exportExcel">
+                            <span excelText>Export to Excel 👌</span>
+                            <span csvText>Export to CSV 👍</span>
                         </igx-grid-toolbar-exporter>
                     </igx-grid-toolbar-actions>
                 </igx-grid-toolbar>
 
-                <ng-template igxToolbarCustomContent let-sampleGrid="grid">
-                    <button igxButton="flat" igxRipple igxRippleCentered="true" (click)="sampleGrid.clearFilter()">
-                        <igx-icon name="clear"></igx-icon>
-                        Clear Filter
-                    </button>
-                    <button igxButton="flat" igxRipple igxRippleCentered="true" (click)="sampleGrid.clearSort()">
-                        <igx-icon name="clear"></igx-icon>
-                        Clear Sort
-                    </button>
-                </ng-template>
-
             </igx-grid>
 
-            <br>
-            <igx-switch [(ngModel)]="showToolbar">Toolbar</igx-switch>
-            <br>
-            <igx-switch [(ngModel)]="hidingEnabled">Column Hiding</igx-switch>
-            <br>
-            <igx-switch [(ngModel)]="pinningEnabled">Column Pinning</igx-switch>
-            <br>
-            <igx-switch [(ngModel)]="excel">Export Excel</igx-switch>
-            <br>
-            <igx-switch [(ngModel)]="csv">Export CSV</igx-switch>
-            <br><input type="text" placeholder="" [(ngModel)]="title" />
+            <br><igx-switch [(ngModel)]="showToolbar">Toolbar</igx-switch>
+            <br><igx-switch [(ngModel)]="columnHiding">Column Hiding</igx-switch>
+            <br><igx-switch [(ngModel)]="columnPinning">Column Pinning</igx-switch>
+            <br><igx-switch [(ngModel)]="exportExcel">Export Excel</igx-switch>
+            <br><igx-switch [(ngModel)]="exportCsv">Export CSV</igx-switch>
+            <br><input type="text" placeholder="" [(ngModel)]="toolbarTitle" />
 
         </article>
     </section>

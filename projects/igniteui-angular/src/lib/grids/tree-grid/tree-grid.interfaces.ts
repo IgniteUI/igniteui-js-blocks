@@ -1,4 +1,3 @@
-import { IBaseEventArgs } from '../../core/utils';
 
 export interface ITreeGridRecord {
     rowID: any;

@@ -33,7 +33,7 @@
             (compositionstart)="onCompositionStart()"
             (compositionend)="onCompositionEnd()"
             (keydown)="onInputKeyDown($event)"
-            (keyup)="onInputKeyUp($event)"/>
+            (keyup)="onInputKeyUp()"/>
             <igx-suffix *ngIf="value || value === 0" >
                 <igx-icon (keydown)="onCommitKeyDown($event)" (click)="onCommitClick()" tabindex="0">done</igx-icon>
                 <igx-icon (keydown)="onClearKeyDown($event)" (click)="onClearClick()" tabindex="0">clear</igx-icon>
@@ -95,7 +95,7 @@
                     (pointerdown)="onChipPointerdown($event, chip)"
                     (click)="onChipClick($event, item)"
                     (keydown)="onChipKeyDown($event, item)"
-                    (onRemove)="onChipRemoved($event, item)"
+                    (remove)="onChipRemoved($event, item)"
                     [selectable]="false"
                     [selected]="item.isSelected"
                     [displayDensity]="displayDensity"
@@ -130,10 +130,10 @@
 <div #buttonsContainer [ngClass]="isNarrowWidth ? 'igx-grid__filtering-row-editing-buttons--small' : 'igx-grid__filtering-row-editing-buttons'">
     <button [displayDensity]="column.grid.displayDensity" [igxButton]="isNarrowWidth ? 'icon' : 'flat'" igxRipple (click)="clearFiltering()" [disabled]="disabled" [tabindex]="disabled">
         <igx-icon>refresh</igx-icon>
-        {{isNarrowWidth ? '' : filteringService.grid.resourceStrings.igx_grid_filter_row_reset}}
+        <span>{{isNarrowWidth ? '' : filteringService.grid.resourceStrings.igx_grid_filter_row_reset}}</span>
     </button>
     <button #closeButton [displayDensity]="column.grid.displayDensity" [igxButton]="isNarrowWidth ? 'icon' : 'flat'"  igxRipple (click)="close()">
         <igx-icon>close</igx-icon>
-        {{isNarrowWidth ? '' : filteringService.grid.resourceStrings.igx_grid_filter_row_close}}
+        <span>{{isNarrowWidth ? '' : filteringService.grid.resourceStrings.igx_grid_filter_row_close}}</span>
     </button>
 </div>

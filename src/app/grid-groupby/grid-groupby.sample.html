@@ -24,7 +24,7 @@
         </igx-drop-down-item>
     </igx-drop-down>
     <div class="density-chooser" style="margin-bottom: 16px">
-        <igx-buttongroup [values]="summaryModes" (onSelect)="selectSummaryMode($event)"
+        <igx-buttongroup [values]="summaryModes" (selected)="selectSummaryMode($event)"
             style="display: block; width: 500px"></igx-buttongroup>
     </div>
     <igx-grid #grid1 [data]="data" [allowFiltering]="true" [cellSelection]="'single'" [width]="'1200px'"

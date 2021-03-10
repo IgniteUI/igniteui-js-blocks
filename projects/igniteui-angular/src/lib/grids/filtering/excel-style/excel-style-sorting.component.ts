@@ -22,7 +22,8 @@ export class IgxExcelStyleSortingComponent implements OnDestroy {
     /**
      * @hidden @internal
      */
-    @HostBinding('class') class = 'igx-excel-filter__sort';
+    @HostBinding('class.igx-excel-filter__sort')
+    public defaultClass = true;
 
     /**
      * @hidden @internal
@@ -38,7 +39,7 @@ export class IgxExcelStyleSortingComponent implements OnDestroy {
         });
      }
 
-    ngOnDestroy(): void {
+     public ngOnDestroy(): void {
         this.destroy$.next(true);
         this.destroy$.complete();
     }

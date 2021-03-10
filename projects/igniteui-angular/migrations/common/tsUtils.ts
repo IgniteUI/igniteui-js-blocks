@@ -9,7 +9,9 @@ import { TSLanguageService } from './tsPlugin/TSLanguageService';
 
 export const IG_PACKAGE_NAME = 'igniteui-angular';
 export const NG_LANG_SERVICE_PACKAGE_NAME = '@angular/language-service';
-export const CUSTOM_TS_PLUGIN_NAME = './tsPlugin';
+export const NG_CORE_PACKAGE_NAME = '@angular/core';
+export const CUSTOM_TS_PLUGIN_PATH = './tsPlugin';
+export const CUSTOM_TS_PLUGIN_NAME = 'igx-ts-plugin';
 
 /** Returns a source file */
 // export function getFileSource(sourceText: string): ts.SourceFile {
@@ -224,14 +226,14 @@ export const createProjectService = (serverHost: tss.server.ServerHost): tss.ser
  * Attempts to get type definitions using the TypeScript Language Service.
  * Can fall back to a cached version of the TSLS.
  */
-const getTypeDefinitions = (langServ: tss.LanguageService, entryPath: string, definition: tss.DefinitionInfo): any =>
+const getTypeDefinitions = (langServ: tss.LanguageService, entryPath: string, position: number): any =>
     /*
         getTypeScriptLanguageService is attached by us to the Typescript Language Service
         via a custom made plugin, it's sole purpose is to cache the language service and return it
         before any other plugins modify it
     */
-    langServ.getTypeDefinitionAtPosition(entryPath, definition.textSpan.start)
-    || (langServ as TSLanguageService).getTypeScriptLanguageService().getTypeDefinitionAtPosition(entryPath, definition.textSpan.start);
+    langServ.getTypeDefinitionAtPosition(entryPath, position)
+    || (langServ as TSLanguageService).getTypeScriptLanguageService().getTypeDefinitionAtPosition(entryPath, position);
 
 /**
  * Get type information about a TypeScript identifier
@@ -251,7 +253,7 @@ export const getTypeDefinitionAtPosition =
         if (definition.kind.toString() === 'reference') {
             return langServ.getDefinitionAndBoundSpan(entryPath, definition.textSpan.start).definitions[0];
         }
-        let typeDefs = getTypeDefinitions(langServ, entryPath, definition);
+        let typeDefs = getTypeDefinitions(langServ, entryPath, definition.textSpan.start);
         // if there are no type definitions found, the identifier is a ts property, referred in an internal/external template
         // or is a reference in a decorator
         if (!typeDefs) {
@@ -288,7 +290,7 @@ export const getTypeDefinitionAtPosition =
                 return null;
             }
 
-            typeDefs = langServ.getTypeDefinitionAtPosition(definition.fileName, member.name.getStart() + 1);
+            typeDefs = getTypeDefinitions(langServ, definition.fileName, member.name.getStart() + 1);
         }
         if (typeDefs?.length) {
             return typeDefs[0];

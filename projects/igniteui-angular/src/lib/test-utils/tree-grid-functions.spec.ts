@@ -335,6 +335,45 @@ export class TreeGridFunctions {
     }
 
     /**
+     * Verifies the selection and checkbox state of the treeGrid row.
+     */
+    public static verifyRowByIndexSelectionAndCheckboxState(fix, rowIndex: any, expectedSelection: boolean,
+        expectedCheckboxState: boolean | null) {
+        const treeGrid = fix.debugElement.query(By.css('igx-tree-grid')).componentInstance as IgxTreeGridComponent;
+        const rowComponent = treeGrid.getRowByIndex(rowIndex);
+        const rowDOM = TreeGridFunctions.sortElementsVertically(TreeGridFunctions.getAllRows(fix))[rowIndex];
+        // Verfiy selection of checkbox
+        const checkboxDiv = rowDOM.query(By.css(TREE_ROW_DIV_SELECTION_CHECKBOX_CSS_CLASS));
+        const checkboxComponent = checkboxDiv.query(By.css('igx-checkbox')).componentInstance as IgxCheckboxComponent;
+
+        if (expectedCheckboxState === null) {
+            expect(checkboxComponent.indeterminate).toBe(true);
+            expect(checkboxComponent.checked).toBe(false, 'Incorrect checkbox selection state');
+            expect(checkboxComponent.nativeCheckbox.nativeElement.checked).toBe(false, 'Incorrect native checkbox selection state');
+
+            // Verify selection of row
+            expect(rowComponent.selected).toBe(false, 'Incorrect row selection state');
+            expect((rowDOM.nativeElement as HTMLElement).classList.contains(TREE_ROW_SELECTION_CSS_CLASS)).toBe(false);
+
+            // Verify selection of row through treeGrid
+            const selectedRows = (treeGrid as IgxTreeGridComponent).selectedRows;
+            expect(selectedRows.includes(rowComponent.rowID)).toBe(false);
+        }  else {
+            expect(checkboxComponent.checked).toBe(expectedCheckboxState, 'Incorrect checkbox selection state');
+            expect(checkboxComponent.nativeCheckbox.nativeElement.checked).toBe(
+                expectedCheckboxState, 'Incorrect native checkbox selection state');
+
+            // Verify selection of row
+            expect(rowComponent.selected).toBe(expectedSelection, 'Incorrect row selection state');
+            expect((rowDOM.nativeElement as HTMLElement).classList.contains(TREE_ROW_SELECTION_CSS_CLASS)).toBe(expectedSelection);
+
+            // Verify selection of row through treeGrid
+            const selectedRows = (treeGrid as IgxTreeGridComponent).selectedRows;
+            expect(selectedRows.includes(rowComponent.rowID)).toBe(expectedSelection);
+        }
+    }
+
+    /**
      * Verifies the selection of the header checkbox.
      * The expected value can be true, false or null (indeterminate).
      */

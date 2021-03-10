@@ -19,15 +19,15 @@ export class NoopFilteringStrategy implements IFilteringStrategy {
         return this._instance || (this._instance = new NoopFilteringStrategy());
     }
 
-    public filter(data: any[], expressionsTree: IFilteringExpressionsTree, advancedExpressionsTree?: IFilteringExpressionsTree): any[] {
+    public filter(data: any[], _: IFilteringExpressionsTree, __?: IFilteringExpressionsTree): any[] {
         return data;
     }
 }
 
 export abstract class BaseFilteringStrategy implements IFilteringStrategy  {
-    public findMatchByExpression(rec: any, expr: IFilteringExpression, isDate?: boolean): boolean {
+    public findMatchByExpression(rec: any, expr: IFilteringExpression, isDate?: boolean, grid?: GridType): boolean {
         const cond = expr.condition;
-        const val = this.getFieldValue(rec, expr.fieldName, isDate);
+        const val = this.getFieldValue(rec, expr.fieldName, isDate, grid);
         return cond.logic(val, expr.searchVal, expr.ignoreCase);
     }
 
@@ -61,7 +61,7 @@ export abstract class BaseFilteringStrategy implements IFilteringStrategy  {
                 const expression = expressions as IFilteringExpression;
                 const isDate = grid && grid.getColumnByName(expression.fieldName) ?
                     grid.getColumnByName(expression.fieldName).dataType === DateType : false;
-                return this.findMatchByExpression(rec, expression, isDate);
+                return this.findMatchByExpression(rec, expression, isDate, grid);
             }
         }
 
@@ -71,7 +71,7 @@ export abstract class BaseFilteringStrategy implements IFilteringStrategy  {
     public abstract filter(data: any[], expressionsTree: IFilteringExpressionsTree,
         advancedExpressionsTree?: IFilteringExpressionsTree, grid?: GridType): any[];
 
-    protected abstract getFieldValue(rec: any, fieldName: string, isDate: boolean): any;
+    protected abstract getFieldValue(rec: any, fieldName: string, isDate?: boolean, grid?: GridType): any;
 }
 
 export class FilteringStrategy extends BaseFilteringStrategy {
@@ -91,6 +91,7 @@ export class FilteringStrategy extends BaseFilteringStrategy {
         let rec;
         const len = data.length;
         const res: T[] = [];
+
         if ((FilteringExpressionsTree.empty(expressionsTree) && FilteringExpressionsTree.empty(advancedExpressionsTree)) || !len) {
             return data;
         }
@@ -106,6 +107,33 @@ export class FilteringStrategy extends BaseFilteringStrategy {
     protected getFieldValue(rec: any, fieldName: string, isDate: boolean = false): any {
         let value = resolveNestedPath(rec, fieldName);
         value = value && isDate ? parseDate(value) : value;
+        return value;
+    }
+}
+export class FormattedValuesFilteringStrategy extends FilteringStrategy {
+    /**
+     * Creates a new instance of FormattedValuesFilteringStrategy.
+     *
+     * @param fields An array of column field names that should be formatted.
+     * If omitted the values of all columns which has formatter will be formatted.
+     */
+    constructor(private fields?: string[]) {
+        super();
+    }
+
+    /** @hidden */
+    public shouldApplyFormatter(fieldName: string): boolean {
+        return !this.fields || this.fields.length === 0 || this.fields.some(f => f === fieldName);
+    }
+
+    protected getFieldValue(rec: any, fieldName: string, isDate: boolean = false, grid?: GridType): any {
+        const column = grid.getColumnByName(fieldName);
+        let value = resolveNestedPath(rec, fieldName);
+
+        value = column.formatter && this.shouldApplyFormatter(fieldName) ?
+            column.formatter(value) :
+            value && isDate ? parseDate(value) : value;
+
         return value;
     }
 }

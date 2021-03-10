@@ -48,7 +48,7 @@
                         <igx-grid-toolbar-advanced-filtering>Really advanced filtering</igx-grid-toolbar-advanced-filtering>
                     </igx-grid-toolbar-actions>
                 </igx-grid-toolbar>
-            
+
                 <igx-column field="ProductID" width="130px" [dataType]="'number'" filterable="true" [resizable]="true" [hasSummary]="true" [movable]="true" [sortable]="true" [editable]="true">
                 </igx-column>
                 <igx-column field="ProductName" width="200px" [dataType]="'string'" filterable="true" [resizable]="true" [hasSummary]="true" [movable]="true" [sortable]="true" [editable]="true">
@@ -69,7 +69,10 @@
             <div class="logContainer">
                 <div class="highlight">
                     <span>Events execution sequence</span>
-                    <button class="clearBtn" igxButton="flat" (click)="clearLog()"><igx-icon>clear</igx-icon>Clear log</button>
+                    <button class="clearBtn" igxButton="flat" (click)="clearLog()">
+                        <igx-icon>clear</igx-icon>
+                        <span>Clear log</span>
+                    </button>
                 </div>
                 <hr />
                 <div #logger class="logger"></div>

@@ -33,6 +33,7 @@ import { GridType } from '../common/grid.interface';
 import { IgxColumnGroupComponent } from '../columns/column-group.component';
 import { IgxColumnComponent } from '../columns/column.component';
 import { IForOfState } from '../../directives/for-of/for_of.directive';
+import { takeUntil } from 'rxjs/operators';
 
 export const hierarchicalTransactionServiceFactory = () => new IgxTransactionService();
 
@@ -195,6 +196,19 @@ export abstract class IgxHierarchicalGridBaseDirective extends IgxGridBaseDirect
         this.columnList.reset(result);
         this.columnList.notifyOnChanges();
         this.initPinning();
+
+        const factoryColumn = this.resolver.resolveComponentFactory(IgxColumnComponent);
+        const outputs = factoryColumn.outputs.filter(o => o.propName !== 'onColumnChange');
+        outputs.forEach(output => {
+            this.columnList.forEach(column => {
+                if (column[output.propName]) {
+                    column[output.propName].pipe(takeUntil(column.destroy$)).subscribe((args) => {
+                        const rowIslandColumn = this.parentIsland.childColumns.find(col => col.field === column.field);
+                        rowIslandColumn[output.propName].emit({ args, owner: this });
+                    });
+                }
+            });
+        });
     }
 
     protected _createColumn(col) {

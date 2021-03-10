@@ -7,6 +7,7 @@ import { IgxMaskModule, IgxMaskDirective } from './mask.directive';
 import { configureTestSuite } from '../../test-utils/configure-suite';
 import { UIInteractions } from '../../test-utils/ui-interactions.spec';
 import { Replaced } from './mask-parsing.service';
+import { By } from '@angular/platform-browser';
 
 describe('igxMask', () => {
     configureTestSuite();
@@ -25,7 +26,8 @@ describe('igxMask', () => {
                 OneWayBindComponent,
                 PipesMaskComponent,
                 PlaceholderMaskComponent,
-                EmptyMaskTestComponent
+                EmptyMaskTestComponent,
+                ReadonlyMaskTestComponent
             ],
             imports: [
                 FormsModule,
@@ -369,7 +371,7 @@ describe('igxMask', () => {
         expect(input.nativeElement.value).toEqual('sss');
     }));
 
-    it('Apply placehodler when value is not defined.', fakeAsync(() => {
+    it('Apply placeholder when value is not defined.', fakeAsync(() => {
         const fixture = TestBed.createComponent(PlaceholderMaskComponent);
         fixture.detectChanges();
 
@@ -389,6 +391,23 @@ describe('igxMask', () => {
 
         expect(input.nativeElement.value).toEqual('');
         expect(input.nativeElement.placeholder).toEqual('hello');
+    }));
+
+    it('should not enter edit mode if it is marked as readonly', fakeAsync(() => {
+        const fixture = TestBed.createComponent(ReadonlyMaskTestComponent);
+        fixture.detectChanges();
+
+        const maskDirective = fixture.componentInstance.mask;
+        spyOn(maskDirective, 'onFocus').and.callThrough();
+        spyOn<any>(maskDirective, 'showMask').and.callThrough();
+
+        const input = fixture.debugElement.query(By.css('.igx-input-group__input'));
+        input.triggerEventHandler('focus', {});
+        fixture.detectChanges();
+
+        expect(maskDirective.onFocus).toHaveBeenCalledTimes(1);
+        expect((maskDirective as any).showMask).toHaveBeenCalledTimes(0);
+        expect((maskDirective as any).inputValue).toEqual('');
     }));
 });
 
@@ -622,6 +641,16 @@ class PipesMaskComponent {
 class EmptyMaskTestComponent {
     @ViewChild('input', { static: true })
     public input: ElementRef;
+}
+
+@Component({
+    template: `<igx-input-group>
+                    <input #input type="text" igxInput readonly [igxMask]="'00/00/0000'"/>
+                </igx-input-group>`
+})
+class ReadonlyMaskTestComponent {
+    @ViewChild(IgxMaskDirective)
+    public mask: IgxMaskDirective;
 }
 
 @Pipe({ name: 'inputFormat' })

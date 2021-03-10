@@ -418,7 +418,7 @@ describe('IgxGrid - Cell selection #grid', () => {
             GridSelectionFunctions.verifyCellsRegionSelected(grid, 0, 2, 1, 2, false);
             expect(rangeChangeSpy).toHaveBeenCalledTimes(1);
             expect(grid.selectedCells.length).toBe(0);
-            expect(grid.getSelectedData()).toEqual([]);
+            expect(grid.getSelectedData().length).toBe(1);
             expect(grid.getSelectedRanges()).toEqual([]);
         });
 
@@ -2918,7 +2918,7 @@ describe('IgxGrid - Cell selection #grid', () => {
             GridSelectionFunctions.verifyCellSelected(secondCell, false);
             GridSelectionFunctions.verifyCellSelected(thirdCell, false);
             expect(grid.selectedCells.length).toBe(0);
-            expect(grid.getSelectedData()).toEqual([]);
+            expect(grid.getSelectedData().length).toBe(1);
             expect(grid.getSelectedRanges()).toEqual([]);
         });
 
@@ -2963,7 +2963,7 @@ describe('IgxGrid - Cell selection #grid', () => {
             cell = grid.getCellByColumn(1, 'ParentID');
             GridSelectionFunctions.verifyCellSelected(cell, false);
             expect(grid.selectedCells.length).toBe(0);
-            expect(grid.getSelectedData()).toEqual([]);
+            expect(grid.getSelectedData().length).toBe(1);
             expect(grid.getSelectedRanges()).toEqual([]);
         });
 
@@ -2980,7 +2980,7 @@ describe('IgxGrid - Cell selection #grid', () => {
             GridSelectionFunctions.verifyCellSelected(endCell, false);
             expect(rangeChangeSpy).toHaveBeenCalledTimes(0);
             expect(grid.selectedCells.length).toBe(0);
-            expect(grid.getSelectedData()).toEqual([]);
+            expect(grid.getSelectedData().length).toBe(1);
             expect(grid.getSelectedRanges()).toEqual([]);
         });
 

@@ -49,7 +49,7 @@ export class ControlsFunction {
         expect(element.classList.contains(CHECKBOX_IND_CLASS)).toEqual(indeterminate);
     }
 
-    public static getCheckboxElement(name: string, element: DebugElement, fix) {
+    public static getCheckboxElement(name: string, element: DebugElement) {
         const checkboxElements = element.queryAll(By.css('igx-checkbox'));
         const chkElement = checkboxElements.find((el) =>
             (el.context as IgxCheckboxComponent).placeholderLabel.nativeElement.innerText === name);
@@ -57,8 +57,8 @@ export class ControlsFunction {
         return chkElement;
     }
 
-    public static getCheckboxInput(name: string, element: DebugElement, fix) {
-        const checkboxEl = ControlsFunction.getCheckboxElement(name, element, fix);
+    public static getCheckboxInput(name: string, element: DebugElement) {
+        const checkboxEl = ControlsFunction.getCheckboxElement(name, element);
         const chkInput = checkboxEl.query(By.css('input')).nativeElement as HTMLInputElement;
 
         return chkInput;
@@ -74,8 +74,8 @@ export class ControlsFunction {
         return inputs;
     }
 
-    public static verifyCheckbox(name: string, isChecked: boolean, isDisabled: boolean, element: DebugElement, fix) {
-        const chkInput = ControlsFunction.getCheckboxInput(name, element, fix);
+    public static verifyCheckbox(name: string, isChecked: boolean, isDisabled: boolean, element: DebugElement) {
+        const chkInput = ControlsFunction.getCheckboxInput(name, element);
         expect(chkInput.type).toBe('checkbox');
         expect(chkInput.disabled).toBe(isDisabled);
         expect(chkInput.checked).toBe(isChecked);

@@ -1,14 +1,15 @@
-import { DateRangePickerResourceStringsEN } from './date-range-picker-resources';
+import { DateRangePickerResourceStringsEN, IDateRangePickerResourceStrings } from './date-range-picker-resources';
 import { IGridResourceStrings, GridResourceStringsEN } from './grid-resources';
 import { ITimePickerResourceStrings, TimePickerResourceStringsEN } from './time-picker-resources';
-import { PaginatorResourceStringsEN } from './paginator-resources';
+import { IPaginatorResourceStrings, PaginatorResourceStringsEN } from './paginator-resources';
 import { cloneValue } from '../utils';
 import { ICarouselResourceStrings, CarouselResourceStringsEN } from './carousel-resources';
-import { ListResourceStringsEN } from './list-resources';
-import { CalendarResourceStringsEN } from './calendar-resources';
-import { InputResourceStringsEN } from './input-resources';
+import { IListResourceStrings, ListResourceStringsEN } from './list-resources';
+import { CalendarResourceStringsEN, ICalendarResourceStrings } from './calendar-resources';
+import { IInputResourceStrings, InputResourceStringsEN } from './input-resources';
 
-export interface IResourceStrings extends IGridResourceStrings, ITimePickerResourceStrings, ICarouselResourceStrings  {}
+export interface IResourceStrings extends IGridResourceStrings, ITimePickerResourceStrings, ICalendarResourceStrings,
+    ICarouselResourceStrings, IInputResourceStrings, IDateRangePickerResourceStrings, IListResourceStrings, IPaginatorResourceStrings { }
 
 /**
  * @hidden
@@ -47,6 +48,12 @@ export const changei18n = (resourceStrings: IResourceStrings) => {
  * Returns current resource strings for all components
  */
 export const getCurrentResourceStrings = (): IResourceStrings => ({
-        ...CurrentResourceStrings.GridResStrings,
-        ...CurrentResourceStrings.TimePickerResStrings
+    ...CurrentResourceStrings.CalendarResStrings,
+    ...CurrentResourceStrings.CarouselResStrings,
+    ...CurrentResourceStrings.DateRangePickerResStrings,
+    ...CurrentResourceStrings.GridResStrings,
+    ...CurrentResourceStrings.InputResStrings,
+    ...CurrentResourceStrings.ListResStrings,
+    ...CurrentResourceStrings.PaginatorResStrings,
+    ...CurrentResourceStrings.TimePickerResStrings
 });
