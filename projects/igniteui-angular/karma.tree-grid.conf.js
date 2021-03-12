@@ -56,8 +56,8 @@ module.exports = function (config) {
     browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
-        base: 'ChromiumHeadless',
-        flags: ['--no-sandbox', '--disable-gpu'],
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-gpu', '-disable-dev-shm-usage'],
         debug: false
       }
     },
