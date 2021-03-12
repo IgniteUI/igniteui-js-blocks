@@ -916,7 +916,7 @@ export class IgxForOfDirective<T> implements OnInit, OnChanges, DoCheck, OnDestr
             const view = container.detach(0);
 
             this.updateTemplateContext(embView.context, i);
-            if(!view.destroyed){
+            if (!view.destroyed) {
                 container.insert(view);
             }
             this._embeddedViews.push(embView);
