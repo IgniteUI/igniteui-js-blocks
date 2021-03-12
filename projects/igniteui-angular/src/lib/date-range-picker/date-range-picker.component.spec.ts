@@ -18,6 +18,7 @@ import { DateRangeType } from '../core/dates';
 import { IgxDateRangePickerComponent, IgxDateRangeEndComponent } from './public_api';
 import { IgxIconModule } from '../icon/public_api';
 import { AutoPositionStrategy } from '../services/public_api';
+import { IgxPickerIconsModule } from '../date-common/public_api';
 
 // The number of milliseconds in one day
 const ONE_DAY = 1000 * 60 * 60 * 24;
@@ -220,7 +221,8 @@ describe('IgxDateRangePicker', () => {
                         IgxInputGroupModule,
                         IgxIconModule,
                         FormsModule,
-                        NoopAnimationsModule]
+                        NoopAnimationsModule,
+                        IgxPickerIconsModule]
                 })
                     .compileComponents();
             }));
@@ -679,7 +681,7 @@ describe('IgxDateRangePicker', () => {
                         DateRangeTwoInputsNgModelTestComponent
                     ],
                     imports: [IgxDateRangePickerModule, IgxDateTimeEditorModule,
-                        IgxInputGroupModule, FormsModule, NoopAnimationsModule, IgxIconModule]
+                        IgxInputGroupModule, FormsModule, NoopAnimationsModule, IgxIconModule, IgxPickerIconsModule]
                 })
                     .compileComponents();
             }));
@@ -1070,7 +1072,7 @@ describe('IgxDateRangePicker', () => {
                         IgxInputGroupModule,
                         IgxIconModule,
                         FormsModule,
-                        NoopAnimationsModule]
+                        NoopAnimationsModule, IgxPickerIconsModule]
                 })
                     .compileComponents();
             }));

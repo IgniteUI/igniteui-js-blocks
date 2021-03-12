@@ -153,10 +153,10 @@ export class IgxInputDirective implements AfterViewInit, OnDestroy {
      * ```
      */
     @Input()
+    @HostBinding('disabled')
     public set disabled(value: boolean) {
         // handle case when disabled attr is set with no value
         this._disabled = value != null && `${value}` !== 'false';
-        this.nativeElement.disabled = this._disabled;
         this.inputGroup.disabled = this._disabled;
     }
     /**
@@ -173,7 +173,7 @@ export class IgxInputDirective implements AfterViewInit, OnDestroy {
         if (this.ngControl && this.ngControl.disabled !== null) {
             return this.ngControl.disabled;
         }
-        return this._disabled = this.nativeElement.disabled;
+        return this._disabled;
     }
 
     /**

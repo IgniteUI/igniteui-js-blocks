@@ -107,6 +107,30 @@ describe('IgxDateTimeEditor', () => {
                 expect(dateTimeEditor.value.getDate()).toEqual(date);
             });
 
+            it('should correctly increment / decrement date portions with passed in spinDelta', () => {
+                inputFormat = 'dd/MM/yyyy';
+                inputDate = '12/10/2015';
+                elementRef = { nativeElement: { value: inputDate } };
+                initializeDateTimeEditor();
+
+                const date = new Date(2015, 11, 12, 14, 35, 12);
+                dateTimeEditor.value = date;
+                dateTimeEditor.spinDelta = { date: 2, month: 2, year: 2, hour: 2, minute: 2, second: 2 };
+                spyOnProperty((dateTimeEditor as any), 'inputValue', 'get').and.returnValue(inputDate);
+
+                dateTimeEditor.increment();
+                expect(dateTimeEditor.value.getDate()).toEqual(14);
+
+                dateTimeEditor.decrement();
+                expect(dateTimeEditor.value.getDate()).toEqual(12);
+
+                dateTimeEditor.increment(DatePart.Minutes);
+                expect(dateTimeEditor.value.getMinutes()).toEqual(date.getMinutes() + 2);
+
+                dateTimeEditor.decrement(DatePart.Hours);
+                expect(dateTimeEditor.value.getHours()).toEqual(date.getHours() - 2);
+            });
+
             it('should not loop over to next month when incrementing date', () => {
                 inputFormat = 'dd/MM/yyyy';
                 inputDate = '29/02/2020';
@@ -943,7 +967,7 @@ describe('IgxDateTimeEditor', () => {
             it('should properly increment/decrement date-time portions on wheel', fakeAsync(() => {
                 fixture.componentInstance.dateTimeFormat = 'dd-MM-yyyy';
                 fixture.detectChanges();
-                const today = new Date();
+                const today = new Date(2021, 12, 12);
                 dateTimeEditorDirective.value = today;
 
                 inputElement.triggerEventHandler('focus', {});
@@ -951,7 +975,7 @@ describe('IgxDateTimeEditor', () => {
                 dateTimeEditorDirective.nativeElement.setSelectionRange(1, 1);
                 inputElement.triggerEventHandler('wheel', new WheelEvent('wheel', { deltaY: -1 }));
                 fixture.detectChanges();
-                expect(dateTimeEditorDirective.value.getDate()).toEqual(new Date().getDate() - 1);
+                expect(dateTimeEditorDirective.value.getDate()).toEqual(today.getDate() - 1);
             }));
         });
 

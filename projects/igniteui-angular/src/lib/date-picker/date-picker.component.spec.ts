@@ -21,7 +21,7 @@ import {
     OverlayEventArgs
 } from '../services/public_api';
 
-describe('IgxDatePicker', () => {
+xdescribe('IgxDatePicker', () => {
     configureTestSuite();
     beforeAll(waitForAsync(() => {
         TestBed.configureTestingModule({
