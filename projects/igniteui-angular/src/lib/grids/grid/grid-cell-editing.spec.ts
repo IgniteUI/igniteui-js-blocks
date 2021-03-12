@@ -506,7 +506,7 @@ describe('IgxGrid - Cell Editing #grid', () => {
 
         it('edit mode - should close calendar when scroll', (async () => {
             GridFunctions.scrollLeft(grid, 800);
-            await wait(100);
+            await wait(150);
             fixture.detectChanges();
 
             let cell = grid.getCellByColumn(1, 'birthday');
