@@ -61,6 +61,9 @@ module.exports = function (config) {
         debug: false
       }
     },
-    singleRun: false
+    browserDisconnectTolerance: 3, //this one helps
+    browserDisconnectTimeout : 5000,
+    browserNoActivityTimeout : 5000,
+    singleRun: true
   });
 };
