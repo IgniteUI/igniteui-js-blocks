@@ -37,6 +37,6 @@ module.exports = function (config) {
         debug: false
       }
     },
-    singleRun: false
+    singleRun: true
   });
 };
