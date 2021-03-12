@@ -38,6 +38,6 @@ module.exports = function (config) {
         debug: false
       }
     },
-    singleRun: true
+    singleRun: false
   });
 };
