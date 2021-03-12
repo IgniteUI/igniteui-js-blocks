@@ -1217,7 +1217,7 @@ export class IgxForOfDirective<T> implements OnInit, OnChanges, DoCheck, OnDestr
      */
     protected getIndexAt(left, set) {
         let start = 0;
-        let end = set.length - 1; 
+        let end = set.length - 1;
         if (left === 0) {
             return 0;
         }
