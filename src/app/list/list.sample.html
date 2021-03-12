@@ -256,18 +256,7 @@
                 Empty list
                 <i class="light">w/ Default template</i>
             </h4>
-
-            <igx-input-group type="search" style="margin-bottom: 16px" [hidden]="fruits.length === 0">
-                <igx-prefix>
-                    <igx-icon>search</igx-icon>
-                </igx-prefix>
-                <input #searchFruits igxInput type="text" placeholder="Search List" [(ngModel)]="fruitsSearch" />
-                <igx-suffix *ngIf="searchFruits.value.length > 0" (click)="searchFruits.value = ''">
-                    <igx-icon>clear</igx-icon>
-                </igx-suffix>
-            </igx-input-group>
-
-            <div class="list-sample list-sample--add">
+            <div class="list-sample">
                 <igx-card>
                     <igx-list [displayDensity]="density" [hidden]="fruitsFilteredItemsCount === 0" [igxFilter]="fruitsFilterOptions" (filtered)="fruitsFiltered($event)">
                         <igx-list-item *ngFor="let fruit of fruits" [attr.data-fruit-id]="fruit.id">
@@ -276,13 +265,6 @@
                         </igx-list-item>
                     </igx-list>
                 </igx-card>
-                <div class="igx-list__empty--custom" [hidden]="fruitsFilteredItemsCount > 0 || searchFruits.value === ''">
-                    No filtered items.
-                </div>
-                <button igxButton="fab" igxButtonColor="white" igxButtonBackground="#0375be" igRipple="white" (click)="addFruitDialog.open()"
-                        [hidden]="fruits.length === 0" style="position: absolute; bottom: 24px; right: 24px">
-                    <igx-icon>add</igx-icon>
-                </button>
             </div>
         </article>
 

@@ -65,21 +65,13 @@
         @extend %igx-list__item-line-subtitle !optional;
     }
 
-    @include e(empty) {
+    @include m(empty) {
         @extend %igx-list !optional;
-        @extend %igx-list-empty !optional;
+        @extend %igx-list--empty !optional;
 
-        @include b(image) {
-            @extend %igx-list-empty-image !optional;
+        @include e(message) {
+            @extend %igx-list__message--empty !optional;
         }
-
-        @include b(message) {
-            @extend %igx-list-empty-message !optional;
-        }
-    }
-
-    @include e(empty, $m: custom) {
-        @extend %igx-list-empty !optional;
     }
 
     @include m(compact) {
@@ -91,12 +83,6 @@
 
         @include e(item-actions) {
             @extend %igx-list__item-actions--compact !optional;
-        }
-
-        @include e(empty) {
-            @include b(message) {
-                @extend %igx-list-empty-message--compact !optional;
-            }
         }
 
         @include e(item-content) {
@@ -117,12 +103,6 @@
 
         @include e(item-actions) {
             @extend %igx-list__item-actions--cosy !optional;
-        }
-
-        @include e(empty) {
-            @include b(message) {
-                @extend %igx-list-empty-message--cosy !optional;
-            }
         }
 
         @include e(item-content) {

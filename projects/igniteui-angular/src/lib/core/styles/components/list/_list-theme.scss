@@ -306,29 +306,16 @@
         }
     }
 
-    %igx-list-empty {
+    %igx-list--empty {
         justify-content: center;
         align-items: center;
     }
 
-    %igx-list-empty-image {
-        width: auto;
-        max-height: 120px;
-    }
-
-    %igx-list-empty-message {
+    %igx-list__message--empty {
         text-align: center;
         color: --var($theme, 'item-text-color');
         padding: map-get($list-empty-padding, 'comfortable');
         z-index: 1;
-    }
-
-    %igx-list-empty-message--cosy {
-        padding: map-get($list-empty-padding, 'cosy');
-    }
-
-    %igx-list-empty-message--compact {
-        padding: map-get($list-empty-padding, 'compact');
     }
 
     %igx-list-header {
@@ -375,7 +362,7 @@
             %igx-list__item-actions {
                 color: --var($theme, 'item-action-color-hover');
 
-                %igx-icon-display {
+                igx-icon {
                     color: --var($theme, 'item-action-color-hover')
                 }
             }
@@ -383,7 +370,7 @@
             %igx-list__item-thumbnail {
                 color: --var($theme, 'item-thumbnail-color-hover');
 
-                %igx-icon-display {
+                igx-icon {
                     color: --var($theme, 'item-thumbnail-color-hover')
                 }
             }
@@ -431,7 +418,7 @@
             display: none;
         }
 
-        %igx-icon-display {
+        igx-icon {
             color: --var($theme, 'item-action-color')
         }
     }
@@ -462,7 +449,7 @@
         padding: 0;
         color: --var($theme, 'item-thumbnail-color');
 
-        > %igx-icon-display {
+        > igx-icon {
             @include if-ltr() {
                 margin: map-get($list-icon-margin, 'comfortable');
             }
@@ -472,8 +459,8 @@
             }
         }
 
-        > %igx-avatar-display {
-            > %igx-icon-display {
+        > igx-avatar {
+            > igx-icon {
                 margin: 0;
             }
         }
@@ -515,13 +502,13 @@
 
     %igx-list__item-thumbnail--cosy {
         @include if-ltr() {
-            > %igx-icon-display {
+            > igx-icon {
                 margin: map-get($list-icon-margin, 'cosy');
             }
         }
 
         @include if-rtl() {
-            > %igx-icon-display {
+            > igx-icon {
                 margin: map-get($list-icon-margin-rtl, 'cosy');
             }
         }
@@ -529,13 +516,13 @@
 
     %igx-list__item-thumbnail--compact {
         @include if-ltr() {
-            > %igx-icon-display {
+            > igx-icon {
                 margin: map-get($list-icon-margin, 'compact');
             }
         }
 
         @include if-rtl() {
-            > %igx-icon-display {
+            > igx-icon {
                 margin: map-get($list-icon-margin-rtl, 'compact');
             }
         }
@@ -569,7 +556,7 @@
         %igx-list__item-actions {
             color: --var($theme, 'item-action-color-active');
 
-            %igx-icon-display {
+            igx-icon {
                 color: --var($theme, 'item-action-color-active')
             }
         }
@@ -577,7 +564,7 @@
         %igx-list__item-thumbnail {
             color: --var($theme, 'item-thumbnail-color-active');
 
-            %igx-icon-display {
+            igx-icon {
                 color: --var($theme, 'item-thumbnail-color-active')
             }
         }

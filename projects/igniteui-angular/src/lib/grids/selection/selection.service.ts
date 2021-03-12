@@ -50,14 +50,14 @@ type SelectionState = ISelectionKeyboardState | ISelectionPointerState;
 // TODO: Refactor - export in a separate file
 
 export class IgxRow {
-    transactionState: any;
-    state: any;
-    newData: any;
-    isAddRow: boolean;
+    public transactionState: any;
+    public state: any;
+    public newData: any;
+    public isAddRow: boolean;
 
     constructor(public id: any, public index: number, public data: any, public grid: IgxGridBaseDirective & GridType) { }
 
-    createEditEventArgs(includeNewValue = true, event?: Event): IGridEditEventArgs {
+    public createEditEventArgs(includeNewValue = true, event?: Event): IGridEditEventArgs {
         const args: IGridEditEventArgs = {
             rowID: this.id,
             rowData: this.data,
@@ -73,7 +73,7 @@ export class IgxRow {
         return args;
     }
 
-    createDoneEditEventArgs(cachedRowData: any, event?: Event): IGridEditDoneEventArgs {
+    public createDoneEditEventArgs(cachedRowData: any, event?: Event): IGridEditDoneEventArgs {
         const updatedData = this.grid.transactions.enabled ?
             this.grid.transactions.getAggregatedValue(this.id, true) : this.grid.gridAPI.getRowData(this.id);
         const rowData = updatedData === null ? this.grid.gridAPI.getRowData(this.id) : updatedData;
@@ -92,8 +92,8 @@ export class IgxRow {
 }
 
 export class IgxCell {
-    primaryKey: any;
-    state: any;
+    public primaryKey: any;
+    public state: any;
 
     constructor(
         public id,
@@ -104,7 +104,7 @@ export class IgxCell {
         public rowData: any,
         public grid: IgxGridBaseDirective & GridType) { }
 
-    castToNumber(value: any): any {
+        public castToNumber(value: any): any {
         if (this.column.dataType === 'number' && !this.column.inlineEditorTemplate) {
             const v = parseFloat(value);
             return !isNaN(v) && isFinite(v) ? v : 0;
@@ -112,7 +112,7 @@ export class IgxCell {
         return value;
     }
 
-    createEditEventArgs(includeNewValue = true, event?: Event): IGridEditEventArgs {
+    public createEditEventArgs(includeNewValue = true, event?: Event): IGridEditEventArgs {
         const args: IGridEditEventArgs = {
             rowID: this.id.rowID,
             cellID: this.id,
@@ -129,7 +129,7 @@ export class IgxCell {
         return args;
     }
 
-    createDoneEditEventArgs(value: any, event?: Event): IGridEditDoneEventArgs {
+    public createDoneEditEventArgs(value: any, event?: Event): IGridEditDoneEventArgs {
         const updatedData = this.grid.transactions.enabled ?
             this.grid.transactions.getAggregatedValue(this.id.rowID, true) : this.rowData;
         const rowData = updatedData === null ? this.grid.gridAPI.getRowData(this.id.rowID) : updatedData;
@@ -160,52 +160,52 @@ export class IgxGridCRUDService {
     private _cellEditingBlocked = false;
     private _rowEditingBlocked = false;
 
-    createCell(cell): IgxCell {
+    public createCell(cell): IgxCell {
         return new IgxCell(cell.cellID, cell.rowIndex, cell.column, cell.value, cell.value, cell.row.rowData, cell.grid);
     }
 
-    createRow(cell: IgxCell): IgxRow {
+    public createRow(cell: IgxCell): IgxRow {
         return new IgxRow(cell.id.rowID, cell.rowIndex, cell.rowData, cell.grid);
     }
 
-    sameRow(rowID): boolean {
+    public sameRow(rowID): boolean {
         return this.row && this.row.id === rowID;
     }
 
-    sameCell(cell: IgxCell): boolean {
+    public sameCell(cell: IgxCell): boolean {
         return (this.cell.id.rowID === cell.id.rowID &&
             this.cell.id.columnID === cell.id.columnID);
     }
 
-    get cellInEditMode(): boolean {
+    public get cellInEditMode(): boolean {
         return !!this.cell;
     }
 
-    get rowInEditMode(): boolean {
+    public get rowInEditMode(): boolean {
         return !!this.row;
     }
 
-    get rowEditing(): boolean {
+    public get rowEditing(): boolean {
         return this.grid.rowEditable;
     }
 
-    get primaryKey(): any {
+    public get primaryKey(): any {
         return this.grid.primaryKey;
     }
 
-    get cellEditingBlocked() {
+    public get cellEditingBlocked() {
         return this._cellEditingBlocked;
     }
 
-    set cellEditingBlocked(val: boolean) {
+    public set cellEditingBlocked(val: boolean) {
         this._cellEditingBlocked = val;
     }
 
-    get rowEditingBlocked() {
+    public get rowEditingBlocked() {
         return this._rowEditingBlocked;
     }
 
-    set rowEditingBlocked(val: boolean) {
+    public set rowEditingBlocked(val: boolean) {
         this._rowEditingBlocked = val;
     }
 
@@ -293,7 +293,7 @@ export class IgxGridCRUDService {
     }
 
     /** Enters cell edit mode */
-    beginAddRow(cell, event?: Event) {
+    public beginAddRow(cell, event?: Event) {
         const newCell = this.createCell(cell);
         newCell.primaryKey = this.primaryKey;
         cell.enterAddMode = true;
@@ -382,33 +382,32 @@ export class IgxGridCRUDService {
 
 @Injectable()
 export class IgxGridSelectionService {
-    grid;
-    dragMode = false;
-    activeElement: ISelectionNode | null;
-    keyboardState = {} as ISelectionKeyboardState;
-    pointerState = {} as ISelectionPointerState;
-    columnsState = {} as IColumnSelectionState;
+    public grid;
+    public dragMode = false;
+    public activeElement: ISelectionNode | null;
+    public keyboardState = {} as ISelectionKeyboardState;
+    public pointerState = {} as ISelectionPointerState;
+    public columnsState = {} as IColumnSelectionState;
 
-    selection = new Map<number, Set<number>>();
-    temp = new Map<number, Set<number>>();
-    _ranges: Set<string> = new Set<string>();
-    _selectionRange: Range;
-    rowSelection: Set<any> = new Set<any>();
-    indeterminateRows: Set<any> = new Set<any>();
-    columnSelection: Set<string> = new Set<string>();
+    public selection = new Map<number, Set<number>>();
+    public temp = new Map<number, Set<number>>();
+    public rowSelection: Set<any> = new Set<any>();
+    public indeterminateRows: Set<any> = new Set<any>();
+    public columnSelection: Set<string> = new Set<string>();
     /**
      * @hidden @internal
      */
     public selectedRowsChange = new Subject();
 
     private allRowsSelected: boolean;
-
+    private _ranges: Set<string> = new Set<string>();
+    private _selectionRange: Range;
 
     /**
      * Returns the current selected ranges in the grid from both
      * keyboard and pointer interactions
      */
-    get ranges(): GridSelectionRange[] {
+    public get ranges(): GridSelectionRange[] {
 
         // The last action was keyboard + shift selection -> add it
         this.addKeyboardRange();
@@ -423,11 +422,11 @@ export class IgxGridSelectionService {
         return ranges;
     }
 
-    get primaryButton(): boolean {
+    public get primaryButton(): boolean {
         return this.pointerState.primaryButton;
     }
 
-    set primaryButton(value: boolean) {
+    public set primaryButton(value: boolean) {
         this.pointerState.primaryButton = value;
     }
 
@@ -440,7 +439,7 @@ export class IgxGridSelectionService {
     /**
      * Resets the keyboard state
      */
-    initKeyboardState(): void {
+    public initKeyboardState(): void {
         this.keyboardState.node = null;
         this.keyboardState.shift = false;
         this.keyboardState.range = null;
@@ -450,7 +449,7 @@ export class IgxGridSelectionService {
     /**
      * Resets the pointer state
      */
-    initPointerState(): void {
+    public initPointerState(): void {
         this.pointerState.node = null;
         this.pointerState.ctrl = false;
         this.pointerState.shift = false;
@@ -461,7 +460,7 @@ export class IgxGridSelectionService {
     /**
      * Resets the columns state
      */
-    initColumnsState(): void {
+    public initColumnsState(): void {
         this.columnsState.field = null;
         this.columnsState.range = [];
     }
@@ -470,7 +469,7 @@ export class IgxGridSelectionService {
      * Adds a single node.
      * Single clicks | Ctrl + single clicks on cells is the usual case.
      */
-    add(node: ISelectionNode, addToRange = true): void {
+    public add(node: ISelectionNode, addToRange = true): void {
         if (this.selection.has(node.row)) {
             this.selection.get(node.row).add(node.column);
         } else {
@@ -485,13 +484,13 @@ export class IgxGridSelectionService {
     /**
      * Adds the active keyboard range selection (if any) to the `ranges` meta.
      */
-    addKeyboardRange(): void {
+    public addKeyboardRange(): void {
         if (this.keyboardState.range) {
             this._ranges.add(JSON.stringify(this.keyboardState.range));
         }
     }
 
-    remove(node: ISelectionNode): void {
+    public remove(node: ISelectionNode): void {
         if (this.selection.has(node.row)) {
             this.selection.get(node.row).delete(node.column);
         }
@@ -501,16 +500,16 @@ export class IgxGridSelectionService {
         this._ranges.delete(JSON.stringify(this.generateRange(node)));
     }
 
-    isInMap(node: ISelectionNode): boolean {
+    public isInMap(node: ISelectionNode): boolean {
         return (this.selection.has(node.row) && this.selection.get(node.row).has(node.column)) ||
             (this.temp.has(node.row) && this.temp.get(node.row).has(node.column));
     }
 
-    selected(node: ISelectionNode): boolean {
+    public selected(node: ISelectionNode): boolean {
         return (this.isActiveNode(node) && this.grid.isCellSelectable) || this.isInMap(node);
     }
 
-    isActiveNode(node: ISelectionNode): boolean {
+    public isActiveNode(node: ISelectionNode): boolean {
         if (this.activeElement) {
             const isActive = this.activeElement.column === node.column && this.activeElement.row === node.row;
             if (this.grid.hasColumnLayouts) {
@@ -522,15 +521,15 @@ export class IgxGridSelectionService {
         return false;
     }
 
-    isActiveLayout(current: IMultiRowLayoutNode, target: IMultiRowLayoutNode): boolean {
+    public isActiveLayout(current: IMultiRowLayoutNode, target: IMultiRowLayoutNode): boolean {
         return current.columnVisibleIndex === target.columnVisibleIndex;
     }
 
-    addRangeMeta(node: ISelectionNode, state?: SelectionState): void {
+    public addRangeMeta(node: ISelectionNode, state?: SelectionState): void {
         this._ranges.add(JSON.stringify(this.generateRange(node, state)));
     }
 
-    removeRangeMeta(node: ISelectionNode, state?: SelectionState): void {
+    public removeRangeMeta(node: ISelectionNode, state?: SelectionState): void {
         this._ranges.delete(JSON.stringify(this.generateRange(node, state)));
     }
 
@@ -539,7 +538,7 @@ export class IgxGridSelectionService {
      * If `state` is passed instead it will generate the range based on the passed `node`
      * and the start node of the `state`.
      */
-    generateRange(node: ISelectionNode, state?: SelectionState): GridSelectionRange {
+    public generateRange(node: ISelectionNode, state?: SelectionState): GridSelectionRange {
         if (!state) {
             return {
                 rowStart: node.row,
@@ -561,7 +560,7 @@ export class IgxGridSelectionService {
     /**
      *
      */
-    keyboardStateOnKeydown(node: ISelectionNode, shift: boolean, shiftTab: boolean): void {
+    public keyboardStateOnKeydown(node: ISelectionNode, shift: boolean, shiftTab: boolean): void {
         this.keyboardState.active = true;
         this.initPointerState();
         this.keyboardState.shift = shift && !shiftTab;
@@ -576,7 +575,7 @@ export class IgxGridSelectionService {
         }
     }
 
-    keyboardStateOnFocus(node: ISelectionNode, emitter: EventEmitter<GridSelectionRange>, dom): void {
+    public keyboardStateOnFocus(node: ISelectionNode, emitter: EventEmitter<GridSelectionRange>, dom): void {
         const kbState = this.keyboardState;
 
         // Focus triggered by keyboard navigation
@@ -598,7 +597,7 @@ export class IgxGridSelectionService {
         }
     }
 
-    pointerDown(node: ISelectionNode, shift: boolean, ctrl: boolean): void {
+    public pointerDown(node: ISelectionNode, shift: boolean, ctrl: boolean): void {
         this.addKeyboardRange();
         this.initKeyboardState();
         this.pointerState.ctrl = ctrl;
@@ -623,12 +622,12 @@ export class IgxGridSelectionService {
         this.pointerState.node = node;
     }
 
-    pointerDownShiftKey(node: ISelectionNode): void {
+    public pointerDownShiftKey(node: ISelectionNode): void {
         this.clear();
         this.selectRange(node, this.pointerState);
     }
 
-    mergeMap(target: Map<number, Set<number>>, source: Map<number, Set<number>>): void {
+    public mergeMap(target: Map<number, Set<number>>, source: Map<number, Set<number>>): void {
         const iterator = source.entries();
         let pair = iterator.next();
         let key: number;
@@ -647,7 +646,7 @@ export class IgxGridSelectionService {
         }
     }
 
-    pointerEnter(node: ISelectionNode, event: PointerEvent): boolean {
+    public pointerEnter(node: ISelectionNode, event: PointerEvent): boolean {
         // https://www.w3.org/TR/pointerevents/#the-button-property
         this.dragMode = event.buttons === 1 && (event.button === -1 || event.button === 0);
         if (!this.dragMode) {
@@ -670,7 +669,7 @@ export class IgxGridSelectionService {
         return true;
     }
 
-    pointerUp(node: ISelectionNode, emitter: EventEmitter<GridSelectionRange>): boolean {
+    public pointerUp(node: ISelectionNode, emitter: EventEmitter<GridSelectionRange>): boolean {
         if (this.dragMode) {
             this.restoreTextSelection();
             this.addRangeMeta(node, this.pointerState);
@@ -693,7 +692,7 @@ export class IgxGridSelectionService {
         return false;
     }
 
-    selectRange(node: ISelectionNode, state: SelectionState, collection: Map<number, Set<number>> = this.selection): void {
+    public selectRange(node: ISelectionNode, state: SelectionState, collection: Map<number, Set<number>> = this.selection): void {
         if (collection === this.temp) {
             collection.clear();
         }
@@ -709,14 +708,14 @@ export class IgxGridSelectionService {
         }
     }
 
-    dragSelect(node: ISelectionNode, state: SelectionState): void {
+    public dragSelect(node: ISelectionNode, state: SelectionState): void {
         if (!this.pointerState.ctrl) {
             this.selection.clear();
         }
         this.selectRange(node, state);
     }
 
-    clear(clearAcriveEl = false): void {
+    public clear(clearAcriveEl = false): void {
         if (clearAcriveEl) {
             this.activeElement = null;
         }
@@ -725,7 +724,7 @@ export class IgxGridSelectionService {
         this._ranges.clear();
     }
 
-    clearTextSelection(): void {
+    public clearTextSelection(): void {
         const selection = window.getSelection();
         if (selection.rangeCount) {
             this._selectionRange = selection.getRangeAt(0);
@@ -734,39 +733,25 @@ export class IgxGridSelectionService {
         }
     }
 
-    restoreTextSelection(): void {
+    public restoreTextSelection(): void {
         const selection = window.getSelection();
         if (!selection.rangeCount) {
             selection.addRange(this._selectionRange || document.createRange());
         }
     }
 
-    /**
-     * (╯°□°）╯︵ ┻━┻
-     * Chrome and Chromium don't care about the active
-     * range after keyboard navigation, thus this.
-     */
-    _moveSelectionChrome(node: Node) {
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        const range = new Range();
-        range.selectNode(node);
-        range.collapse(true);
-        selection.addRange(range);
-    }
-
     /** Returns array of the selected row id's. */
-    getSelectedRows(): Array<any> {
+    public getSelectedRows(): Array<any> {
         return this.rowSelection.size ? Array.from(this.rowSelection.keys()) : [];
     }
 
     /** Returns array of the rows in indeterminate state. */
-    getIndeterminateRows(): Array<any> {
+    public getIndeterminateRows(): Array<any> {
         return this.indeterminateRows.size ? Array.from(this.indeterminateRows.keys()) : [];
     }
 
     /** Clears row selection, if filtering is applied clears only selected rows from filtered data. */
-    clearRowSelection(event?): void {
+    public clearRowSelection(event?): void {
         const removedRec = this.isFilteringApplied() ?
             this.getRowIDs(this.allData).filter(rID => this.isRowSelected(rID)) : this.getSelectedRows();
         const newSelection = this.isFilteringApplied() ? this.getSelectedRows().filter(x => !removedRec.includes(x)) : [];
@@ -774,7 +759,7 @@ export class IgxGridSelectionService {
     }
 
     /** Select all rows, if filtering is applied select only from filtered data. */
-    selectAllRows(event?) {
+    public selectAllRows(event?) {
         const allRowIDs = this.getRowIDs(this.allData);
         const addedRows = allRowIDs.filter((rID) => !this.isRowSelected(rID));
         const newSelection = this.rowSelection.size ? this.getSelectedRows().concat(addedRows) : addedRows;
@@ -784,7 +769,7 @@ export class IgxGridSelectionService {
     }
 
     /** Select the specified row and emit event. */
-    selectRowById(rowID, clearPrevSelection?, event?): void {
+    public selectRowById(rowID, clearPrevSelection?, event?): void {
         if (!this.grid.isRowSelectable || this.isRowDeleted(rowID)) {
             return;
         }
@@ -798,7 +783,7 @@ export class IgxGridSelectionService {
     }
 
     /** Deselect the specified row and emit event. */
-    deselectRow(rowID, event?): void {
+    public deselectRow(rowID, event?): void {
         if (!this.isRowSelected(rowID)) {
             return;
         }
@@ -810,7 +795,7 @@ export class IgxGridSelectionService {
     }
 
     /** Select specified rows. No event is emitted. */
-    selectRowsWithNoEvent(rowIDs: any[], clearPrevSelection?): void {
+    public selectRowsWithNoEvent(rowIDs: any[], clearPrevSelection?): void {
         if (clearPrevSelection) {
             this.rowSelection.clear();
         }
@@ -820,22 +805,22 @@ export class IgxGridSelectionService {
     }
 
     /** Deselect specified rows. No event is emitted. */
-    deselectRowsWithNoEvent(rowIDs: any[]): void {
+    public deselectRowsWithNoEvent(rowIDs: any[]): void {
         rowIDs.forEach(rowID => this.rowSelection.delete(rowID));
         this.allRowsSelected = undefined;
         this.selectedRowsChange.next();
     }
 
-    isRowSelected(rowID): boolean {
+    public isRowSelected(rowID): boolean {
         return this.rowSelection.size > 0 && this.rowSelection.has(rowID);
     }
 
-    isRowInIndeterminateState(rowID): boolean {
+    public isRowInIndeterminateState(rowID): boolean {
         return this.indeterminateRows.size > 0 && this.indeterminateRows.has(rowID);
     }
 
     /** Select range from last selected row to the current specified row. */
-    selectMultipleRows(rowID, rowData, event?): void {
+    public selectMultipleRows(rowID, rowData, event?): void {
         this.allRowsSelected = undefined;
         if (!this.rowSelection.size || this.isRowDeleted(rowID)) {
             this.selectRowById(rowID);
@@ -853,7 +838,7 @@ export class IgxGridSelectionService {
         this.emitRowSelectionEvent(newSelection, added, [], event);
     }
 
-    areAllRowSelected(): boolean {
+    public areAllRowSelected(): boolean {
         if (!this.grid.data) {
             return false;
         }
@@ -866,7 +851,7 @@ export class IgxGridSelectionService {
             new Set(Array.from(this.rowSelection.values()).concat(dataItemsID)).size === this.rowSelection.size;
     }
 
-    hasSomeRowSelected(): boolean {
+    public hasSomeRowSelected(): boolean {
         const filteredData = this.isFilteringApplied() ?
             this.getRowIDs(this.grid.filteredData).some(rID => this.isRowSelected(rID)) : true;
         return this.rowSelection.size > 0 && filteredData && !this.areAllRowSelected();
@@ -931,16 +916,16 @@ export class IgxGridSelectionService {
     }
 
     /** Returns array of the selected columns fields. */
-    getSelectedColumns(): Array<any> {
+    public getSelectedColumns(): Array<any> {
         return this.columnSelection.size ? Array.from(this.columnSelection.keys()) : [];
     }
 
-    isColumnSelected(field: string): boolean {
+    public isColumnSelected(field: string): boolean {
         return this.columnSelection.size > 0 && this.columnSelection.has(field);
     }
 
     /** Select the specified column and emit event. */
-    selectColumn(field: string, clearPrevSelection?, selectColumnsRange?, event?): void {
+    public selectColumn(field: string, clearPrevSelection?, selectColumnsRange?, event?): void {
         const stateColumn = this.columnsState.field ? this.grid.getColumnByName(this.columnsState.field) : null;
         if (!event || !stateColumn || stateColumn.visibleIndex < 0 || !selectColumnsRange) {
             this.columnsState.field = field;
@@ -957,7 +942,7 @@ export class IgxGridSelectionService {
     }
 
     /** Select specified columns. And emit event. */
-    selectColumns(fields: string[], clearPrevSelection?, selectColumnsRange?, event?): void {
+    public selectColumns(fields: string[], clearPrevSelection?, selectColumnsRange?, event?): void {
         const columns = fields.map(f => this.grid.getColumnByName(f)).sort((a, b) => a.visibleIndex - b.visibleIndex);
         const stateColumn = this.columnsState.field ? this.grid.getColumnByName(this.columnsState.field) : null;
         if (!stateColumn || stateColumn.visibleIndex < 0 || !selectColumnsRange) {
@@ -977,7 +962,7 @@ export class IgxGridSelectionService {
     }
 
     /** Select range from last clicked column to the current specified column. */
-    selectColumnsRange(field: string, event): void {
+    public selectColumnsRange(field: string, event): void {
         const currIndex = this.grid.getColumnByName(this.columnsState.field).visibleIndex;
         const newIndex = this.grid.columnToVisibleIndex(field);
         const columnsFields = this.grid.visibleColumns
@@ -1001,7 +986,7 @@ export class IgxGridSelectionService {
     }
 
     /** Select specified columns. No event is emitted. */
-    selectColumnsWithNoEvent(fields: string[], clearPrevSelection?): void {
+    public selectColumnsWithNoEvent(fields: string[], clearPrevSelection?): void {
         if (clearPrevSelection) {
             this.columnSelection.clear();
         }
@@ -1011,19 +996,19 @@ export class IgxGridSelectionService {
     }
 
     /** Deselect the specified column and emit event. */
-    deselectColumn(field: string, event?): void {
+    public deselectColumn(field: string, event?): void {
         this.initColumnsState();
         const newSelection = this.getSelectedColumns().filter(c => c !== field);
         this.emitColumnSelectionEvent(newSelection, [], [field], event);
     }
 
     /** Deselect specified columns. No event is emitted. */
-    deselectColumnsWithNoEvent(fields: string[]): void {
+    public deselectColumnsWithNoEvent(fields: string[]): void {
         fields.forEach(field => this.columnSelection.delete(field));
     }
 
     /** Deselect specified columns. And emit event. */
-    deselectColumns(fields: string[], event?): void {
+    public deselectColumns(fields: string[], event?): void {
         const removed = this.getSelectedColumns().filter(colField => fields.indexOf(colField) > -1);
         const newSelection = this.getSelectedColumns().filter(colField => fields.indexOf(colField) === -1);
 
@@ -1054,6 +1039,20 @@ export class IgxGridSelectionService {
 
     protected areEqualCollections(first, second): boolean {
         return first.length === second.length && new Set(first.concat(second)).size === first.length;
+    }
+
+    /**
+     * (╯°□°）╯︵ ┻━┻
+     * Chrome and Chromium don't care about the active
+     * range after keyboard navigation, thus this.
+     */
+    private _moveSelectionChrome(node: Node) {
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        const range = new Range();
+        range.selectNode(node);
+        range.collapse(true);
+        selection.addRange(range);
     }
 
     private isFilteringApplied(): boolean {

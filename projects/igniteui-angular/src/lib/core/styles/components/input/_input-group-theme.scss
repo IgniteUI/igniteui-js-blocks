@@ -454,10 +454,6 @@
         padding: 0 rem(16px, map-get($base-scale-size, 'comfortable'));
         background: --var($theme, 'box-background');
         box-shadow: inset 0 -2px 0 0 --var($theme, 'idle-bottom-line-color');
-
-        %form-group-label--box + %form-group-input--box {
-            transform: translateY(0);
-        }
     }
 
     %form-group-bundle--indigo {
@@ -830,10 +826,6 @@
         border-radius: --var($theme, 'search-border-radius');
         background: --var($theme, 'search-background');
         box-shadow: --var($theme, 'search-resting-shadow');
-
-        %form-group-label--box + %form-group-input--box {
-            transform: translateY(0);
-        }
     }
 
     %form-group-bundle--search-cosy {
@@ -911,11 +903,27 @@
 
     %form-group-label--box {
         transform: translateY(0);
+
+        + %form-group-input--box,
+        ~ %form-group-file-input--box {
+            transform: translateY(0);
+        }
     }
 
     %form-group-label--border {
         padding: 0 rem(4px);
         transition: all $transition-timing;
+    }
+
+    %form-group-label--border,
+    %form-group-label--search {
+        transform: translateY(0);
+    }
+
+    %form-group-label--search {
+        + %form-group-input--search {
+            transform: translateY(0);
+        }
     }
 
     %form-group-label--float {
@@ -1077,16 +1085,13 @@
         }
     }
 
-    %form-group-input--box {
+    %form-group-input--box,
+    %form-group-file-input--box,
+    %form-group-input--search,
+    %form-group-input--border,
+    %form-group-input--indigo,
+    %form-group-file-input-indigo {
         transform: translateY(-25%);
-    }
-
-    %form-group-file-input--box {
-        span {
-            top: initial;
-            transform: none;
-            bottom: 0;
-        }
     }
 
     %form-group-input--hover {
@@ -1294,7 +1299,7 @@
         padding: rem(8px, map-get($base-scale-size, 'comfortable'));
         line-height: normal;
 
-        %igx-icon-display {
+        igx-icon {
             width: rem(18px);
             height: rem(18px);
             font-size: rem(18px);

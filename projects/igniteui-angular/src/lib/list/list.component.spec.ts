@@ -268,7 +268,7 @@ describe('List', () => {
         expect(list.cssClass).toBeFalsy();
         expect(list.isListEmpty).toBeTruthy();
 
-        const noItemsMessage = fixture.debugElement.query(By.css('.message'));
+        const noItemsMessage = fixture.debugElement.query(By.css('.igx-list__message'));
         expect(noItemsMessage.nativeElement.textContent.trim()).toBe(listNoItemsMessage);
     });
 
@@ -298,7 +298,7 @@ describe('List', () => {
         expect(list.cssClass).toBeFalsy();
         expect(list.isListEmpty).toBeTruthy();
 
-        const noItemsMessage = fixture.debugElement.query(By.css('.message'));
+        const noItemsMessage = fixture.debugElement.query(By.css('.igx-list__message'));
         expect(noItemsMessage.nativeElement.textContent.trim()).toBe(listLoadingItemsMessage);
     });
 
@@ -312,7 +312,7 @@ describe('List', () => {
 
         verifyItemsCount(list, 3);
 
-        const noItemsMessage = fixture.debugElement.query(By.css('.message'));
+        const noItemsMessage = fixture.debugElement.query(By.css('.igx-list__message'));
         expect(noItemsMessage.nativeElement.textContent.trim()).toBe(listLoadingItemsMessage);
 
         list.isLoading = false;

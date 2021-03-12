@@ -152,7 +152,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get context(): any {
+    public get context(): any {
         return {
             $implicit: this.value,
             cell: this
@@ -167,7 +167,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get template(): TemplateRef<any> {
+    public get template(): TemplateRef<any> {
         if (this.editMode) {
             const inlineEditorTemplate = this.column.inlineEditorTemplate;
             return inlineEditorTemplate ? inlineEditorTemplate : this.inlineEditorTemplate;
@@ -189,7 +189,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get pinnedIndicatorTemplate() {
+    public get pinnedIndicatorTemplate() {
         if (this.pinnedIndicator) {
             return this.pinnedIndicator;
         }
@@ -204,7 +204,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get gridID(): any {
+    public get gridID(): any {
         return this.row.gridID;
     }
 
@@ -216,7 +216,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get grid(): any {
+    public get grid(): any {
         return this.gridAPI.grid;
     }
 
@@ -229,7 +229,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @memberof IgxGridCellComponent
      */
     @HostBinding('attr.data-rowIndex')
-    get rowIndex(): number {
+    public get rowIndex(): number {
         return this.row.index;
     }
 
@@ -241,7 +241,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get columnIndex(): number {
+    public get columnIndex(): number {
         return this.column.index;
     }
 
@@ -255,11 +255,11 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      */
     @HostBinding('attr.data-visibleIndex')
     @Input()
-    get visibleColumnIndex() {
+    public get visibleColumnIndex() {
         return this.column.columnLayoutChild ? this.column.visibleIndex : this._vIndex;
     }
 
-    set visibleColumnIndex(val) {
+    public set visibleColumnIndex(val) {
         this._vIndex = val;
     }
 
@@ -305,7 +305,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    get nativeElement(): HTMLElement {
+    public get nativeElement(): HTMLElement {
         return this.element.nativeElement;
     }
 
@@ -314,11 +314,11 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @internal
      */
     @Input()
-    get cellSelectionMode() {
+    public get cellSelectionMode() {
         return this._cellSelection;
     }
 
-    set cellSelectionMode(value) {
+    public set cellSelectionMode(value) {
         if (this._cellSelection === value) {
             return;
         }
@@ -337,7 +337,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @internal
      */
     @Input()
-    set lastSearchInfo(value: ISearchInfo) {
+    public set lastSearchInfo(value: ISearchInfo) {
         this._lastSearchInfo = value;
         this.highlightText(this._lastSearchInfo.searchText, this._lastSearchInfo.caseSensitive, this._lastSearchInfo.exactMatch);
     }
@@ -348,7 +348,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      */
     @Input()
     @HostBinding('class.igx-grid__td--pinned-last')
-    lastPinned = false;
+    public lastPinned = false;
 
     /**
      * @hidden
@@ -356,14 +356,14 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      */
     @Input()
     @HostBinding('class.igx-grid__td--pinned-first')
-    firstPinned = false;
+    public firstPinned = false;
 
     /**
      * Returns whether the cell is in edit mode.
      */
     @Input()
     @HostBinding('class.igx-grid__td--editing')
-    editMode = false;
+    public editMode = false;
 
     /**
      * Sets/get the `role` property of the cell.
@@ -389,32 +389,32 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @memberof IgxGridCellComponent
      */
     @HostBinding('attr.aria-readonly')
-    get readonly(): boolean {
+    public get readonly(): boolean {
         return !this.editable;
     }
 
-    get gridRowSpan(): number {
+    public get gridRowSpan(): number {
         return this.column.gridRowSpan;
     }
 
-    get gridColumnSpan(): number {
+    public get gridColumnSpan(): number {
         return this.column.gridColumnSpan;
     }
 
 
-    get rowEnd(): number {
+    public get rowEnd(): number {
         return this.column.rowEnd;
     }
 
-    get colEnd(): number {
+    public get colEnd(): number {
         return this.column.colEnd;
     }
 
-    get rowStart(): number {
+    public get rowStart(): number {
         return this.column.rowStart;
     }
 
-    get colStart(): number {
+    public get colStart(): number {
         return this.column.colStart;
     }
 
@@ -427,7 +427,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @memberof IgxGridCellComponent
      */
     @Input()
-    width = '';
+    public width = '';
 
     /**
      * @hidden
@@ -437,7 +437,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
     public active = false;
 
     @HostBinding('attr.aria-selected')
-    get ariaSelected() {
+    public get ariaSelected() {
         return this.selected || this.column.selected  || this.row.selected;
     }
 
@@ -450,7 +450,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @memberof IgxGridCellComponent
      */
     @HostBinding('class.igx-grid__td--selected')
-    get selected() {
+    public get selected() {
         return this.selectionService.selected(this.selectionNode);
     }
 
@@ -462,7 +462,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      *
      * @memberof IgxGridCellComponent
      */
-    set selected(val: boolean) {
+    public set selected(val: boolean) {
         const node = this.selectionNode;
         if (val) {
             this.selectionService.add(node);
@@ -481,7 +481,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @memberof IgxGridCellComponent
      */
     @HostBinding('class.igx-grid__td--column-selected')
-    get columnSelected() {
+    public get columnSelected() {
         return this.selectionService.isColumnSelected(this.column.field);
     }
 
@@ -518,7 +518,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
     /**
      * Returns whether the cell is editable.
      */
-    get editable(): boolean {
+    public get editable(): boolean {
         return this.column.editable && !this.row.disabled;
     }
 
@@ -704,7 +704,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @hidden
      * @internal
      */
-    ngOnInit() {
+    public ngOnInit() {
         this.zone.runOutsideAngular(() => {
             this.nativeElement.addEventListener('pointerdown', this.pointerdown);
             this.addPointerListeners(this.cellSelectionMode);
@@ -728,7 +728,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @hidden
      * @internal
      */
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.zone.runOutsideAngular(() => {
             this.nativeElement.removeEventListener('pointerdown', this.pointerdown);
             this.removePointerListeners(this.cellSelectionMode);
@@ -738,62 +738,6 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
             }
         });
         this.touchManager.destroy();
-    }
-
-    /**
-     * @hidden
-     * @internal
-     */
-    _updateCRUDStatus(event?: Event) {
-        if (this.editMode) {
-            return;
-        }
-
-        const crud = this.crudService;
-        const editableCell = this.crudService.cell;
-        const editMode = !!(crud.row || crud.cell);
-
-        if (this.editable && editMode && !this.row.deleted) {
-            if (editableCell) {
-                if (this.row.addRow) {
-                    this.gridAPI.update_add_cell(editableCell, editableCell.editValue, event);
-                    this.row.rowData = editableCell.rowData;
-                } else {
-                    this.gridAPI.update_cell(editableCell, editableCell.editValue, event);
-                }
-                /* This check is related with the following issue #6517:
-                 * when edit cell that belongs to a column which is sorted and press tab,
-                 * the next cell in edit mode is with wrong value /its context is not updated/;
-                 * So we reapply sorting before the next cell enters edit mode.
-                 * Also we need to keep the notifyChanges below, because of the current
-                 * change detection cycle when we have editing with enabled transactions
-                 */
-                if (this.grid.sortingExpressions.length && this.grid.sortingExpressions.indexOf(editableCell.column.field)) {
-                    this.grid.cdr.detectChanges();
-                }
-
-                if (this.crudService.cellEditingBlocked) {
-                    return true;
-                }
-
-                crud.exitCellEdit(event);
-            }
-            this.grid.tbody.nativeElement.focus({ preventScroll: true });
-            this.grid.notifyChanges();
-            crud.enterEditMode(this, event);
-            return false;
-        }
-
-        if (editableCell && crud.sameRow(this.cellID.rowID)) {
-            if (this.row.addRow) {
-                this.gridAPI.submit_add_value(event);
-                this.row.rowData = editableCell.rowData;
-            } else {
-                this.gridAPI.submit_value(event);
-            }
-        } else if (editMode && !crud.sameRow(this.cellID.rowID)) {
-            this.grid.endEdit(true, event);
-        }
     }
 
     /**
@@ -817,7 +761,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * cell.setEditMode(true);
      * ```
      */
-    setEditMode(value: boolean): void {
+    public setEditMode(value: boolean): void {
         if (this.row.deleted) {
             return;
         }
@@ -859,7 +803,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @hidden
      * @internal
      */
-    pointerdown = (event: PointerEvent) => {
+    public pointerdown = (event: PointerEvent) => {
         if (this.cellSelectionMode !== GridSelectionMode.multiple) {
             this.activate(event);
             return;
@@ -885,7 +829,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @hidden
      * @internal
      */
-    pointerenter = (event: PointerEvent) => {
+    public pointerenter = (event: PointerEvent) => {
         const isHierarchicalGrid =  this.grid.nativeElement.tagName.toLowerCase() === 'igx-hierarchical-grid';
         if (isHierarchicalGrid && (!this.grid.navigation.activeNode.gridID || this.grid.navigation.activeNode.gridID !== this.gridID)) {
             return;
@@ -903,7 +847,7 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
      * @hidden
      * @internal
      */
-    pointerup = (event: PointerEvent) => {
+    public pointerup = (event: PointerEvent) => {
         const isHierarchicalGrid =  this.grid.nativeElement.tagName.toLowerCase() === 'igx-hierarchical-grid';
         if (!isLeftClick(event) || (isHierarchicalGrid && (!this.grid.navigation.activeNode.gridID ||
         this.grid.navigation.activeNode.gridID !== this.gridID))) {
@@ -998,6 +942,62 @@ export class IgxGridCellComponent implements OnInit, OnChanges, OnDestroy {
         const meta = new Map<string, any>();
         meta.set('pinned', this.grid.isRecordPinnedByViewIndex(this.row.index));
         return meta;
+    }
+
+    /**
+     * @hidden
+     * @internal
+     */
+    private _updateCRUDStatus(event?: Event) {
+        if (this.editMode) {
+            return;
+        }
+
+        const crud = this.crudService;
+        const editableCell = this.crudService.cell;
+        const editMode = !!(crud.row || crud.cell);
+
+        if (this.editable && editMode && !this.row.deleted) {
+            if (editableCell) {
+                if (this.row.addRow) {
+                    this.gridAPI.update_add_cell(editableCell, editableCell.editValue, event);
+                    this.row.rowData = editableCell.rowData;
+                } else {
+                    this.gridAPI.update_cell(editableCell, editableCell.editValue, event);
+                }
+                /* This check is related with the following issue #6517:
+                 * when edit cell that belongs to a column which is sorted and press tab,
+                 * the next cell in edit mode is with wrong value /its context is not updated/;
+                 * So we reapply sorting before the next cell enters edit mode.
+                 * Also we need to keep the notifyChanges below, because of the current
+                 * change detection cycle when we have editing with enabled transactions
+                 */
+                if (this.grid.sortingExpressions.length && this.grid.sortingExpressions.indexOf(editableCell.column.field)) {
+                    this.grid.cdr.detectChanges();
+                }
+
+                if (this.crudService.cellEditingBlocked) {
+                    return true;
+                }
+
+                crud.exitCellEdit(event);
+            }
+            this.grid.tbody.nativeElement.focus({ preventScroll: true });
+            this.grid.notifyChanges();
+            crud.enterEditMode(this, event);
+            return false;
+        }
+
+        if (editableCell && crud.sameRow(this.cellID.rowID)) {
+            if (this.row.addRow) {
+                this.gridAPI.submit_add_value(event);
+                this.row.rowData = editableCell.rowData;
+            } else {
+                this.gridAPI.submit_value(event);
+            }
+        } else if (editMode && !crud.sameRow(this.cellID.rowID)) {
+            this.grid.endEdit(true, event);
+        }
     }
 
     private addPointerListeners(selection) {

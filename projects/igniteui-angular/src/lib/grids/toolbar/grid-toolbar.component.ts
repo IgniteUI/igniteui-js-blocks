@@ -20,12 +20,12 @@ import { IgxGridBaseDirective } from '../grid-base.directive';
 import { GridType } from '../common/grid.interface';
 
 
- /**
-  * Provides a context-aware container component for UI operations for the grid components.
-  *
-  * @igxModule IgxGridToolbarModule
-  *
-  */
+/**
+ * Provides a context-aware container component for UI operations for the grid components.
+ *
+ * @igxModule IgxGridToolbarModule
+ *
+ */
 @Component({
     selector: 'igx-grid-toolbar',
     templateUrl: './grid-toolbar.component.html'
@@ -51,14 +51,14 @@ export class IgxGridToolbarComponent extends DisplayDensityBase implements OnIni
      * information check the toolbar topic.
      */
     @Input()
-    get grid() {
+    public get grid() {
         if (this._grid) {
             return this._grid;
         }
         return this.api.grid;
     }
 
-    set grid(value: IgxGridBaseDirective) {
+    public set grid(value: IgxGridBaseDirective) {
         this._grid = value;
     }
 
@@ -86,30 +86,30 @@ export class IgxGridToolbarComponent extends DisplayDensityBase implements OnIni
      * @internal
      */
     @HostBinding('class.igx-grid-toolbar')
-    defaultStyle = true;
+    public defaultStyle = true;
 
     /**
      * @hidden
      * @internal
      */
     @HostBinding('class.igx-grid-toolbar--cosy')
-    get cosyStyle() {
- return this.displayDensity === 'cosy';
-}
+    public get cosyStyle() {
+        return this.displayDensity === 'cosy';
+    }
 
     /**
      * @hidden
      * @internal
      */
     @HostBinding('class.igx-grid-toolbar--compact')
-    get compactStyle() {
- return this.displayDensity === 'compact';
-}
+    public get compactStyle() {
+        return this.displayDensity === 'compact';
+    }
 
     /** @hidden @internal */
     @HostBinding('style.max-width.px')
     @HostBinding('style.flex-basis.px')
-    width = null;
+    public width = null;
 
     protected _grid: IgxGridBaseDirective;
     protected sub: Subscription;
@@ -126,13 +126,13 @@ export class IgxGridToolbarComponent extends DisplayDensityBase implements OnIni
     }
 
     /** @hidden @internal */
-    ngOnInit() {
+    public ngOnInit() {
         this.grid.rendered$.pipe(first()).subscribe(() => this.width = this.grid.outerWidth);
         this.sub = this.grid.resizeNotify.subscribe(() => this.width = this.grid.outerWidth);
     }
 
     /** @hidden @internal */
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.sub?.unsubscribe();
     }
 }

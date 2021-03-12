@@ -24,27 +24,23 @@
     }
 
     @include m(pinned) {
-        @extend %igx-grid-summary !optional;
         @extend %igx-grid-summary--pinned !optional;
     }
 
     @include m(pinned-last) {
-        @extend %igx-grid-summary--pinned !optional;
         @extend %igx-grid-summary--pinned-last !optional;
     }
 
     @include m(pinned-first) {
-        @extend %igx-grid-summary--pinned !optional;
         @extend %igx-grid-summary--pinned-first !optional;
     }
 
+    // TODO check if we need to implement styling for .igx-grid-summary--empty selector
     @include m(empty) {
-        @extend %igx-grid-summary !optional;
         @extend %igx-grid-summary--empty !optional;
     }
 
     @include m(fw) {
-        @extend %igx-grid-summary !optional;
         @extend %grid-summary--fixed-width !optional;
     }
 

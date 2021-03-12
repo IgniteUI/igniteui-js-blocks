@@ -24,7 +24,7 @@ export class IgxGridToolbarAdvancedFilteringComponent {
     /**
      * Returns the grid containing this component.
      */
-    get grid() {
+    public get grid() {
         return this.toolbar.grid;
     }
 

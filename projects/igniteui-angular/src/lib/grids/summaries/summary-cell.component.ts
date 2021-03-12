@@ -40,7 +40,7 @@ export class IgxSummaryCellComponent {
     }
 
     @HostBinding('attr.data-visibleIndex')
-    get visibleColumnIndex(): number {
+    public get visibleColumnIndex(): number {
         return this.column.visibleIndex;
     }
 
@@ -68,19 +68,19 @@ export class IgxSummaryCellComponent {
         };
     }
 
-    get width() {
+    public get width() {
         return this.column.getCellWidth();
     }
 
-    get nativeElement(): any {
+    public get nativeElement(): any {
         return this.element.nativeElement;
     }
 
-    get columnDatatype(): DataType {
+    public get columnDatatype(): DataType {
         return this.column.dataType;
     }
 
-    get itemHeight() {
+    public get itemHeight() {
         return this.column.grid.defaultSummaryHeight;
     }
 

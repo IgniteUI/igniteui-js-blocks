@@ -183,17 +183,21 @@
                 background: --var($theme, 'base-track-hover-color');
             }
 
-            %igx-slider-track--disabled {
-                background: --var($theme, 'disabled-base-track-color');
-            }
-
-            %igx-thumb-dot {
+            %igx-slider-thumb__dot {
                 &::before {
                     border-color: --var($theme, 'track-hover-color');
                 }
             }
+        }
+    }
 
-            %igx-thumb-dot--disabled {
+    %igx-slider-disabled {
+        &:hover {
+            %igx-slider-track--disabled {
+                background: --var($theme, 'disabled-base-track-color');
+            }
+
+            %igx-slider-thumb__dot {
                 &::before {
                     border-color: --var($theme, 'thumb-disabled-border-color');
                 }
@@ -411,13 +415,13 @@
         top: -#{rem($slider-thumb-radius)};
         margin-#{$left}: -#{rem($slider-thumb-radius)};
 
-        &:focus %igx-thumb-dot::after {
+        &:focus div::after {
             opacity: .18;
             /* 32 / 40 */
             transform: scale(.8);
         }
 
-        &:focus %igx-thumb-dot::before {
+        &:focus div::before {
             box-shadow: 0 0 0 rem($slider-outline-width) --var($theme, 'thumb-focus-color');
 
             @if $variant == 'fluent' {
@@ -427,16 +431,16 @@
     }
 
     %igx-thumb--disabled {
-        &:hover %igx-thumb-label {
-            opacity: 0;
-        }
-
-        &:focus %igx-thumb-dot::before {
+        &:focus div::before {
             box-shadow: none;
 
             @if $variant == 'fluent' {
                 border-color: --var($theme, 'thumb-disabled-border-color') !important;
             }
+        }
+
+        &:focus div::after {
+            transform: scale(0);
         }
     }
 
@@ -452,7 +456,7 @@
         margin: 0 auto;
     }
 
-    %igx-thumb-label {
+    %igx-slider-thumb-label__container {
         position: relative;
         display: flex;
         align-items: center;
@@ -500,7 +504,7 @@
         }
     }
 
-    %igx-thumb-dot {
+    %igx-slider-thumb__dot {
         position: relative;
         #{$left}: 0;
         padding: rem(20px);
@@ -543,7 +547,7 @@
         }
     }
 
-    %igx-thumb-dot--disabled {
+    %igx-slider-thumb__dot--disabled {
         pointer-events: none;
 
         &::before {
@@ -551,19 +555,15 @@
             border-color: --var($theme, 'thumb-disabled-border-color');
             border-radius: rem($slider-thumb-radius);
         }
-
-        &::after {
-            transform: scale(0);
-        }
     }
 
-    %igx-thumb-dot--active {
+    %igx-slider-thumb__dot--active {
         &::before {
             border-radius: 0 $slider-thumb-radius $slider-thumb-radius;
         }
     }
 
-    %igx-thumb-dot--pressed {
+    %igx-slider-thumb__dot--pressed {
         &::after {
             opacity: .24 !important;
             /* 48 / 40 */
@@ -571,11 +571,11 @@
         }
     }
 
-    %igx-thumb-label--active {
+    %igx-slider-thumb-label__container--active {
         opacity: 1;
     }
 
-    %igx-thumb-label--pressed {
+    %igx-slider-thumb-label__container--pressed {
         z-index: 1;
     }
 }
@@ -597,7 +597,7 @@
     $ticks-label: map-get($categories, 'ticks-label');
     $thumb-label: map-get($categories, 'thumb-label');
 
-    %igx-thumb-label {
+    %igx-slider-thumb-label__container {
         @include igx-type-style($type-scale, $thumb-label)
     }
 

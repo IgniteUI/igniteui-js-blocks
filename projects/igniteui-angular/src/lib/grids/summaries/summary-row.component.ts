@@ -42,11 +42,11 @@ export class IgxSummaryRowComponent implements DoCheck  {
     public firstCellIndentation = -1;
 
     @HostBinding('attr.data-rowIndex')
-    get dataRowIndex() {
+    public get dataRowIndex() {
         return this.index;
     }
 
-    get minHeight() {
+    public get minHeight() {
         return this.grid.summaryService.calcMaxSummaryHeight() - 1;
     }
 
@@ -117,7 +117,7 @@ export class IgxSummaryRowComponent implements DoCheck  {
         return this.grid.unpinnedColumns;
     }
 
-    getContext(row) {
+    public getContext(row) {
         return {
             $implicit: row
         };

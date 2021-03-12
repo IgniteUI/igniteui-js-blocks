@@ -71,29 +71,51 @@ export class IgxSliderThumbComponent implements OnInit, OnDestroy {
     @HostBinding('attr.z-index')
     public zIndex = 0;
 
-    @HostBinding('class.igx-slider__thumb-from')
+    @HostBinding('class.igx-slider-thumb-from')
     public get thumbFromClass() {
         return this.type === SliderHandle.FROM;
     }
 
-    @HostBinding('class.igx-slider__thumb-to')
+    @HostBinding('class.igx-slider-thumb-to')
     public get thumbToClass() {
         return this.type === SliderHandle.TO;
     }
 
-    @HostBinding('class.igx-slider__thumb-from--active')
+    @HostBinding('class.igx-slider-thumb-from--active')
     public get thumbFromActiveClass() {
         return this.type === SliderHandle.FROM && this._isActive;
     }
 
-    @HostBinding('class.igx-slider__thumb-to--active')
+    @HostBinding('class.igx-slider-thumb-to--active')
     public get thumbToActiveClass() {
         return this.type === SliderHandle.TO && this._isActive;
     }
 
-    @HostBinding('class.igx-slider__thumb--pressed')
-    public get thumbPressedClass() {
-        return this.isActive && this._isPressed;
+    @HostBinding('class.igx-slider-thumb-from--disabled')
+    public get thumbFromDisabledClass() {
+        return this.type === SliderHandle.FROM && this.disabled;
+    }
+
+    @HostBinding('class.igx-slider-thumb-to--disabled')
+    public get thumbToDisabledClass() {
+        return this.type === SliderHandle.TO && this.disabled;
+    }
+
+    @HostBinding('class.igx-slider-thumb-from--pressed')
+    public get thumbFromPressedClass() {
+        return this.type === SliderHandle.FROM && this.isActive && this._isPressed;
+    }
+
+    @HostBinding('class.igx-slider-thumb-to--pressed')
+    public get thumbToPressedClass() {
+        return this.type === SliderHandle.TO && this.isActive && this._isPressed;
+    }
+
+    public get getDotClass() {
+        return {
+            'igx-slider-thumb-from__dot': this.type === SliderHandle.FROM,
+            'igx-slider-thumb-to__dot': this.type === SliderHandle.TO
+        };
     }
 
     public isActive = false;

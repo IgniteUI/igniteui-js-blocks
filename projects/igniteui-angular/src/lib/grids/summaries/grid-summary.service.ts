@@ -211,8 +211,8 @@ export class IgxGridSummaryService {
     }
 
     // TODO: remove only deleted rows
-    private removeChildRowSummaries(rowID, columnName?) {
-    }
+    // private removeChildRowSummaries(rowID, columnName?) {
+    // }
 
     private compareGroupingExpressions(current, groupingArgs) {
         const newExpressions = groupingArgs.expressions.map(record => record.fieldName);

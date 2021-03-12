@@ -457,7 +457,7 @@ export class IgxListComponent extends IgxListBaseDirective {
      * let isEmpty =  this.list.isListEmpty;
      * ```
      */
-    @HostBinding('class.igx-list-empty')
+    @HostBinding('class.igx-list--empty')
     public get isListEmpty(): boolean {
         return !this.children || this.children.length === 0;
     }

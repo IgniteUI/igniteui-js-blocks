@@ -248,14 +248,14 @@ export class IgxPaginatorComponent extends DisplayDensityBase {
      * By default it uses EN resources.
      */
     @Input()
-    set resourceStrings(value: IPaginatorResourceStrings) {
+    public set resourceStrings(value: IPaginatorResourceStrings) {
         this._resourceStrings = Object.assign({}, this._resourceStrings, value);
     }
 
     /**
      * An accessor that returns the resource strings.
      */
-    get resourceStrings(): IPaginatorResourceStrings {
+    public get resourceStrings(): IPaginatorResourceStrings {
         return this._resourceStrings;
     }
 
@@ -269,7 +269,7 @@ export class IgxPaginatorComponent extends DisplayDensityBase {
      * const lastPage = this.paginator.isLastPage;
      * ```
      */
-    get isLastPage(): boolean {
+    public get isLastPage(): boolean {
         return this.page + 1 >= this.totalPages;
     }
 
@@ -279,7 +279,7 @@ export class IgxPaginatorComponent extends DisplayDensityBase {
      * const lastPage = this.paginator.isFirstPage;
      * ```
      */
-    get isFirstPage(): boolean {
+    public get isFirstPage(): boolean {
         return this.page === 0;
     }
 
@@ -287,14 +287,14 @@ export class IgxPaginatorComponent extends DisplayDensityBase {
     /**
      * Returns if the first pager buttons should be disabled
      */
-    get isFirstPageDisabled(): boolean {
+    public get isFirstPageDisabled(): boolean {
         return this.isFirstPage || !this.pagerEnabled;
     }
 
     /**
      * Returns if the last pager buttons should be disabled
      */
-    get isLastPageDisabled(): boolean {
+    public get isLastPageDisabled(): boolean {
         return this.isLastPage || !this.pagerEnabled;
     }
 

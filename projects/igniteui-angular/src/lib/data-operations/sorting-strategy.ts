@@ -88,7 +88,7 @@ export class NoopSortingStrategy implements IGridSortingStrategy {
         return this._instance || (this._instance = new NoopSortingStrategy());
     }
 
-    public sort(data: any[], expressions: ISortingExpression[]): any[] {
+    public sort(data: any[]): any[] {
         return data;
     }
 }

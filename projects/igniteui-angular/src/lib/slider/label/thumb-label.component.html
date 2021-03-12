@@ -1,4 +1,4 @@
-<div class="label">
+<div [ngClass]="getLabelClass">
     <ng-container *ngTemplateOutlet="templateRef ? templateRef : thumbFromDefaultTemplate; context: context"></ng-container>
 </div>
 

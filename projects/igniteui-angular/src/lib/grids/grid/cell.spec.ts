@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, NgZone, DebugElement } from '@angular/core';
-import { TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { TestBed, fakeAsync, waitForAsync } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { IgxColumnComponent, IgxGridComponent, IgxGridModule, IGridCellEventArgs } from './public_api';
 import { UIInteractions, wait } from '../../test-utils/ui-interactions.spec';
@@ -403,12 +403,12 @@ export class ConditionalCellStyleTestComponent implements OnInit {
     public data: Array<any>;
     public columns: Array<any>;
 
-    cellClasses;
-    cellClasses1;
+    public cellClasses;
+    public cellClasses1;
 
-    callback = (rowData: any, columnKey: any) => rowData[columnKey] >= 5;
+    public callback = (rowData: any, columnKey: any) => rowData[columnKey] >= 5;
 
-    callback1 = (rowData: any) => rowData[this.grid.primaryKey] === 5;
+    public callback1 = (rowData: any) => rowData[this.grid.primaryKey] === 5;
 
     public ngOnInit(): void {
         this.cellClasses = {

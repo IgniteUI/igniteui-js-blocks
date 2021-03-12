@@ -11,8 +11,8 @@ import { IgxDirectionality, DIR_DOCUMENT } from '../services/direction/direction
 
 declare let Simulator: any;
 const SLIDER_CLASS = '.igx-slider';
-const THUMB_TO_CLASS = '.igx-slider__thumb-to';
-const THUMB_FROM_CLASS = '.igx-slider__thumb-from';
+const THUMB_TO_CLASS = '.igx-slider-thumb-to';
+const THUMB_FROM_CLASS = '.igx-slider-thumb-from';
 const SLIDER_TICKS_ELEMENT = '.igx-slider__ticks';
 const SLIDER_TICKS_TOP_ELEMENT = '.igx-slider__ticks--top';
 const SLIDER_PRIMARY_GROUP_TICKS_CLASS_NAME = 'igx-slider__ticks-group--tall';
@@ -370,7 +370,7 @@ describe('IgxSlider', () => {
             return panRight(sliderEl, sliderEl.offsetHeight, sliderEl.offsetWidth, 200)
             .then(() => {
                 fixture.detectChanges();
-                const activeThumb = fixture.debugElement.query(By.css('.igx-slider__thumb-to--active'));
+                const activeThumb = fixture.debugElement.query(By.css('.igx-slider-thumb-to--active'));
                 expect(sliderInstance.value).toBeGreaterThan(150);
                 expect(activeThumb).toBeNull();
                 done();
@@ -390,7 +390,7 @@ describe('IgxSlider', () => {
             return panRight(sliderEl, sliderEl.offsetHeight, sliderEl.offsetWidth, 200)
             .then(() => {
                 fixture.detectChanges();
-                const activeThumb = fixture.debugElement.query(By.css('.igx-slider__thumb-to--active'));
+                const activeThumb = fixture.debugElement.query(By.css('.igx-slider-thumb-to--active'));
                 expect(activeThumb).toBeDefined();
                 expect(sliderInstance.value).toBe(sliderInstance.minValue);
                 done();
@@ -440,8 +440,8 @@ describe('IgxSlider', () => {
             return panRight(sliderEl, sliderEl.offsetHeight, sliderEl.offsetWidth, 200)
             .then(() => {
                 fixture.detectChanges();
-                const activetoThumb = fixture.debugElement.query(By.css('.igx-slider__thumb-to--active'));
-                const activefromThumb = fixture.debugElement.query(By.css('.igx-slider__thumb-from--active'));
+                const activetoThumb = fixture.debugElement.query(By.css('.igx-slider-thumb-to--active'));
+                const activefromThumb = fixture.debugElement.query(By.css('.igx-slider-thumb-from--active'));
                 expect(slider.value).toEqual({ lower: 60, upper: 100 });
                 expect(activetoThumb).toBeNull();
                 expect(activefromThumb).toBeNull();
@@ -580,14 +580,14 @@ describe('IgxSlider', () => {
             fixture.detectChanges();
 
             expect(sliderEl).toBeDefined();
-            let activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-to--active'));
+            let activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-to--active'));
             expect(activeLabel).not.toBeNull();
 
             sliderEl.triggerEventHandler('pointerup', {pointerId: 1, preventDefault: (e: any) => {}});
             await wait(slider.thumbLabelVisibilityDuration + 10);
             fixture.detectChanges();
 
-            activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-to--active'));
+            activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-to--active'));
             expect(activeLabel).toBeNull();
         });
 
@@ -599,19 +599,19 @@ describe('IgxSlider', () => {
             fixture.detectChanges();
 
             expect(sliderEl).toBeDefined();
-            let activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-to--active'));
+            let activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-to--active'));
             expect(activeLabel).not.toBeNull();
 
             sliderEl.triggerEventHandler('pointerup', {pointerId: 1, preventDefault: (e: any) => {}});
             await wait(750);
             fixture.detectChanges();
 
-            activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-to--active'));
+            activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-to--active'));
             expect(activeLabel).not.toBeNull();
 
             await wait(300);
             fixture.detectChanges();
-            activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-to--active'));
+            activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-to--active'));
             expect(activeLabel).toBeNull();
         });
 
@@ -853,14 +853,14 @@ describe('IgxSlider', () => {
             fixture.detectChanges();
 
             expect(sliderEl).toBeDefined();
-            let activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-from--active'));
+            let activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-from--active'));
             expect(activeLabel).not.toBeNull();
 
             sliderEl.triggerEventHandler('pointerup', { pointerId: 1, preventDefault: (e: any) => {}});
             await wait(slider.thumbLabelVisibilityDuration + 10);
             fixture.detectChanges();
 
-            activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-from--active'));
+            activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-from--active'));
             expect(activeLabel).toBeNull();
         });
 
@@ -872,19 +872,19 @@ describe('IgxSlider', () => {
             fixture.detectChanges();
 
             expect(sliderEl).toBeDefined();
-            let activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-from--active'));
+            let activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-from--active'));
             expect(activeLabel).not.toBeNull();
 
             sliderEl.dispatchEvent( new PointerEvent('pointerup', { pointerId: 1}));
             await wait(750);
             fixture.detectChanges();
 
-            activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-from--active'));
+            activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-from--active'));
             expect(activeLabel).not.toBeNull();
 
             await wait(300);
             fixture.detectChanges();
-            activeLabel = fixture.debugElement.query(By.css('.igx-slider__label-from--active'));
+            activeLabel = fixture.debugElement.query(By.css('.igx-slider-thumb-label-from--active'));
             expect(activeLabel).toBeNull();
         });
 

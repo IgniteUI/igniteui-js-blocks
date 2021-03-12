@@ -301,7 +301,6 @@
         }
 
         @include e(file-input) {
-            @extend %form-group-input--box !optional;
             @extend %form-group-file-input--box !optional;
         }
 
@@ -364,15 +363,14 @@
         }
 
         @include e(input) {
-            @extend %form-group-input--box !optional;
+            @extend %form-group-input--border !optional;
         }
 
         @include e(file-input) {
-            @extend %form-group-input--box !optional;
+            @extend %form-group-input--border !optional;
         }
 
         @include e(label) {
-            @extend %form-group-label--box !optional;
             @extend %form-group-label--border !optional;
         }
 
@@ -383,28 +381,24 @@
 
     @include mx(border, filled) {
         @include e(label) {
-            @extend %form-group-label-float !optional;
             @extend %form-group-label--float-border !optional;
         }
     }
 
     @include mx(border, file) {
         @include e(label) {
-            @extend %form-group-label-float !optional;
             @extend %form-group-label--float-border !optional;
         }
     }
 
     @include mx(border, focused) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
             @extend %form-group-label--float-border !optional;
         }
     }
 
     @include mx(border, placeholder) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
             @extend %form-group-label--float-border !optional;
         }
     }
@@ -423,32 +417,24 @@
 
     @include mx(border, cosy, filled) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-cosy !optional;
         }
     }
 
     @include mx(border, cosy, file) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-cosy !optional;
         }
     }
 
     @include mx(border, cosy, focused) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-cosy !optional;
         }
     }
 
     @include mx(border, cosy, placeholder) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-cosy !optional;
         }
     }
@@ -467,32 +453,24 @@
 
     @include mx(border, compact, filled) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-compact !optional;
         }
     }
 
     @include mx(border, compact, file) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-compact !optional;
         }
     }
 
     @include mx(border, compact, focused) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-compact !optional;
         }
     }
 
     @include mx(border, compact, placeholder) {
         @include e(label) {
-            @extend %form-group-label--float !optional;
-            @extend %form-group-label--float-border !optional;
             @extend %form-group-label--float-border-compact !optional;
         }
     }
@@ -688,11 +666,11 @@
         }
 
         @include e(input) {
-            @extend %form-group-input--box !optional;
+            @extend %form-group-input--indigo !optional;
         }
 
         @include e(file-input) {
-            @extend %form-group-input--box !optional;
+            @extend %form-group-input--indigo !optional;
         }
 
         @include e(label) {
@@ -971,11 +949,11 @@
         }
 
         @include e(input) {
-            @extend %form-group-input--box !optional;
+            @extend %form-group-input--search !optional;
         }
 
         @include e(label) {
-            @extend %form-group-label--box !optional;
+            @extend %form-group-label--search !optional;
         }
 
         @include e(hint) {
