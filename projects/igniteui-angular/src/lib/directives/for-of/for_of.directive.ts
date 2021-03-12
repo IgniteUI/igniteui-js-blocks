@@ -916,7 +916,9 @@ export class IgxForOfDirective<T> implements OnInit, OnChanges, DoCheck, OnDestr
             const view = container.detach(0);
 
             this.updateTemplateContext(embView.context, i);
-            container.insert(view);
+            if(!view.destroyed){
+                container.insert(view);
+            }
             this._embeddedViews.push(embView);
         }
     }
@@ -1215,7 +1217,7 @@ export class IgxForOfDirective<T> implements OnInit, OnChanges, DoCheck, OnDestr
      */
     protected getIndexAt(left, set) {
         let start = 0;
-        let end = set.length - 1;
+        let end = set.length - 1; 
         if (left === 0) {
             return 0;
         }
